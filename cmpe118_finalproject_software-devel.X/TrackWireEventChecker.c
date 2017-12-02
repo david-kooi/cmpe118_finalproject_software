@@ -42,9 +42,14 @@ uint8_t RightTrackWireCheck(void){
             ReturnEvent.EventType = curEvent;
             ReturnEvent.EventParam = rightADCReading;
             lastEvent = curEvent; // update history
-            TWIRE_PRINT("RIGHT_TW_EVENT, EventType: %p, EventParam %u",ReturnEvent.EventType,ReturnEvent.EventParam);
-            //PostGenericService(ReturnEvent); //-------------------------------------------------------edit
- 
+            //TWIRE_PRINT("RIGHT_TW_EVENT, EventType: %p, EventParam %u",ReturnEvent.EventType,ReturnEvent.EventParam);
+            
+#ifdef TEST_HARNESS_SERVICE_TEST
+            PostTestHarnessService(ReturnEvent); //-------------------------------------------------------edit
+#else
+            //PostHSM(ReturnEvent);
+#endif
+            
         }
         
         return 0;
@@ -76,9 +81,13 @@ uint8_t LeftTrackWireCheck(void){
             ReturnEvent.EventType = curEvent;
             ReturnEvent.EventParam = leftADCReading;
             lastEvent = curEvent; // update history
-            TWIRE_PRINT("LEFT_TW_EVENT, EventType: %p, EventParam %u",ReturnEvent.EventType,ReturnEvent.EventParam);
-         //   PostGenericService(ReturnEvent); //-------------------------------------------------------edit
-  
+            //TWIRE_PRINT("LEFT_TW_EVENT, EventType: %p, EventParam %u",ReturnEvent.EventType,ReturnEvent.EventParam);
+
+#ifdef TEST_HARNESS_SERVICE_TEST
+            PostTestHarnessService(ReturnEvent); //-------------------------------------------------------edit
+#else
+            //PostHSM(ReturnEvent);
+#endif
         }
     
     return 0;

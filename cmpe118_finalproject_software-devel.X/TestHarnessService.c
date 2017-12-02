@@ -1,5 +1,5 @@
 /*
- * File: TemplateService.h
+ * File: TestHarnessService.h
  * Author: J. Edward Carryer
  * Modified: Gabriel H Elkaim
  *
@@ -22,16 +22,14 @@
 #include "AD.h"
 #include "ES_Configure.h"
 #include "ES_Framework.h"
-#include "RateGroupDriverService.h"
-#include "ES_Timers.h"
-
-#include "TrackWireEventChecker.h"
-
+#include "TestHarnessService.h"
 #include <stdio.h>
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
+
+#define BATTERY_DISCONNECT_THRESHOLD 175
 
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
@@ -52,28 +50,24 @@ static uint8_t MyPriority;
  ******************************************************************************/
 
 /**
- * @Function InitRateGroupService(uint8_t Priority)
+ * @Function InitTestHarnessService(uint8_t Priority)
  * @param Priority - internal variable to track which event queue to use
  * @return TRUE or FALSE
  * @brief This will get called by the framework at the beginning of the code
  *        execution. It will post an ES_INIT event to the appropriate event
- *        queue, which will be handled inside RunTemplateService function. Remember
+ *        queue, which will be handled inside RunTestHarnessService function. Remember
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitRateGroupDriverService(uint8_t Priority)
+uint8_t InitTestHarnessService(uint8_t Priority)
 {
     ES_Event ThisEvent;
 
     MyPriority = Priority;
-    
-    // Start all required timers
-    ES_Timer_InitTimer(HZ_1_TIMER, 1000);
-    ES_Timer_InitTimer(HZ_500_TIMER, 1000);
 
-    
-       
-    
+    // in here you write your initialization code
+    // this includes all hardware and software initialization
+    // that needs to occur.
 
     // post the initial transition event
     ThisEvent.EventType = ES_INIT;
@@ -85,7 +79,7 @@ uint8_t InitRateGroupDriverService(uint8_t Priority)
 }
 
 /**
- * @Function PostRateGroupService(ES_Event ThisEvent)
+ * @Function PostTestHarnessService(ES_Event ThisEvent)
  * @param ThisEvent - the event (type and param) to be posted to queue
  * @return TRUE or FALSE
  * @brief This function is a wrapper to the queue posting function, and its name
@@ -93,78 +87,63 @@ uint8_t InitRateGroupDriverService(uint8_t Priority)
  *        be posted to. Remember to rename to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t PostRateGroupDriverService(ES_Event ThisEvent)
+uint8_t PostTestHarnessService(ES_Event ThisEvent)
 {
     return ES_PostToService(MyPriority, ThisEvent);
 }
 
 /**
- * @Function RunRateGroupService(ES_Event ThisEvent)
+ * @Function RunTestHarnessService(ES_Event ThisEvent)
  * @param ThisEvent - the event (type and param) to be responded.
  * @return Event - return event (type and param), in general should be ES_NO_EVENT
- * @brief This service provides acts as a centra driver for various rate groups. 
- *        Max rate group resolution is 1ms(1000Hz)
+ * @brief This function is where you implement the whole of the service,
+ *        as this is called any time a new event is passed to the event queue. 
  * @note Remember to rename to something appropriate.
  *       Returns ES_NO_EVENT if the event have been "consumed." 
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
+ES_Event RunTestHarnessService(ES_Event ThisEvent)
 {
     ES_Event ReturnEvent;
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
 
+    /********************************************
+     in here you write your service code
+     *******************************************/
+    static ES_EventTyp_t lastEvent = BATTERY_DISCONNECTED;
+    ES_EventTyp_t curEvent;
+    uint16_t batVoltage = AD_ReadADPin(BAT_VOLTAGE); // read the battery voltage
 
     switch (ThisEvent.EventType) {
     case ES_INIT:
+        // No hardware initialization or single time setups, those
+        // go in the init function above.
+        //
+        // This section is used to reset service for some reason
         break;
 
     case ES_TIMEOUT:
-        // Handle the various rate groups
-        switch(ThisEvent.EventParam){
-            case HZ_1_TIMER:
-                //DEBUG_PRINT("1HZ TICK");
-                
-                RightTrackWireCheck();
-                LeftTrackWireCheck();
-                
-                
-                
-                // Restart Timer
-                ES_Timer_InitTimer(HZ_1_TIMER, 1000); //1000 ms 
-                break;
-                
-            case HZ_500_TIMER:
-                //DEBUG_PRINT_("500HZ TICK");
-                TS_StartSampling();
-
-                
-                
-                
-                
-                // Restart Timer
-                ES_Timer_InitTimer(HZ_500_TIMER, 2); //2 ms 
-                break;
-                
-            case TS_SYNC_TIMER:
-                //DEBUG_PRINT("TS_SYNC_TIMER TICK)
-                TS_DriveSampling();
-                
-                break;
-
-
-
-            default:
-
-                break;
-                
+        if (batVoltage > BATTERY_DISCONNECT_THRESHOLD) { // is battery connected?
+            curEvent = BATTERY_CONNECTED;
+        } else {
+            curEvent = BATTERY_DISCONNECTED;
+        }
+        if (curEvent != lastEvent) { // check for change from last time
+            ReturnEvent.EventType = curEvent;
+            ReturnEvent.EventParam = batVoltage;
+            lastEvent = curEvent; // update history
+            
+            PostTestHarnessService(ReturnEvent);
 
         }
-        
-        
-        
-        
         break;
+        
+#ifdef TEST_HARNESS_SERVICE_TEST     // keep this as is for test harness      
+    default:
+        printf("\r\nEvent: %s\tParam: 0x%X",
+                EventNames[ThisEvent.EventType], ThisEvent.EventParam);
+        break;
+#endif
     }
-
 
     return ReturnEvent;
 }

@@ -23,7 +23,7 @@ uint8_t sensorState_PREV = 0x00;
  
 
 // Sampling Time
-#define TS_SAMPLE_TIME 4 // 2ms
+#define TS_SAMPLE_TIME 2 // ms
 
 // Tape Sensor Port Numbers
 #define TS_LEFT_TRIG_NUM      PORTY, PIN9
@@ -59,6 +59,10 @@ uint8_t sensorState_PREV = 0x00;
  // Forward Declared Functions
  uint16_t CheckTapeSensor_LEFT(void);
  uint16_t CheckTapeSensor_RIGHT(void);
+ 
+ void HandleTapeSensorEvent(uint8_t prevState, uint8_t currState, 
+                            uint8_t ON_EVENT, uint8_t OFF_EVENT,
+                            uint16_t sensorVal, ES_Event thisEvent);
 
  
 /**
@@ -158,17 +162,17 @@ void TS_DriveSampling(void){
             
                 IO_SINK(TS_LEFT_TRIG_NUM); // Turn emitter on
                 leftSensorVal = CheckTapeSensor_LEFT();
-                IO_SOURCE(TS_LEFT_TRIG_NUM); // Turn emitter off
+                //IO_SOURCE(TS_LEFT_TRIG_NUM); // Turn emitter off
 
             /* RIGHT SENSOR */
-                IO_SINK(TS_RIGHT_TRIG_NUM); // Turn emitter on
-                leftSensorVal = CheckTapeSensor_LEFT();
+                //IO_SINK(TS_RIGHT_TRIG_NUM); // Turn emitter on
+                rightSensorVal = CheckTapeSensor_RIGHT();
                 IO_SOURCE(TS_RIGHT_TRIG_NUM); // Turn emitter off
             
             
             // Change State and Restart Sensor
             TS_EMITTER_STATE = TS_EMITTER_OFF;
-            ES_Timer_InitTimer(TS_SYNC_TIMER, TS_SAMPLE_TIME); // 2ms Tape Sensor Sampling            
+            ES_Timer_InitTimer(TS_SYNC_TIMER, TS_SAMPLE_TIME); // ms Tape Sensor Sampling            
             break;
         
         case TS_EMITTER_OFF:
@@ -179,8 +183,8 @@ void TS_DriveSampling(void){
                 
                 /* LEFT SENSOR */
                     tmp_1 = CheckTapeSensor_LEFT();
-                    //leftSensorVal = abs((int32_t)tmp_1 - leftSensorVal);
-                    //TAPE_PRINT("DELTA: %d", leftSensorVal);
+                    leftSensorVal = abs((int32_t)tmp_1 - leftSensorVal);
+                    TAPE_PRINT("DELTA: %d", leftSensorVal);
                     if     (leftSensorVal > TS_LEFT_HI_THRESH){sensorState_CURR |= TS_LEFT_SENSOR;}  // Toggle sensor bit 
                     else if(leftSensorVal < TS_LEFT_LO_THRESH){sensorState_CURR &= ~TS_LEFT_SENSOR;} // Untoggle sensor bit 
                     
@@ -188,18 +192,15 @@ void TS_DriveSampling(void){
                     prevState = sensorState_PREV & TS_LEFT_SENSOR; // previous state
                     currState = sensorState_CURR & TS_LEFT_SENSOR; // current state
                     
-                    if( prevState ^ currState ){  // There has been a change
-                        // Post to Services TODO
-                        
-                        // Toggle LED
-                        currState == 1 ? IO_SINK(TS_LEFT_LED_NUM) : IO_SOURCE(TS_LEFT_LED_NUM);
-                    }
+                    HandleTapeSensorEvent(prevState, currState, 
+                                          TS_LEFT_ON, TS_LEFT_OFF,
+                                          leftSensorVal, thisEvent);
                     
                     
                 /* RIGHT SENSOR */
                     tmp_1 = CheckTapeSensor_RIGHT();
-                    //rightSensorVal = abs((int32_t)tmp_1 - leftSensorVal);
-                    //TAPE_PRINT("DELTA: %d", rightSensorVal);
+                    rightSensorVal = abs((int32_t)tmp_1 - rightSensorVal);
+                    TAPE_PRINT("DELTA: %d", rightSensorVal);
                     if     (rightSensorVal > TS_RIGHT_HI_THRESH){sensorState_CURR |= TS_RIGHT_SENSOR;}  // Toggle sensor bit 
                     else if(rightSensorVal < TS_RIGHT_LO_THRESH){sensorState_CURR &= ~TS_RIGHT_SENSOR;} // Untoggle sensor bit 
                     
@@ -207,14 +208,20 @@ void TS_DriveSampling(void){
                     prevState = sensorState_PREV & TS_RIGHT_SENSOR; // previous state
                     currState = sensorState_CURR & TS_RIGHT_SENSOR; // current state
                     
-                    if( prevState ^ currState ){  // There has been a change
-                        // Post to Services TODO
-                        
-                        // Toggle LED
-                        currState == 1 ? IO_SINK(TS_RIGHT_LED_NUM) : IO_SOURCE(TS_RIGHT_LED_NUM);
-                    }
+                    // Check for change
+                    prevState = sensorState_PREV & TS_LEFT_SENSOR; // previous state
+                    currState = sensorState_CURR & TS_LEFT_SENSOR; // current state
+                    
+                    // Handle Change
+                    HandleTapeSensorEvent(prevState, currState, 
+                                          TS_RIGHT_ON, TS_RIGHT_OFF,
+                                          rightSensorVal, thisEvent);
                                  
 
+                    
+                    
+                    
+                    
                     
                 // Sampling finished
                 sensorState_PREV = sensorState_CURR;
@@ -240,6 +247,39 @@ void TS_DriveSampling(void){
 }
 
 
+/**
+ * @Function HandleTapeSensorEvent
+ * @param Needed parameters
+ * @return void
+ * @brief Handles a tape sensor event
+ * @note 
+ * @author David Kooi, 2017.11.21
+ * @modified */
+void HandleTapeSensorEvent(uint8_t prevState, uint8_t currState, 
+                            uint8_t ON_EVENT, uint8_t OFF_EVENT,
+                            uint16_t sensorVal, ES_Event thisEvent){
+
+    if( prevState ^ currState ){  // There has been a change
+
+    // If current state is greater than zero the tape sensor has turned on
+    (currState > 0) ? (thisEvent.EventType = ON_EVENT) : (thisEvent.EventType = OFF_EVENT);
+
+    // Toggle LED if the current state is greater than 0
+    (currState > 0) ? IO_SINK(TS_LEFT_LED_NUM) : IO_SOURCE(TS_LEFT_LED_NUM);
+
+    // Set param
+    thisEvent.EventParam = sensorVal;
+
+    // Post to services
+#ifdef TEST_HARNESS_SERVICE_TEST
+    PostTestHarnessService(thisEvent);
+#else
+    //PostHSM(thisEvent);
+#endif
+                        
+                        
+                    }
+}
 
 /**
  * @Function CheckTapeSensor_LEFT(void)
@@ -250,7 +290,7 @@ void TS_DriveSampling(void){
  * @author David Kooi, 2017.11.21
  * @modified */
 uint16_t CheckTapeSensor_LEFT(void){
-    static uint16_t val = 0;
+    uint16_t val = 0;
     val = AD_ReadADPin(TS_LEFT_ADC);
     TAPE_PRINT("TAPE SENSOR LEFT: %d\r\n", val);
     
@@ -266,9 +306,9 @@ uint16_t CheckTapeSensor_LEFT(void){
  * @author David Kooi, 2017.11.21
  * @modified */
 uint16_t CheckTapeSensor_RIGHT(void){
-    static uint16_t val = 0;
+    uint16_t val = 0;
     val = AD_ReadADPin(TS_RIGHT_ADC);
-    TAPE_PRINT("TAPE SENSOR LEFT: %d\r\n", val);
+    TAPE_PRINT("TAPE SENSOR RIGHT: %d\r\n", val);
     
     return val;
 }

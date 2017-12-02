@@ -161,11 +161,10 @@ uint8_t CheckSpecificBumper(BumperState_t* bumperState){
             
             BUMPER_PRINT("EVENT: %s\n", EventNames[thisEvent.EventType]);
             
-            #ifndef EVENTCHECKER_TEST           // keep this as is for test harness
-                //PostGenericService(thisEvent);
+            #ifdef TEST_HARNESS_SERVICE_TEST           // keep this as is for test harness
+                PostTestHarnessService(thisEvent);
             #else
-                BUMPER_PRINT("NEW EVENT\n");
-                SaveEvent(thisEvent);
+                //PostHSM(thisEvent);
             #endif   
                 return TRUE;
             

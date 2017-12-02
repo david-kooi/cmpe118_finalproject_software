@@ -1,7 +1,7 @@
 build/default/production/_ext/331920610/ES_TattleTale.o:  \
  C:/CMPE118/src/ES_TattleTale.c  \
 C:/CMPE118/include/BOARD.h  \
- C:/Users/dkooi/Desktop/Resistance_Brain.X/ES_Configure.h  \
+ES_Configure.h  \
  C:/CMPE118/include/ES_Framework.h  \
 C:/CMPE118/include/ES_Events.h  \
  C:/CMPE118/include/ES_Timers.h  \
@@ -14,8 +14,8 @@ C:/CMPE118/include/ES_Port.h  \
 C:/CMPE118/include/ES_PriorTables.h  \
  C:/CMPE118/include/ES_Queue.h  \
 C:/CMPE118/include/ES_ServiceHeaders.h  \
- C:/Users/dkooi/Desktop/Resistance_Brain.X/RateGroupDriverService.h  \
- C:/Users/dkooi/Desktop/Resistance_Brain.X/ES_Configure.h  \
+ RateGroupDriverService.h  \
+ES_Configure.h  \
  C:/CMPE118/include/ES_TattleTale.h  \
 C:/CMPE118/include/ES_TattleTale.h  \
  C:/CMPE118/include/serial.h 

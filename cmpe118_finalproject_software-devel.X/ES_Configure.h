@@ -189,6 +189,24 @@ static const char *EventNames[] = {
 #define SERV_1_QUEUE_SIZE 3
 #endif
 
+
+#ifdef TEST_HARNESS_SERVICE_TEST
+
+
+// These are the definitions for TestHarness
+#if NUM_SERVICES > 2
+// the header file with the public fuction prototypes
+#define SERV_2_HEADER "TestHarnessService.h"
+// the name of the Init function
+#define SERV_2_INIT TestHarnessServiceInit
+// the name of the run function
+#define SERV_2_RUN TestHarnessServiceRun
+// How big should this services Queue be?
+#define SERV_2_QUEUE_SIZE 3
+#endif
+
+#else
+
 // These are the definitions for Service 2
 #if NUM_SERVICES > 2
 // the header file with the public fuction prototypes
@@ -200,6 +218,8 @@ static const char *EventNames[] = {
 // How big should this services Queue be?
 #define SERV_2_QUEUE_SIZE 3
 #endif
+
+#endif // RUN_TEST_HARNESS
 
 
 

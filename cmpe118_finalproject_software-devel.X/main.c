@@ -10,6 +10,8 @@
 #include "TapeSensorEventChecker.h"
 #include "TrackWireEventChecker.h"
 
+//Test
+
 void main(void)
 {
     ES_Return_t ErrorType;
@@ -23,15 +25,17 @@ void main(void)
 
     // Your hardware initialization function calls go here
     AD_Init();
+    //AD_TEST_PINS() // Cycles through and prints values from pins forever
     
-    ES_Timer_Init();
-    InitializeTapeSensors(); 
     
+    
+    ES_Timer_Init();    
     /* Initialize Event Checkers */
     
     InitializeBumperChecker();
-    
     InitializeTrackWire();
+    InitializeTapeSensors(); 
+
         
     // now initialize the Events and Services Framework and start it running
     ErrorType = ES_Initialize();
