@@ -12,8 +12,8 @@
 #include "BatteryEventChecker.h"
 #include "pwm.h"
 #include "AD.h"
-#include "stdint.h"
-#include "stdio.h"
+#include <stdint.h>
+#include <stdio.h>
 
 #define ABS(x) (((x) > 0) ? (x) : (-(x)))
 #define SIGN(x) (((x) > 0) ? 1 : (-1))
@@ -35,10 +35,6 @@ static int32_t timerHeading;            // [micro-radians]
 static int32_t timeoutDistance;         // [micro-inches]
 static int32_t timeoutHeading;          // [micro-radians]
 
-static void setMotors(int32_t forwardSpeed, int32_t turningSpeed);
-static void setLeftMotor(int32_t voltage);
-static void setRightMotor(int32_t voltage);
-
 typedef enum {
     DISABLED,
     ENABLED,
@@ -56,7 +52,7 @@ uint8_t InitDriveService(uint8_t priority) {
                            LEFT_DIRECTION_PIN | RIGHT_DIRECTION_PIN);
     IO_PortsClearPortBits(DRIVE_DIRECTION_PORT,
                           LEFT_DIRECTION_PIN | RIGHT_DIRECTION_PIN);
-    PWM_Init();
+//    PWM_Init();
     PWM_SetFrequency(DRIVE_PWM_FREQ);
     PWM_AddPins(LEFT_ENABLE_PIN | RIGHT_ENABLE_PIN);
     PWM_SetDutyCycle(LEFT_ENABLE_PIN, 0);
@@ -80,8 +76,10 @@ ES_Event RunDriveService(ES_Event thisEvent){
     returnEvent.EventType = ES_NO_EVENT;
     switch (thisEvent.EventType) {
         case ES_TIMEOUT:
-            if (thisEvent.EventParam == DRIVE_SERVICE_TIMER){
+            if (thisEvent.EventParam == DRIVE_SERVICE_TIMER){                
+                break;
                 ES_Timer_InitTimer(DRIVE_SERVICE_TIMER, DRIVE_TIMER_TICKS);
+                
                 int32_t actualForwardSpeed;
                 int32_t actualTurningSpeed;
                 switch (controlState) {
@@ -213,31 +211,39 @@ void InitHeadingTimer(int32_t degrees) {
     return;
 }
 
-static void setMotors(int32_t forwardSpeed, int32_t turningSpeed) {
+void setMotors(int32_t forwardSpeed, int32_t turningSpeed) {
     batteryVoltage = GetBatteryVoltage();
     int32_t leftSpeed = forwardSpeed - ((turningSpeed * HALF_TRACKWIDTH) / 1000);
-    int32_t rightSpeed = turningSpeed + ((turningSpeed * HALF_TRACKWIDTH) / 1000);
+    int32_t rightSpeed = forwardSpeed + ((turningSpeed * HALF_TRACKWIDTH) / 1000);
     int32_t leftVoltage = (LEFT_BIAS * leftSpeed) / Kv;
     int32_t rightVoltage = (RIGHT_BIAS * rightSpeed) / Kv;
     setLeftMotor(leftVoltage);
     setRightMotor(rightVoltage);
     return;
 }
-
-static void setLeftMotor(int32_t voltage) {
-    uint32_t dutyCycle = (1000 * ABS(voltage)) / batteryVoltage;
+void setLeftMotor(int32_t voltage) {
+    uint32_t dutyCycle = (1000 * ABS(voltage)) / GetBatteryVoltage();
     if (voltage < 0) {
         IO_PortsSetPortBits(DRIVE_DIRECTION_PORT, LEFT_DIRECTION_PIN);
+    }else{
+        IO_PortsClearPortBits(DRIVE_DIRECTION_PORT, LEFT_DIRECTION_PIN);
     }
+    printf("LEFT DUTY %d\r\n",dutyCycle);
     PWM_SetDutyCycle(LEFT_ENABLE_PIN, dutyCycle);
     return;
 }
 
-static void setRightMotor(int32_t voltage) {
-    uint32_t dutyCycle = (1000 * ABS(voltage)) / batteryVoltage;
+void setRightMotor(int32_t voltage) {
+    
+    uint32_t dutyCycle = (1000 * ABS(voltage)) / GetBatteryVoltage();
     if (voltage < 0) {
         IO_PortsSetPortBits(DRIVE_DIRECTION_PORT, RIGHT_DIRECTION_PIN);
+    }else{
+        IO_PortsClearPortBits(DRIVE_DIRECTION_PORT, RIGHT_DIRECTION_PIN);
     }
+    
+    printf("RIGHT DUTY %d\r\n",dutyCycle);
     PWM_SetDutyCycle(RIGHT_ENABLE_PIN, dutyCycle);
+    
     return;
 }

@@ -55,6 +55,9 @@ void StopDrive(void);
 uint8_t SetForwardSpeed(int32_t mInchesPerSecond);
 uint8_t SetTurningSpeed(int32_t degreesPerSecond);
 uint8_t SetTurnRadius(int32_t mInches);
+void setMotors(int32_t forwardSpeed, int32_t turningSpeed);
+void setRightMotor(int32_t voltage);
+void setLeftMotor(int32_t voltage);
 void InitDistanceTimer(int32_t mInches);
 void InitHeadingTimer(int32_t degrees);
 

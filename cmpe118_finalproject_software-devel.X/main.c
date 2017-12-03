@@ -25,11 +25,10 @@ void main(void)
 
     // Your hardware initialization function calls go here
     AD_Init();
-    TestADCPins(); // Cycles through and prints values from pins forever
+    PWM_Init();
+    //TestADCPins(); // Cycles through and prints values from pins forever
     
-    
-    
-    //ES_Timer_Init();    
+  
     /* Initialize Event Checkers */
     
     InitializeBumperChecker();

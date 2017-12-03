@@ -11,6 +11,7 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "HsmTopLevel.h"
+#include "DriveService.h"
 //#include sub-sm's here
 #include <stdio.h>
 
@@ -60,6 +61,9 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
     }
     switch (CurrentState) {
         case IDLE:
+            setMotors(0, 1571);
+
+
             break;
         case STARTUP:
             break;
