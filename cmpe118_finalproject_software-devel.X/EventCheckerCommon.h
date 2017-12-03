@@ -10,8 +10,9 @@
 #include "IO_Ports.h"
 #include "BOARD.h"
 #include "IO_Ports.h"
-
 #include <stdio.h>
+
+#include "BatteryEventChecker.h"
 
 // Global TapeSensor Variables and Defines
 uint8_t TS_SAMPLING_ACTIVE = 0; // Tape Sensor sample time
@@ -35,10 +36,5 @@ uint8_t TS_SAMPLING_ACTIVE = 0; // Tape Sensor sample time
 
 //#define TWIRE_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
 #define TWIRE_PRINT(fmt,...) 
-
-
-
-
-
 
 #endif 
