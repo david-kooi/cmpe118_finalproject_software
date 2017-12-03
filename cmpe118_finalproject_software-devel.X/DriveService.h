@@ -17,10 +17,10 @@
 
 #define PLUS_INFINITY 2147483647
 
-#define DRIVE_ENABLE_A PWM_PORTY10  // PWM
-#define DRIVE_ENABLE_B PWM_PORTY12  // PWM
-#define DRIVE_DIRECTION_A PIN5      // Digital Out
-#define DRIVE_DIRECTION_B PIN7      // Digital Out
+#define DRIVE_ENABLE_B PWM_PORTY10  // PWM
+#define DRIVE_ENABLE_A PWM_PORTY12  // PWM
+#define DRIVE_DIRECTION_B PIN5      // Digital Out
+#define DRIVE_DIRECTION_A PIN7      // Digital Out
 #define DRIVE_DIRECTION_PORT PORTY
 #define DRIVE_PWM_FREQ PWM_1KHZ
 #define LEFT_BIAS 1000              // Out of 1000

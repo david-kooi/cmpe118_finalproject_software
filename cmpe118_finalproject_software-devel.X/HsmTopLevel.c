@@ -61,9 +61,9 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
     }
     switch (CurrentState) {
         case IDLE:
-            setMotors(0, 1571);
-
-
+//            setMotors(5000,0);
+//            setLeftMotor(5000);
+            EnableDriveMotors();
             break;
         case STARTUP:
             break;

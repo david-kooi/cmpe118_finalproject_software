@@ -52,7 +52,6 @@ uint8_t InitDriveService(uint8_t priority) {
                            LEFT_DIRECTION_PIN | RIGHT_DIRECTION_PIN);
     IO_PortsClearPortBits(DRIVE_DIRECTION_PORT,
                           LEFT_DIRECTION_PIN | RIGHT_DIRECTION_PIN);
-//    PWM_Init();
     PWM_SetFrequency(DRIVE_PWM_FREQ);
     PWM_AddPins(LEFT_ENABLE_PIN | RIGHT_ENABLE_PIN);
     PWM_SetDutyCycle(LEFT_ENABLE_PIN, 0);
@@ -76,10 +75,10 @@ ES_Event RunDriveService(ES_Event thisEvent){
     returnEvent.EventType = ES_NO_EVENT;
     switch (thisEvent.EventType) {
         case ES_TIMEOUT:
-            if (thisEvent.EventParam == DRIVE_SERVICE_TIMER){                
-                break;
+            if (thisEvent.EventParam == DRIVE_SERVICE_TIMER){
                 ES_Timer_InitTimer(DRIVE_SERVICE_TIMER, DRIVE_TIMER_TICKS);
-                
+                SetForwardSpeed(MAX_FORWARD_SPEED);
+                SetTurningSpeed(0);
                 int32_t actualForwardSpeed;
                 int32_t actualTurningSpeed;
                 switch (controlState) {
@@ -228,7 +227,7 @@ void setLeftMotor(int32_t voltage) {
     }else{
         IO_PortsClearPortBits(DRIVE_DIRECTION_PORT, LEFT_DIRECTION_PIN);
     }
-    printf("LEFT DUTY %d\r\n",dutyCycle);
+    printf("LEFT DUTY %d\r\n", dutyCycle);
     PWM_SetDutyCycle(LEFT_ENABLE_PIN, dutyCycle);
     return;
 }
