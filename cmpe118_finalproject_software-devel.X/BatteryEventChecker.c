@@ -10,6 +10,7 @@
 #include "ES_Events.h"
 #include "serial.h"
 #include "AD.h"
+#include "BOARD.h"
 
 #define BATTERY_DISCONNECT_THRESHOLD 175
 

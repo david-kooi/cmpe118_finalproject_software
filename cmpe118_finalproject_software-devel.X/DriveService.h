@@ -9,19 +9,19 @@
 #define DRIVESERVICE_H
 
 #include "ES_Configure.h"
+#include "IO_Ports.h"
 #include "stdint.h"
 #include "pwm.h"
 
 #define POST_DRIVE_EVENT PostHsmTopLevel
 
 #define PLUS_INFINITY 2147483647
-#define MINUS_INFINITY –2147483648
 
 #define DRIVE_ENABLE_A PWM_PORTY10  // PWM
 #define DRIVE_ENABLE_B PWM_PORTY12  // PWM
 #define DRIVE_DIRECTION_A PIN5      // Digital Out
 #define DRIVE_DIRECTION_B PIN7      // Digital Out
-#define DRIVE_DIRECTION_PORT
+#define DRIVE_DIRECTION_PORT PORTY
 #define DRIVE_PWM_FREQ PWM_1KHZ
 #define LEFT_BIAS 1000              // Out of 1000
 #define RIGHT_BIAS 1000             // Out of 1000
@@ -41,7 +41,7 @@
 // MAX_FORWARD_SPEED [milli-inches/s] = approximately 9.5 in/sec right now.
 #define MAX_FORWARD_SPEED ((MAX_WHEEL_SPEED * MIN_TURN_RADIUS) / (MIN_TURN_RADIUS + HALF_TRACKWIDTH))
 // MAX_TURNING_SPEED [milli-radians/s] = approximately 246 deg/s right now.
-#define MAX_TURNING_SPEED ((1000 * MAX_WHEEL_SPEED) / HALF_TRACKWIDTH);
+#define MAX_TURNING_SPEED ((1000 * MAX_WHEEL_SPEED) / HALF_TRACKWIDTH)
 
 /* Periodic Drive Service Functions */
 uint8_t InitDriveService(uint8_t priority);

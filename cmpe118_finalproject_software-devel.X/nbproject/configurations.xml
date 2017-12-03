@@ -32,10 +32,14 @@
         <itemPath>EventCheckerCommon.h</itemPath>
         <itemPath>TapeSensorEventChecker.h</itemPath>
         <itemPath>TrackWireEventChecker.h</itemPath>
+        <itemPath>BatteryEventChecker.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="Services" projectFiles="true">
         <itemPath>RateGroupDriverService.h</itemPath>
         <itemPath>TestHarnessService.h</itemPath>
+        <itemPath>DriveService.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f4" displayName="StateMachines" projectFiles="true">
       </logicalFolder>
       <itemPath>ES_Configure.h</itemPath>
     </logicalFolder>
@@ -68,10 +72,15 @@
         <itemPath>BumperEventChecker.c</itemPath>
         <itemPath>TapeSensorEventChecker.c</itemPath>
         <itemPath>TrackWireEventChecker.c</itemPath>
+        <itemPath>BatteryEventChecker.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="Services" projectFiles="true">
         <itemPath>C:/Users/dkooi/Desktop/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/TestHarnessService.c</itemPath>
         <itemPath>RateGroupDriverService.c</itemPath>
+        <itemPath>DriveService.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f4" displayName="StateMachines" projectFiles="true">
+        <itemPath>HsmTopLevel.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
     </logicalFolder>
@@ -141,7 +150,7 @@
         <property key="place-data-into-section" value="false"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
-        <property key="preprocessor-macros" value=""/>
+        <property key="preprocessor-macros" value="_SUPPRESS_PLIB_WARNING"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="toplevel-reordering" value=""/>

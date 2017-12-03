@@ -15,16 +15,19 @@ C:/CMPE118/include/ES_PriorTables.h  \
  C:/CMPE118/include/ES_Queue.h  \
 C:/CMPE118/include/ES_ServiceHeaders.h  \
  ES_Configure.h  \
-RateGroupDriverService.h  \
+DriveService.h  \
 ES_Configure.h  \
- C:/CMPE118/include/ES_TattleTale.h  \
-C:/CMPE118/include/ES_Timers.h  \
- C:/CMPE118/include/AD.h  \
-BumperEventChecker.h  \
+ C:/CMPE118/include/IO_Ports.h  \
+C:/CMPE118/include/pwm.h  \
+ RateGroupDriverService.h  \
+C:/CMPE118/include/ES_TattleTale.h  \
+ C:/CMPE118/include/ES_Timers.h  \
+C:/CMPE118/include/AD.h  \
+ BumperEventChecker.h  \
 EventCheckerCommon.h  \
- C:/CMPE118/include/ES_Events.h  \
-C:/CMPE118/include/serial.h  \
- C:/CMPE118/include/ES_CheckEvents.h  \
-C:/CMPE118/include/IO_Ports.h  \
- TapeSensorEventChecker.h  \
+C:/CMPE118/include/ES_Events.h  \
+ C:/CMPE118/include/serial.h  \
+C:/CMPE118/include/ES_CheckEvents.h  \
+ BatteryEventChecker.h  \
+TapeSensorEventChecker.h  \
 TrackWireEventChecker.h 

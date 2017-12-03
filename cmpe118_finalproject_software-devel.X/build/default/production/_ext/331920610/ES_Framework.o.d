@@ -18,11 +18,14 @@ C:/CMPE118/include/ES_Port.h  \
 C:/CMPE118/include/ES_PriorTables.h  \
  C:/CMPE118/include/ES_Queue.h  \
 C:/CMPE118/include/ES_ServiceHeaders.h  \
- RateGroupDriverService.h  \
+ DriveService.h  \
 ES_Configure.h  \
- C:/CMPE118/include/ES_TattleTale.h  \
-C:/CMPE118/include/ES_KeyboardInput.h  \
- C:/CMPE118/include/ES_Events.h  \
-C:/CMPE118/include/BOARD.h  \
+C:/CMPE118/include/IO_Ports.h  \
+ C:/CMPE118/include/BOARD.h  \
+C:/CMPE118/include/pwm.h  \
+ RateGroupDriverService.h  \
+C:/CMPE118/include/ES_TattleTale.h  \
+ C:/CMPE118/include/ES_KeyboardInput.h  \
+C:/CMPE118/include/ES_Events.h  \
  C:/CMPE118/include/ES_ServiceHeaders.h  \
 C:/CMPE118/include/serial.h 

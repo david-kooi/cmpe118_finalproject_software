@@ -69,7 +69,8 @@ uint8_t InitRateGroupDriverService(uint8_t Priority)
     
     // Start all required timers
     ES_Timer_InitTimer(HZ_1_TIMER, 1000);
-    ES_Timer_InitTimer(HZ_500_TIMER, 1000);
+    ES_Timer_InitTimer(HZ_20_TIMER, 50);
+   // ES_Timer_InitTimer(HZ_500_TIMER, 2);
 
     
        
@@ -115,6 +116,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
 
     switch (ThisEvent.EventType) {
     case ES_INIT:
+        DEBUG_PRINT("ES_INIT");
         break;
 
     case ES_TIMEOUT:
@@ -123,26 +125,33 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
             case HZ_1_TIMER:
                 //DEBUG_PRINT("1HZ TICK");
                 
-                RightTrackWireCheck();
-                LeftTrackWireCheck();
-                
-                
-                
                 // Restart Timer
                 ES_Timer_InitTimer(HZ_1_TIMER, 1000); //1000 ms 
                 break;
                 
-            case HZ_500_TIMER:
-                //DEBUG_PRINT_("500HZ TICK");
+                
+            case HZ_20_TIMER:
+                //DEBUG_PRINT("20HZ TICK");
+                
+                RightTrackWireCheck();
+                LeftTrackWireCheck();
                 TS_StartSampling();
+                
+                // Restart Timer
+                ES_Timer_InitTimer(HZ_20_TIMER, 50); //50 ms 
+                break;
+   
+            //case HZ_500_TIMER:
+                //DEBUG_PRINT_("500HZ TICK");
+                
 
                 
                 
                 
                 
                 // Restart Timer
-                ES_Timer_InitTimer(HZ_500_TIMER, 2); //2 ms 
-                break;
+                //ES_Timer_InitTimer(HZ_500_TIMER, 2); //2 ms 
+                //break;
                 
             case TS_SYNC_TIMER:
                 //DEBUG_PRINT("TS_SYNC_TIMER TICK)

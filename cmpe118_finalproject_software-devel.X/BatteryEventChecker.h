@@ -8,6 +8,8 @@
 #ifndef BATTERYEVENTCHECKER_H
 #define BATTERYEVENTCHECKER_H
 
+#include <stdint.h>
+
 #define POST_BATTERY_EVENT PostHsmTopLevel
 
 /**
@@ -27,6 +29,6 @@
 uint8_t CheckBatteryEvent(void);
 
 // GetBatteryVoltage(): Returns last measured battery voltage in millivolts
-uint16_t GetBatteryVoltage(void);
+int32_t GetBatteryVoltage(void);
 
 #endif
