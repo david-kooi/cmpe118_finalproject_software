@@ -16,7 +16,10 @@ C:/CMPE118/include/ES_PriorTables.h  \
  C:/CMPE118/include/ES_Queue.h  \
 C:/CMPE118/include/ES_ServiceHeaders.h  \
  ES_Configure.h  \
-RateGroupDriverService.h  \
+DriveService.h  \
 ES_Configure.h  \
- C:/CMPE118/include/ES_TattleTale.h  \
+ C:/CMPE118/include/IO_Ports.h  \
+C:/CMPE118/include/pwm.h  \
+ RateGroupDriverService.h  \
+C:/CMPE118/include/ES_TattleTale.h  \
  C:/Users/dkooi/Desktop/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/TestHarnessService.h 

@@ -92,8 +92,8 @@ static const char *EventNames[] = {
 	"ES_TIMERSTOPPED",
 	"BATTERY_CONNECTED",
 	"BATTERY_DISCONNECTED",
-    "DISTANCE_TIMEOUT",
-    "HEADING_TIMEOUT",
+	"DISTANCE_TIMEOUT",
+	"HEADING_TIMEOUT",
 	"FR_BUMPER_ON",
 	"FR_BUMPER_OFF",
 	"FL_BUMPER_ON",
@@ -130,12 +130,12 @@ static const char *EventNames[] = {
 // a timers, then you can use TIMER_UNUSED
 #define TIMER_UNUSED ((pPostFunc)0)
 #define TIMER0_RESP_FUNC (PostDriveService)
-#define TIMER1_RESP_FUNC (PostRateGroupDriverService) // 1 Hz
+#define TIMER1_RESP_FUNC (PostRateGroupDriverService) // 50 Hz
 #define TIMER2_RESP_FUNC TIMER_UNUSED
 #define TIMER3_RESP_FUNC TIMER_UNUSED
 #define TIMER4_RESP_FUNC TIMER_UNUSED
 #define TIMER5_RESP_FUNC TIMER_UNUSED
-#define TIMER6_RESP_FUNC (PostRateGroupDriverService) // 500 Hz
+#define TIMER6_RESP_FUNC (PostRateGroupDriverService) // 20 Hz
 #define TIMER7_RESP_FUNC TIMER_UNUSED
 #define TIMER8_RESP_FUNC TIMER_UNUSED
 #define TIMER9_RESP_FUNC TIMER_UNUSED
@@ -155,8 +155,9 @@ static const char *EventNames[] = {
 
 #define DRIVE_SERVICE_TIMER 0
 #define DRIVE_TIMER_TICKS 50
+
 #define HZ_1_TIMER     1 /*make sure this is enabled above and posting to the correct state machine*/
-#define HZ_500_TIMER   6
+#define HZ_20_TIMER   6
 #define TS_SYNC_TIMER 15
 
 /****************************************************************************/
@@ -168,7 +169,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 2
+#define NUM_SERVICES 3
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service

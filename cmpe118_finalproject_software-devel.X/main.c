@@ -11,7 +11,7 @@
 #include "TrackWireEventChecker.h"
 
 //Test
-
+void TestADCPins(void);
 void main(void)
 {
     ES_Return_t ErrorType;
@@ -25,11 +25,11 @@ void main(void)
 
     // Your hardware initialization function calls go here
     AD_Init();
-    //AD_TEST_PINS() // Cycles through and prints values from pins forever
+    TestADCPins(); // Cycles through and prints values from pins forever
     
     
     
-    ES_Timer_Init();    
+    //ES_Timer_Init();    
     /* Initialize Event Checkers */
     
     InitializeBumperChecker();
@@ -59,6 +59,59 @@ void main(void)
         ;
 
 };
+
+
+
+void TestADCPins(void){
+    uint16_t val;
+    AD_AddPins(0xFF);
+    
+    while(1){
+        int i;
+        for(i = 0; i < 1000000; i++){
+        
+        }
+        
+        val = AD_ReadADPin(AD_PORTV3);
+        printf("V3: %d\r\n", val);
+
+        val = AD_ReadADPin(AD_PORTV4);
+        printf("V4: %d\r\n", val);
+
+        val = AD_ReadADPin(AD_PORTV5);
+        printf("V5: %d\r\n", val);
+
+        val = AD_ReadADPin(AD_PORTV6);
+        printf("V6: %d\r\n", val);
+
+        val = AD_ReadADPin(AD_PORTV7);
+        printf("V7: %d\r\n", val);
+
+        val = AD_ReadADPin(AD_PORTV8);
+        printf("V8: %d\r\n", val);
+
+        val = AD_ReadADPin(AD_PORTW3);
+        printf("W3: %d\r\n", val);
+
+        val = AD_ReadADPin(AD_PORTW4);
+        printf("W4: %d\r\n", val);
+
+        val = AD_ReadADPin(AD_PORTW5);
+        printf("W5: %d\r\n", val);
+
+        val = AD_ReadADPin(AD_PORTW6);
+        printf("W6: %d\r\n", val);
+
+        val = AD_ReadADPin(AD_PORTW7);
+        printf("W7: %d\r\n", val);
+
+        val = AD_ReadADPin(AD_PORTW8);
+        printf("W8: %d\r\n", val);
+   
+    }
+    
+}
+
 
 /*------------------------------- Footnotes -------------------------------*/
 /*------------------------------ End of file ------------------------------*/

@@ -75,7 +75,7 @@ uint8_t PostDriveService(ES_Event thisEvent) {
     return ES_PostToService(myPriority, thisEvent);
 }
 
-ES_Event RunDriveService(ES_Event thisEvent)(ES_Event thisEvent) {
+ES_Event RunDriveService(ES_Event thisEvent){
     ES_Event returnEvent;
     returnEvent.EventType = ES_NO_EVENT;
     switch (thisEvent.EventType) {
@@ -113,7 +113,7 @@ ES_Event RunDriveService(ES_Event thisEvent)(ES_Event thisEvent) {
                     if (timerDistance >= timeoutDistance) {
                         returnEvent.EventType = DISTANCE_TIMEOUT;
                         POST_DRIVE_EVENT(returnEvent);
-                        timerDistanceTimerActive = FALSE;
+                        distanceTimerActive = FALSE;
                     }
                 }
                 if (headingTimerActive) {
@@ -121,7 +121,7 @@ ES_Event RunDriveService(ES_Event thisEvent)(ES_Event thisEvent) {
                     if (timerHeading >= timeoutHeading) {
                         returnEvent.EventType = HEADING_TIMEOUT;
                         POST_DRIVE_EVENT(returnEvent);
-                        angleTimerActive = FALSE;
+                        headingTimerActive = FALSE;
                     }
                 }
             }
@@ -138,7 +138,6 @@ uint8_t EnableDriveMotors(void) {
     if (controlState != DISABLED) {
         return ERROR;
     }
-    CurrentState = ENABLED;
     controlState = ENABLED;
     return SUCCESS;
 }
@@ -147,7 +146,6 @@ uint8_t DisableDriveMotors(void) {
     if (controlState == DISABLED) {
         return ERROR;
     }
-    CurrentState = DISABLED;
     controlState = DISABLED;
     return SUCCESS;
 }
@@ -168,7 +166,7 @@ uint8_t SetForwardSpeed(int32_t mInchesPerSecond) {
     if (ABS(mInchesPerSecond) > MAX_FORWARD_SPEED) {
         forwardSpeed = SIGN(mInchesPerSecond) * MAX_FORWARD_SPEED;
     } else {
-        forwardSpeed = inchesPerSecond;
+        forwardSpeed = mInchesPerSecond;
     }
     newCommand = TRUE;
     return SUCCESS;
@@ -192,7 +190,7 @@ uint8_t SetTurnRadius(int32_t mInches) {
     if (controlState != ENABLED) {
         return ERROR;
     }
-    if (mInches == PLUS_INFINITY || mInches == MINUS_INFINITY || mInches < MIN_TURN_RADIUS) {
+    if (mInches == (int32_t)PLUS_INFINITY || ABS(mInches) < MIN_TURN_RADIUS) {
         turningSpeed = 0;
     } else {
         turningSpeed = (1000 * forwardSpeed) / mInches;

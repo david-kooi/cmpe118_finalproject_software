@@ -26,21 +26,21 @@ uint8_t sensorState_PREV = 0x00;
 #define TS_SAMPLE_TIME 2 // ms
 
 // Tape Sensor Port Numbers
-#define TS_LEFT_TRIG_NUM      PORTY, PIN9
-#define TS_LEFT_ADC           AD_PORTV8
-#define TS_LEFT_LED_NUM       PORTY, PIN10
+#define TS_LEFT_TRIG_NUM      PORTZ, PIN9
+#define TS_LEFT_ADC           AD_PORTW8
+#define TS_LEFT_LED_NUM       PORTZ, PIN10
  
-#define TS_RIGHT_TRIG_NUM      PORTY, PIN7
-#define TS_RIGHT_ADC           AD_PORTV7
-#define TS_RIGHT_LED_NUM       PORTY, PIN8
+#define TS_RIGHT_TRIG_NUM      PORTZ, PIN7
+#define TS_RIGHT_ADC           AD_PORTW7
+#define TS_RIGHT_LED_NUM       PORTZ, PIN8
 
-#define TS_CENTER_TRIG_NUM      PORTY, PIN5
-#define TS_CENTER_ADC           AD_PORTV5
-#define TS_CENTER_LED_NUM       PORTY, PIN6
+#define TS_CENTER_TRIG_NUM      PORTZ, PIN5
+#define TS_CENTER_ADC           AD_PORTW5
+#define TS_CENTER_LED_NUM       PORTZ, PIN6
  
-#define TS_REAR_TRIG_NUM      PORTY, PIN3
-#define TS_REAR_ADC           AD_PORTV3
-#define TS_REAR_LED_NUM       PORTY, PIN4
+#define TS_REAR_TRIG_NUM      PORTZ, PIN3
+#define TS_REAR_ADC           AD_PORTW3
+#define TS_REAR_LED_NUM       PORTZ, PIN4
 
 
 // Sensor Thresholds
@@ -158,33 +158,34 @@ void TS_DriveSampling(void){
 
             // Sample all sensors with their emitters on
             
-           /* LEFT SENSOR */
-            
-                IO_SINK(TS_LEFT_TRIG_NUM); // Turn emitter on
+           /* LEFT SENSOR */        
+                //IO_SINK(TS_LEFT_TRIG_NUM); // Turn emitter on
                 leftSensorVal = CheckTapeSensor_LEFT();
-                //IO_SOURCE(TS_LEFT_TRIG_NUM); // Turn emitter off
+                IO_SOURCE(TS_LEFT_TRIG_NUM); // Turn emitter off
+                
 
             /* RIGHT SENSOR */
-                //IO_SINK(TS_RIGHT_TRIG_NUM); // Turn emitter on
+                IO_SINK(TS_RIGHT_TRIG_NUM); // Turn emitter on
                 rightSensorVal = CheckTapeSensor_RIGHT();
-                IO_SOURCE(TS_RIGHT_TRIG_NUM); // Turn emitter off
-            
+                //IO_SOURCE(TS_RIGHT_TRIG_NUM); // Turn emitter off
+                
             
             // Change State and Restart Sensor
             TS_EMITTER_STATE = TS_EMITTER_OFF;
             ES_Timer_InitTimer(TS_SYNC_TIMER, TS_SAMPLE_TIME); // ms Tape Sensor Sampling            
             break;
-        
+                    
         case TS_EMITTER_OFF:
             TAPE_PRINT("TS DRIVER STATE: EMITTER OFF");
-
+                
+            
                 // Sample all sensors with their emitters off
                 // Emitters are turned off after TS_EMITTER_ON sampling
                 
                 /* LEFT SENSOR */
                     tmp_1 = CheckTapeSensor_LEFT();
                     leftSensorVal = abs((int32_t)tmp_1 - leftSensorVal);
-                    TAPE_PRINT("DELTA: %d", leftSensorVal);
+                    //TAPE_PRINT("DELTA: %d", leftSensorVal);
                     if     (leftSensorVal > TS_LEFT_HI_THRESH){sensorState_CURR |= TS_LEFT_SENSOR;}  // Toggle sensor bit 
                     else if(leftSensorVal < TS_LEFT_LO_THRESH){sensorState_CURR &= ~TS_LEFT_SENSOR;} // Untoggle sensor bit 
                     
@@ -198,9 +199,10 @@ void TS_DriveSampling(void){
                     
                     
                 /* RIGHT SENSOR */
+ 
                     tmp_1 = CheckTapeSensor_RIGHT();
                     rightSensorVal = abs((int32_t)tmp_1 - rightSensorVal);
-                    TAPE_PRINT("DELTA: %d", rightSensorVal);
+                    //TAPE_PRINT("DELTA: %d", rightSensorVal);
                     if     (rightSensorVal > TS_RIGHT_HI_THRESH){sensorState_CURR |= TS_RIGHT_SENSOR;}  // Toggle sensor bit 
                     else if(rightSensorVal < TS_RIGHT_LO_THRESH){sensorState_CURR &= ~TS_RIGHT_SENSOR;} // Untoggle sensor bit 
                     
