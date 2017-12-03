@@ -1,0 +1,61 @@
+/* 
+ * File:   DriveService.h
+ * Author: jwloughb
+ *
+ * Created on Dec 1, 2017, 3:51 PM
+ */
+
+#ifndef DRIVESERVICE_H
+#define DRIVESERVICE_H
+
+#include "ES_Configure.h"
+#include "stdint.h"
+#include "pwm.h"
+
+#define POST_DRIVE_EVENT PostHsmTopLevel
+
+#define PLUS_INFINITY 2147483647
+#define MINUS_INFINITY –2147483648
+
+#define DRIVE_ENABLE_A PWM_PORTY10  // PWM
+#define DRIVE_ENABLE_B PWM_PORTY12  // PWM
+#define DRIVE_DIRECTION_A PIN5      // Digital Out
+#define DRIVE_DIRECTION_B PIN7      // Digital Out
+#define DRIVE_DIRECTION_PORT
+#define DRIVE_PWM_FREQ PWM_1KHZ
+#define LEFT_BIAS 1000              // Out of 1000
+#define RIGHT_BIAS 1000             // Out of 1000
+
+// TRACKWIDTH = distance between wheels [milli-inches]
+#define TRACKWIDTH 8900
+// HALF_TRACKWIDTH = trackwidth/2 [milli-inches]
+#define HALF_TRACKWIDTH 4450
+// MIN_TURN_RADIUS = tightest turn we can make. More gradual turns = faster robot.
+#define MIN_TURN_RADIUS 4450
+// Kv = speed-voltage conversion constant [milli-inches/s per volt]
+#define Kv 2727
+// MAX_VOLTAGE = highest voltage [mV] we want to apply to the motors.
+#define MAX_VOLTAGE 7000
+// MAX_WHEEL_SPEEED units = [milli-inches/s]. Comes out to ~19 in/s @ 7V.
+#define MAX_WHEEL_SPEED (Kv * (MAX_VOLTAGE/1000))
+// MAX_FORWARD_SPEED [milli-inches/s] = approximately 9.5 in/sec right now.
+#define MAX_FORWARD_SPEED ((MAX_WHEEL_SPEED * MIN_TURN_RADIUS) / (MIN_TURN_RADIUS + HALF_TRACKWIDTH))
+// MAX_TURNING_SPEED [milli-radians/s] = approximately 246 deg/s right now.
+#define MAX_TURNING_SPEED ((1000 * MAX_WHEEL_SPEED) / HALF_TRACKWIDTH);
+
+/* Periodic Drive Service Functions */
+uint8_t InitDriveService(uint8_t priority);
+uint8_t PostDriveService(ES_Event thisEvent);
+ES_Event RunDriveService(ES_Event thisEvent);
+
+/* Public Interface Functions */
+uint8_t EnableDriveMotors(void);
+uint8_t DisableDriveMotors(void);
+void StopDrive(void);
+uint8_t SetForwardSpeed(int32_t mInchesPerSecond);
+uint8_t SetTurningSpeed(int32_t degreesPerSecond);
+uint8_t SetTurnRadius(int32_t mInches);
+void InitDistanceTimer(int32_t mInches);
+void InitHeadingTimer(int32_t degrees);
+
+#endif  /* DRIVESUBSM_H */

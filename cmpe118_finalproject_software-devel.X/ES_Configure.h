@@ -51,6 +51,10 @@ typedef enum {
     /* User-defined events start here */
     BATTERY_CONNECTED,
     BATTERY_DISCONNECTED,
+
+    // Drive Events
+    DISTANCE_TIMEOUT,
+    HEADING_TIMEOUT,
     
     // Bumper events
     FR_BUMPER_ON,
@@ -88,6 +92,8 @@ static const char *EventNames[] = {
 	"ES_TIMERSTOPPED",
 	"BATTERY_CONNECTED",
 	"BATTERY_DISCONNECTED",
+    "DISTANCE_TIMEOUT",
+    "HEADING_TIMEOUT",
 	"FR_BUMPER_ON",
 	"FR_BUMPER_OFF",
 	"FL_BUMPER_ON",
@@ -123,8 +129,8 @@ static const char *EventNames[] = {
 // corresponding timer expires. All 16 must be defined. If you are not using
 // a timers, then you can use TIMER_UNUSED
 #define TIMER_UNUSED ((pPostFunc)0)
-#define TIMER0_RESP_FUNC (PostRateGroupDriverService) // 1 Hz
-#define TIMER1_RESP_FUNC TIMER_UNUSED
+#define TIMER0_RESP_FUNC (PostDriveService)
+#define TIMER1_RESP_FUNC (PostRateGroupDriverService) // 1 Hz
 #define TIMER2_RESP_FUNC TIMER_UNUSED
 #define TIMER3_RESP_FUNC TIMER_UNUSED
 #define TIMER4_RESP_FUNC TIMER_UNUSED
@@ -147,7 +153,9 @@ static const char *EventNames[] = {
 // definitions for the response functions to make it easire to check that
 // the timer number matches where the timer event will be routed
 
-#define HZ_1_TIMER     0 /*make sure this is enabled above and posting to the correct state machine*/
+#define DRIVE_SERVICE_TIMER 0
+#define DRIVE_TIMER_TICKS 50
+#define HZ_1_TIMER     1 /*make sure this is enabled above and posting to the correct state machine*/
 #define HZ_500_TIMER   6
 #define TS_SYNC_TIMER 15
 
@@ -180,48 +188,27 @@ static const char *EventNames[] = {
 // These are the definitions for Service 1
 #if NUM_SERVICES > 1
 // the header file with the public fuction prototypes
-#define SERV_1_HEADER "RateGroupDriverService.h"
+#define SERV_1_HEADER "DriveService.h"
 // the name of the Init function
-#define SERV_1_INIT InitRateGroupDriverService
+#define SERV_1_INIT InitDriveService
 // the name of the run function
-#define SERV_1_RUN RunRateGroupDriverService
+#define SERV_1_RUN RunDriveService
 // How big should this services Queue be?
 #define SERV_1_QUEUE_SIZE 3
 #endif
 
-
-#ifdef TEST_HARNESS_SERVICE_TEST
-
-
-// These are the definitions for TestHarness
-#if NUM_SERVICES > 2
-// the header file with the public fuction prototypes
-#define SERV_2_HEADER "TestHarnessService.h"
-// the name of the Init function
-#define SERV_2_INIT TestHarnessServiceInit
-// the name of the run function
-#define SERV_2_RUN TestHarnessServiceRun
-// How big should this services Queue be?
-#define SERV_2_QUEUE_SIZE 3
-#endif
-
-#else
-
+/****************************************************************************/
 // These are the definitions for Service 2
 #if NUM_SERVICES > 2
 // the header file with the public fuction prototypes
-#define SERV_2_HEADER "TestService.h"
+#define SERV_2_HEADER "RateGroupDriverService.h"
 // the name of the Init function
-#define SERV_2_INIT TestServiceInit
+#define SERV_2_INIT InitRateGroupDriverService
 // the name of the run function
-#define SERV_2_RUN TestServiceRun
+#define SERV_2_RUN RunRateGroupDriverService
 // How big should this services Queue be?
 #define SERV_2_QUEUE_SIZE 3
 #endif
-
-#endif // RUN_TEST_HARNESS
-
-
 
 /****************************************************************************/
 // These are the definitions for Service 3
