@@ -77,8 +77,6 @@ ES_Event RunDriveService(ES_Event thisEvent){
         case ES_TIMEOUT:
             if (thisEvent.EventParam == DRIVE_SERVICE_TIMER){
                 ES_Timer_InitTimer(DRIVE_SERVICE_TIMER, DRIVE_TIMER_TICKS);
-                SetForwardSpeed(MAX_FORWARD_SPEED);
-                SetTurningSpeed(0);
                 int32_t actualForwardSpeed;
                 int32_t actualTurningSpeed;
                 switch (controlState) {
