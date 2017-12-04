@@ -23,8 +23,8 @@
 #define DRIVE_DIRECTION_A PIN7      // Digital Out
 #define DRIVE_DIRECTION_PORT PORTY
 #define DRIVE_PWM_FREQ PWM_1KHZ
-#define LEFT_BIAS 1000              // Out of 1000
-#define RIGHT_BIAS 965              // Out of 1000
+#define LEFT_BIAS 1100              // Out of 1000
+#define RIGHT_BIAS 900              // Out of 1000
 
 // TRACKWIDTH = distance between wheels [milli-inches]
 #define TRACKWIDTH 8900
@@ -35,7 +35,7 @@
 // Kv = speed-voltage conversion constant [milli-inches/s per volt]
 #define Kv 2727
 // MAX_VOLTAGE = highest voltage [mV] we want to apply to the motors.
-#define MAX_VOLTAGE 7000
+#define MAX_VOLTAGE 9000
 // MAX_WHEEL_SPEEED units = [milli-inches/s]. Comes out to ~19 in/s @ 7V.
 #define MAX_WHEEL_SPEED (Kv * (MAX_VOLTAGE/1000))
 // MAX_FORWARD_SPEED [milli-inches/s] = approximately 9.5 in/sec right now.

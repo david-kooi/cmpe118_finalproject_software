@@ -18,10 +18,10 @@
 #define ABS(x) (((x) > 0) ? (x) : (-(x)))
 #define SIGN(x) (((x) > 0) ? 1 : (-1))
 
-#define LEFT_ENABLE_PIN DRIVE_ENABLE_A
-#define RIGHT_ENABLE_PIN DRIVE_ENABLE_B
-#define LEFT_DIRECTION_PIN DRIVE_DIRECTION_A
-#define RIGHT_DIRECTION_PIN DRIVE_DIRECTION_B
+#define LEFT_ENABLE_PIN DRIVE_ENABLE_B
+#define RIGHT_ENABLE_PIN DRIVE_ENABLE_A
+#define LEFT_DIRECTION_PIN DRIVE_DIRECTION_B
+#define RIGHT_DIRECTION_PIN DRIVE_DIRECTION_A
 
 static uint8_t newCommand;
 static int32_t forwardSpeed;            // [milli-inches/s]
@@ -85,10 +85,11 @@ ES_Event RunDriveService(ES_Event thisEvent){
                         actualTurningSpeed = 0;
                     break;
                     case ENABLED:
-                        if (newCommand) {
-                            newCommand = FALSE;
-                            setMotors(forwardSpeed, turningSpeed);
-                        }
+//                        if (newCommand) {
+//                            newCommand = FALSE;
+//                            setMotors(forwardSpeed, turningSpeed);
+//                        }
+                        setMotors(forwardSpeed, turningSpeed);
                         actualForwardSpeed = forwardSpeed;
                         actualTurningSpeed = turningSpeed;
                     break;
@@ -208,6 +209,7 @@ void InitHeadingTimer(int32_t degrees) {
 
 void setMotors(int32_t forwardSpeed, int32_t turningSpeed) {
     batteryVoltage = GetBatteryVoltage();
+    printf("Batt: %d\r\n", batteryVoltage);
     int32_t leftSpeed = forwardSpeed - ((turningSpeed * HALF_TRACKWIDTH) / 1000);
     int32_t rightSpeed = forwardSpeed + ((turningSpeed * HALF_TRACKWIDTH) / 1000);
     int32_t leftVoltage = (LEFT_BIAS * leftSpeed) / Kv;
@@ -217,27 +219,27 @@ void setMotors(int32_t forwardSpeed, int32_t turningSpeed) {
     return;
 }
 void setLeftMotor(int32_t voltage) {
-    uint32_t dutyCycle = (1000 * ABS(voltage)) / GetBatteryVoltage();
+    uint32_t dutyCycle = (1000 * ABS(voltage)) / batteryVoltage;
     if (voltage < 0) {
         IO_PortsSetPortBits(DRIVE_DIRECTION_PORT, LEFT_DIRECTION_PIN);
     }else{
         IO_PortsClearPortBits(DRIVE_DIRECTION_PORT, LEFT_DIRECTION_PIN);
     }
-    printf("LEFT DUTY %d\r\n", dutyCycle);
+//    printf("LEFT DUTY %d\r\n", dutyCycle);
     PWM_SetDutyCycle(LEFT_ENABLE_PIN, dutyCycle);
     return;
 }
 
 void setRightMotor(int32_t voltage) {
     
-    uint32_t dutyCycle = (1000 * ABS(voltage)) / GetBatteryVoltage();
+    uint32_t dutyCycle = (1000 * ABS(voltage)) / batteryVoltage;
     if (voltage < 0) {
         IO_PortsSetPortBits(DRIVE_DIRECTION_PORT, RIGHT_DIRECTION_PIN);
     }else{
         IO_PortsClearPortBits(DRIVE_DIRECTION_PORT, RIGHT_DIRECTION_PIN);
     }
     
-    printf("RIGHT DUTY %d\r\n",dutyCycle);
+//    printf("RIGHT DUTY %d\r\n",dutyCycle);
     PWM_SetDutyCycle(RIGHT_ENABLE_PIN, dutyCycle);
     
     return;
