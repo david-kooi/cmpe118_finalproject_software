@@ -31,8 +31,8 @@ uint8_t TS_SAMPLING_ACTIVE = 0; // Tape Sensor sample time
 //#define BUMPER_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
 #define BUMPER_PRINT(fmt,...) 
 
-//#define TAPE_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
-#define TAPE_PRINT(fmt,...) 
+#define TAPE_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
+//#define TAPE_PRINT(fmt,...) 
 
 //#define TWIRE_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
 #define TWIRE_PRINT(fmt,...) 

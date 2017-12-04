@@ -124,7 +124,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
         switch(ThisEvent.EventParam){
             case HZ_1_TIMER:
                 //DEBUG_PRINT("1HZ TICK");
-                
+                TS_StartSampling();
                 // Restart Timer
                 ES_Timer_InitTimer(HZ_1_TIMER, 1000); //1000 ms 
                 break;
@@ -135,7 +135,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 
                 RightTrackWireCheck();
                 LeftTrackWireCheck();
-                TS_StartSampling();
+                //TS_StartSampling();
                 
                 // Restart Timer
                 ES_Timer_InitTimer(HZ_20_TIMER, 50); //50 ms 

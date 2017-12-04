@@ -159,7 +159,7 @@ void TS_DriveSampling(void){
             // Sample all sensors with their emitters on
             
            /* LEFT SENSOR */        
-                //IO_SINK(TS_LEFT_TRIG_NUM); // Turn emitter on
+                IO_SINK(TS_LEFT_TRIG_NUM); // Turn emitter on
                 leftSensorVal = CheckTapeSensor_LEFT();
                 IO_SOURCE(TS_LEFT_TRIG_NUM); // Turn emitter off
                 
@@ -167,7 +167,7 @@ void TS_DriveSampling(void){
             /* RIGHT SENSOR */
                 IO_SINK(TS_RIGHT_TRIG_NUM); // Turn emitter on
                 rightSensorVal = CheckTapeSensor_RIGHT();
-                //IO_SOURCE(TS_RIGHT_TRIG_NUM); // Turn emitter off
+                IO_SOURCE(TS_RIGHT_TRIG_NUM); // Turn emitter off
                 
             
             // Change State and Restart Sensor
