@@ -22,19 +22,19 @@
         } while(0)
 
 typedef enum {
-    IDLE,
+    INIT,
     STARTUP,
     DESTROYING_ATM6,
     DESTROYING_REN,
-    COMPLETE,
+    IDLE,
 } TopLevelState;
 
 static const char *StateNames[] = {
-    "TOP_IDLE",
+    "TOP_INIT",
     "TOP_STRT",
     "TOP_ATM6",
     "TOP_REN",
-    "TOP_DONE",
+    "TOP_IDLE",
 };
 
 static TopLevelState CurrentState;
@@ -43,7 +43,7 @@ static uint8_t myPriority;
 
 uint8_t InitHsmTopLevel(uint8_t priority) {
     myPriority = priority;
-    CurrentState = IDLE;
+    CurrentState = INIT;
     return ES_PostToService(myPriority, INIT_EVENT);
 }
 
@@ -60,10 +60,14 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         printf("Battery disconnected, stop everything!\r\n");
     }
     switch (CurrentState) {
-        case IDLE:
-//            setMotors(5000,0);
-//            setLeftMotor(5000);
-//            EnableDriveMotors();
+        case INIT:
+            if (ThisEvent.EventType == ES_INIT) {
+                printf("Got this far\r\n");
+                EnableDriveMotors();
+                SetForwardSpeed(MAX_FORWARD_SPEED);
+                SetTurningSpeed(0);
+                SWITCH_STATE(STARTUP);
+            }
             break;
         case STARTUP:
             break;
@@ -72,6 +76,9 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case DESTROYING_REN:
             break;
         default:
+            break;
+        case IDLE:
+            DisableDriveMotors();
             break;
     }
     if (makeTransition) {
