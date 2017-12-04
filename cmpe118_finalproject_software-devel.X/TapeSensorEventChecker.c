@@ -31,41 +31,7 @@ enum {
 
 static uint8_t TS_SAMPLING_ACTIVE = 0;
 
-// Sampling Time
-#define TS_SAMPLE_TIME 2 // ms
 
-#define TS_PORT PORTZ
-
-// Tape Sensor Port Numbers
-#define TS_LEFT_TRIG_PIN      PIN9
-#define TS_LEFT_ADC           AD_PORTW8
-#define TS_LEFT_LED_PIN       PIN10
- 
-#define TS_RIGHT_TRIG_PIN      PIN7
-#define TS_RIGHT_ADC           AD_PORTW7
-#define TS_RIGHT_LED_PIN       PIN8
-
-#define TS_CENTER_TRIG_PIN      PIN5
-#define TS_CENTER_ADC           AD_PORTW5
-#define TS_CENTER_LED_PIN       PIN6
- 
-#define TS_REAR_TRIG_PIN      PIN3
-#define TS_REAR_ADC           AD_PORTW3
-#define TS_REAR_LED_PIN       PIN4
-
-
-// Sensor Thresholds
-#define TS_LEFT_HI_THRESH 900
-#define TS_LEFT_LO_THRESH 700
-
-#define TS_RIGHT_HI_THRESH 900
-#define TS_RIGHT_LO_THRESH 700
- 
-#define TS_CENTER_HI_THRESH 900
-#define TS_CENTER_LO_THRESH 700
-
-#define TS_REAR_HI_THRESH 900
-#define TS_REAR_LO_THRESH 700
 
  // Forward Declared Functions
 uint16_t CheckTapeSensor(char* desc, uint32_t adcPin);
@@ -88,8 +54,7 @@ uint8_t InitializeTapeSensors(void){
     
     // Sensors start as sourcing. (Photo Emitter ) 
     
-    AD_AddPins(TS_LEFT_ADC | TS_RIGHT_ADC | TS_CENTER_ADC | TS_REAR_ADC);
-        printf("ADDING TS PINS\r\n");
+    //AD_AddPins(TS_LEFT_ADC | TS_RIGHT_ADC | TS_CENTER_ADC | TS_REAR_ADC);
 
     /* LEFT SENSOR */
     

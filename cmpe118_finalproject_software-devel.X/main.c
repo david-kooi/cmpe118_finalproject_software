@@ -26,13 +26,15 @@ void main(void)
 
     // Your hardware initialization function calls go here
     AD_Init();
+    AD_AddPins(TW_LEFT_ADC | TW_RIGHT_ADC | TS_LEFT_ADC | TS_RIGHT_ADC | TS_CENTER_ADC | TS_REAR_ADC);
     PWM_Init();
+    
     //TestADCPins(); // Cycles through and prints values from pins forever
     //Stepper_Test(10, 10);
   
     /* Initialize Event Checkers */
     
-    //InitializeBumperChecker();
+    InitializeBumperChecker();
     InitializeTrackWire();
     InitializeTapeSensors(); 
 

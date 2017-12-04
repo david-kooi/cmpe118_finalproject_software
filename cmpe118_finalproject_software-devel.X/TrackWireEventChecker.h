@@ -10,6 +10,9 @@
 
 #include "EventCheckerCommon.h"
 
+#define TW_LEFT_ADC  AD_PORTV6
+#define TW_RIGHT_ADC AD_PORTV4
+
 #define TRACKWIRE_IN_SIGHT_THRESHOLD 200
 #define TRACKWIRE_TOUCHING_THRESHOLD 600
 
