@@ -11,7 +11,7 @@
 // Tape Sensor Port Numbers
 #define TS_LEFT_TRIG_PIN      PIN9
 #define TS_LEFT_ADC           AD_PORTW8
-#define TS_LEFT_LED_PIN       PIN10
+#define TS_LEFT_LED_PIN       PIN6
  
 #define TS_RIGHT_TRIG_PIN      PIN7
 #define TS_RIGHT_ADC           AD_PORTW7

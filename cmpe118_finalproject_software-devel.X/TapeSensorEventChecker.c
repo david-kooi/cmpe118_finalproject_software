@@ -62,8 +62,8 @@ uint8_t InitializeTapeSensors(void){
         IO_PortsSetPortOutputs(TS_PORT, TS_LEFT_TRIG_PIN);
         IO_SOURCE(TS_PORT, TS_LEFT_TRIG_PIN); // Start emitter off
         // LED Indicator
-        IO_PortsSetPortOutputs(TS_PORT, TS_LEFT_LED_PIN);
-        IO_SOURCE(TS_PORT, TS_LEFT_LED_PIN); // Set indicator off
+        IO_PortsSetPortOutputs(PORTX, TS_LEFT_LED_PIN);
+        IO_SOURCE(PORTX, TS_LEFT_LED_PIN); // Set indicator off
         
     /* RIGHT SENSOR*/
         
@@ -92,7 +92,7 @@ uint8_t InitializeTapeSensors(void){
         IO_PortsSetPortOutputs(TS_PORT, TS_REAR_LED_PIN);
         IO_SOURCE(TS_PORT, TS_REAR_LED_PIN); // Set indicator off
         
-  
+        
     
 }
 
@@ -276,17 +276,25 @@ void HandleTapeSensorEvent(uint8_t firstRun, uint32_t prevVal, uint32_t currVal,
                             uint32_t lowerThresh, uint32_t upperThresh,
                             ES_Event thisEvent){
 
+    static uint8_t port = 0;
+    if(ON_TAPE_EVENT == TS_LEFT_ON_TAPE || OFF_TAPE_EVENT == TS_LEFT_OFF_TAPE){
+        port = PORTX;
+    }else{
+        port = TS_PORT;
+    }
+    
     // Off tape event
     if      (prevVal < upperThresh && currVal > upperThresh){
         thisEvent.EventType = OFF_TAPE_EVENT;
-        IO_SOURCE(TS_PORT, ledPin); //Turn LED OFF
+        IO_SOURCE(port, ledPin); //Turn LED OFF
     }
     // On tape event
     else if(prevVal > lowerThresh && currVal < lowerThresh){
         thisEvent.EventType = ON_TAPE_EVENT;
-        IO_SINK(TS_PORT, ledPin); // Turn LED ON
+        IO_SINK(port, ledPin); // Turn LED ON
     }else{
-        thisEvent.EventType = ES_NO_EVENT;
+        // Nothing to do
+        return;
     }
 
     // Set param
