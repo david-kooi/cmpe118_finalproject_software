@@ -9,8 +9,7 @@
 #include "BumperEventChecker.h"
 #include "TapeSensorEventChecker.h"
 #include "TrackWireEventChecker.h"
-
-#define TEST_STEPPER
+#include "Stepper.h"
 
 //Test
 void TestADCPins(void);
@@ -29,7 +28,7 @@ void main(void)
     AD_Init();
     PWM_Init();
     //TestADCPins(); // Cycles through and prints values from pins forever
-    Stepper_Test(200);
+    Stepper_Test(10000);
   
     /* Initialize Event Checkers */
     

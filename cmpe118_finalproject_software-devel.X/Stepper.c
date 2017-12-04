@@ -29,7 +29,7 @@
 #define ONE_KHZ_RATE  (F_PB_DIV8-1)/1000
 #endif
 
-#define THREE_MICROS 50 //2
+#define THREE_MICROS 2
 #define ENABLE_WAIT 3000
 #define MED_HZ_RATE 77
 #define LOW_HZ_RATE 10
@@ -588,6 +588,7 @@ void __ISR(_TIMER_3_VECTOR, ipl4auto) Timer3IntHandler(void) {
 #define STEP_TIMER 1
 #define WAIT_TIME 1000
 #define PIVOT_TIME 100
+#define NUM_STEPS 100000
 void Stepper_Test(uint16_t rate){
     TIMERS_Init();
     uint8_t direction = REVERSE;
@@ -596,7 +597,9 @@ void Stepper_Test(uint16_t rate){
     while (1) {
         if (!Stepper_IsStepping() && !finishedStepping) {
             finishedStepping = TRUE;
+            printf("old direction: %s, ", (direction == FORWARD) ? "FORWARD" : "REVERSE");
             direction = (direction == FORWARD) ? REVERSE : FORWARD;
+            printf("new direction: %s\r\n", (direction == FORWARD) ? "FORWARD" : "REVERSE");
             time = (direction == FORWARD) ? WAIT_TIME : PIVOT_TIME;
             TIMERS_InitTimer(STEP_TIMER, time);
         }
@@ -605,10 +608,11 @@ void Stepper_Test(uint16_t rate){
             Stepper_End();
             Stepper_Init();
             Stepper_SetRate(rate);
-            Stepper_InitSteps(direction, 200);
+            Stepper_InitSteps(direction, NUM_STEPS);
             finishedStepping = FALSE;
         }
     }
+    return;
 }
 #endif
 
