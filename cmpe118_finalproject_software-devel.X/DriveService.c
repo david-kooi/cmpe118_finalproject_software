@@ -46,8 +46,6 @@ static uint8_t myPriority;
 
 uint8_t InitDriveService(uint8_t priority) {
     myPriority = priority;
-    AD_AddPins(BAT_VOLTAGE);
-    batteryVoltage = AD_ReadADPin(BAT_VOLTAGE);
     IO_PortsSetPortOutputs(DRIVE_DIRECTION_PORT,
                            LEFT_DIRECTION_PIN | RIGHT_DIRECTION_PIN);
     IO_PortsClearPortBits(DRIVE_DIRECTION_PORT,

@@ -89,7 +89,8 @@ uint8_t InitializeTapeSensors(void){
     // Sensors start as sourcing. (Photo Emitter ) 
     
     AD_AddPins(TS_LEFT_ADC | TS_RIGHT_ADC | TS_CENTER_ADC | TS_REAR_ADC);
-    
+        printf("ADDING TS PINS\r\n");
+
     /* LEFT SENSOR */
     
         // Trigger Pin

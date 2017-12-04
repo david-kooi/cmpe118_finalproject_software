@@ -13,8 +13,7 @@
 
 
 void InitializeTrackWire(void){
-    AD_AddPins(TW_LEFT_ADC);
-    AD_AddPins(TW_RIGHT_ADC);
+    AD_AddPins(TW_LEFT_ADC | TW_RIGHT_ADC);
 }
 
 uint8_t RightTrackWireCheck(void){
@@ -24,7 +23,7 @@ uint8_t RightTrackWireCheck(void){
     static ES_EventTyp_t lastEvent = TRACKWIRE_NOT_DETECTED;
     ES_EventTyp_t curEvent;
     
-    uint16_t rightADCReading = AD_ReadADPin(TW_RIGHT_ADC); //------------------------------------------------edit
+    uint16_t rightADCReading = 0;//AD_ReadADPin(TW_RIGHT_ADC); //------------------------------------------------edit
     TWIRE_PRINT("RIGHT TWIRE: %d", rightADCReading);        
     
     
@@ -63,7 +62,7 @@ uint8_t LeftTrackWireCheck(void){
     static ES_EventTyp_t lastEvent = TRACKWIRE_NOT_DETECTED;
     ES_EventTyp_t curEvent;
     
-    uint16_t leftADCReading = AD_ReadADPin(TW_LEFT_ADC); //------------------------------------------------edit
+    uint16_t leftADCReading = 0;//AD_ReadADPin(TW_LEFT_ADC); //------------------------------------------------edit
     TWIRE_PRINT("LEFT TWIRE: %d", leftADCReading);        
         
     
