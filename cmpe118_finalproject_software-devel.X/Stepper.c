@@ -62,7 +62,7 @@
     DRV8811_DIRECTION = stepDir;\
     DRV8811_STEP = 1;\
     DRV8811_ENABLE = 1;} while(0)
-#define InitDrive() do{\
+#define TurnOn8811() do{\
     DRV8811_DIRECTION = stepDir;\
     DRV8811_STEP = 1;\
     DRV8811_ENABLE = 1;\
@@ -134,7 +134,14 @@ int8_t Stepper_Init(void) {
     stepCount = 0;
     overflowReps = 0;
     stepsPerSecondRate = DEFAULT_STEP_RATE;
-    InitDrive();
+#ifdef FULL_STEP_DRIVE
+    COIL_A_DIRECTION = 1;
+    COIL_B_DIRECTION = 1;
+#endif
+    // Initialize hardware (no current flow)
+#ifdef DRV8811_DRIVE
+    TurnOn8811();
+#endif
     TRIS_COIL_A_DIRECTION = 0;
     TRIS_COIL_A_ENABLE = 0;
     TRIS_COIL_B_DIRECTION = 0;
@@ -214,6 +221,9 @@ int8_t Stepper_StartSteps(void) {
     }
     stepperState = stepping;
     TurnOnDrive();
+    //#ifdef DRV8811_DRIVE
+    //    Drv8811Drive();
+    //#endif
     return SUCCESS;
 }
 
@@ -560,7 +570,7 @@ void __ISR(_TIMER_3_VECTOR, ipl4auto) Timer3IntHandler(void) {
                 if (--stepCount <= 0) {
                     stepperState = halted;
                 }
-//                TurnOnDrive();
+                TurnOnDrive();
 #ifdef FULL_STEP_DRIVE
                 FullStepDrive();
 #endif // FULL_STATE_DRIVE
@@ -588,8 +598,7 @@ void __ISR(_TIMER_3_VECTOR, ipl4auto) Timer3IntHandler(void) {
 #define STEP_TIMER 1
 #define WAIT_TIME 1000
 #define PIVOT_TIME 100
-#define NUM_STEPS 100000
-void Stepper_Test(uint16_t rate){
+void Stepper_Test(uint16_t steps, uint16_t rate){
     TIMERS_Init();
     uint8_t direction = REVERSE;
     uint8_t finishedStepping = FALSE;
@@ -608,7 +617,7 @@ void Stepper_Test(uint16_t rate){
             Stepper_End();
             Stepper_Init();
             Stepper_SetRate(rate);
-            Stepper_InitSteps(direction, NUM_STEPS);
+            Stepper_InitSteps(direction, steps);
             finishedStepping = FALSE;
         }
     }

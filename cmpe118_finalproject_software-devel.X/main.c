@@ -28,7 +28,7 @@ void main(void)
     AD_Init();
     PWM_Init();
     //TestADCPins(); // Cycles through and prints values from pins forever
-    Stepper_Test(10000);
+    Stepper_Test(10, 10);
   
     /* Initialize Event Checkers */
     

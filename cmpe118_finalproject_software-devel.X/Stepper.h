@@ -62,9 +62,9 @@
 #define FORWARD 1
 #define REVERSE 0
 
-#define TRIS_COIL_A_ENABLE      PORTX03_TRIS
+#define TRIS_COIL_A_ENABLE      PORTX05_TRIS
 #define TRIS_COIL_A_DIRECTION   PORTX04_TRIS
-#define TRIS_COIL_B_ENABLE      PORTX05_TRIS
+#define TRIS_COIL_B_ENABLE      PORTX03_TRIS
 #define TRIS_COIL_B_DIRECTION   PORTX06_TRIS
 
 #define COIL_A_ENABLE       PORTX03_LAT
@@ -72,9 +72,9 @@
 #define COIL_B_ENABLE       PORTX05_LAT
 #define COIL_B_DIRECTION    PORTX06_LAT
 
-#define DRV8811_ENABLE    PORTX03_LAT
+#define DRV8811_STEP      PORTX03_LAT
 #define DRV8811_DIRECTION PORTX04_LAT
-#define DRV8811_STEP      PORTX05_LAT
+#define DRV8811_ENABLE    PORTX05_LAT
 
 /*******************************************************************************
  * PUBLIC FUNCTION PROTOTYPES                                                  *
@@ -87,7 +87,7 @@
  * @brief Runs a blocking stepper test routine that drives a stepper motor forward and backward.
  * @note Uses the timers.h instead of ES_Timers.h
  * @author Joe Loughboro, 2017.12.3 16:44 */
-void Stepper_Test(uint16_t rate);
+void Stepper_Test(uint16_t steps, uint16_t rate);
 
 /**
  * @Function: Stepper_Init(void);
