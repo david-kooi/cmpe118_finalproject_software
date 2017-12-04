@@ -81,6 +81,15 @@
  ******************************************************************************/
 
 /**
+ * @Function: Stepper_Test(void);
+ * @param none
+ * @return SUCCESS or ERROR
+ * @brief Runs a blocking stepper test routine that drives a stepper motor forward and backward.
+ * @note Uses the timers.h instead of ES_Timers.h
+ * @author Joe Loughboro, 2017.12.3 16:44 */
+void Stepper_Test(uint16_t rate);
+
+/**
  * @Function: Stepper_Init(void);
  * @param none
  * @return SUCCESS or ERROR

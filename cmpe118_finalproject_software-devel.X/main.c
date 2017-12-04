@@ -10,6 +10,8 @@
 #include "TapeSensorEventChecker.h"
 #include "TrackWireEventChecker.h"
 
+#define TEST_STEPPER
+
 //Test
 void TestADCPins(void);
 void main(void)
@@ -27,7 +29,7 @@ void main(void)
     AD_Init();
     PWM_Init();
     //TestADCPins(); // Cycles through and prints values from pins forever
-    
+    Stepper_Test(200);
   
     /* Initialize Event Checkers */
     
@@ -35,7 +37,6 @@ void main(void)
     InitializeTrackWire();
     InitializeTapeSensors(); 
 
-        
     // now initialize the Events and Services Framework and start it running
     ErrorType = ES_Initialize();
     if (ErrorType == Success) {

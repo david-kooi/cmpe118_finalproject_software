@@ -582,8 +582,37 @@ void __ISR(_TIMER_3_VECTOR, ipl4auto) Timer3IntHandler(void) {
 /*******************************************************************************
  * TEST HARNESS                                                                *
  ******************************************************************************/
-#ifdef STEPPER_TEST
+#define TEST_STEPPER
+#ifdef TEST_STEPPER
+#include "timers.h"
+#define STEP_TIMER 1
+#define WAIT_TIME 1000
+#define PIVOT_TIME 100
+void Stepper_Test(uint16_t rate){
+    TIMERS_Init();
+    uint8_t direction = REVERSE;
+    uint8_t finishedStepping = FALSE;
+    int time;
+    while (1) {
+        if (!Stepper_IsStepping() && !finishedStepping) {
+            finishedStepping = TRUE;
+            direction = (direction == FORWARD) ? REVERSE : FORWARD;
+            time = (direction == FORWARD) ? WAIT_TIME : PIVOT_TIME;
+            TIMERS_InitTimer(STEP_TIMER, time);
+        }
+        if (TIMERS_IsTimerExpired(STEP_TIMER)) {
+            TIMERS_ClearTimerExpired(STEP_TIMER);
+            Stepper_End();
+            Stepper_Init();
+            Stepper_SetRate(rate);
+            Stepper_InitSteps(direction, 200);
+            finishedStepping = FALSE;
+        }
+    }
+}
+#endif
 
+#ifdef STEPPER_TEST
 #include <stdio.h>
 
 #define NOPCOUNT 150000
