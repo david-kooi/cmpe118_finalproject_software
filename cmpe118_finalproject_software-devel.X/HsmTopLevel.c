@@ -63,9 +63,9 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case INIT:
             if (ThisEvent.EventType == ES_INIT) {
                 printf("Got this far\r\n");
-                EnableDriveMotors();
-                SetForwardSpeed(MAX_FORWARD_SPEED);
-                SetTurningSpeed(0);
+                //EnableDriveMotors();
+                //SetForwardSpeed(MAX_FORWARD_SPEED);
+                //SetTurningSpeed(0);
                 SWITCH_STATE(STARTUP);
             }
             break;

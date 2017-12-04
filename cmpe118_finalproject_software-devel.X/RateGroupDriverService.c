@@ -123,7 +123,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
         // Handle the various rate groups
         switch(ThisEvent.EventParam){
             case HZ_1_TIMER:
-                //DEBUG_PRINT("1HZ TICK");
+                /*DEBUG_PRINT("1HZ TICK");*/
                 TS_StartSampling();
                 // Restart Timer
                 ES_Timer_InitTimer(HZ_1_TIMER, 1000); //1000 ms 
@@ -154,7 +154,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 //break;
                 
             case TS_SYNC_TIMER:
-                //DEBUG_PRINT("TS_SYNC_TIMER TICK)
+                DEBUG_PRINT("TS_SYNC_TIMER TICK");
                 TS_DriveSampling();
                 
                 break;

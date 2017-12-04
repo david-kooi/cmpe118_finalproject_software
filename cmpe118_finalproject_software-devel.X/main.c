@@ -27,13 +27,13 @@ void main(void)
     // Your hardware initialization function calls go here
     AD_Init();
     PWM_Init();
-    //TestADCPins(); // Cycles through and prints values from pins forever
-    Stepper_Test(10, 10);
+    TestADCPins(); // Cycles through and prints values from pins forever
+    //Stepper_Test(10, 10);
   
     /* Initialize Event Checkers */
     
-    InitializeBumperChecker();
-    InitializeTrackWire();
+    //InitializeBumperChecker();
+    //InitializeTrackWire();
     InitializeTapeSensors(); 
 
     // now initialize the Events and Services Framework and start it running
@@ -63,7 +63,7 @@ void main(void)
 
 void TestADCPins(void){
     uint16_t val;
-    AD_AddPins(0xFF);
+    AD_AddPins(0xFFF);
     
     while(1){
         int i;

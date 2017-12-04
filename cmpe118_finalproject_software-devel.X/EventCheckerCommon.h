@@ -14,9 +14,6 @@
 
 #include "BatteryEventChecker.h"
 
-// Global TapeSensor Variables and Defines
-uint8_t TS_SAMPLING_ACTIVE = 0; // Tape Sensor sample time
-
 #define TS_LEFT_SENSOR   0x01 //b0001
 #define TS_RIGHT_SENSOR  0x02 //b0010
 #define TS_CENTER_SENSOR 0x04 //b0100

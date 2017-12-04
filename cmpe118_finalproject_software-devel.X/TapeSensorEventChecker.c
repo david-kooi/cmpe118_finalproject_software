@@ -24,9 +24,15 @@ typedef enum {
     TS_CHECK_SAMPLES
 } TS_State;
 
+enum {
+    TS_VAL_CURR,
+    TS_VAL_PREV
+};
+
+static uint8_t TS_SAMPLING_ACTIVE = 0;
 
 // Sampling Time
-#define TS_SAMPLE_TIME 1 // ms
+#define TS_SAMPLE_TIME 2 // ms
 
 #define TS_PORT PORTZ
 
@@ -62,11 +68,12 @@ typedef enum {
 #define TS_REAR_LO_THRESH 700
 
  // Forward Declared Functions
-uint16_t CheckTapeSensor(char* desc, uint8_t adcPin);
+uint16_t CheckTapeSensor(char* desc, uint32_t adcPin);
 
-void HandleTapeSensorEvent(uint8_t prevVal, uint8_t currVal, 
-                            uint8_t ON_EVENT, uint8_t OFF_EVENT,
-                            ES_Event thisEvent){
+void HandleTapeSensorEvent(uint8_t firstRun, uint32_t prevVal, uint32_t currVal, 
+                            uint32_t ledPin, uint16_t ON_EVENT, uint16_t OFF_EVENT,
+                            uint32_t lowerThresh, uint32_t upperThresh,
+                            ES_Event thisEvent);
 
  
 /**
@@ -81,13 +88,13 @@ uint8_t InitializeTapeSensors(void){
     
     // Sensors start as sourcing. (Photo Emitter ) 
     
+    AD_AddPins(TS_LEFT_ADC | TS_RIGHT_ADC | TS_CENTER_ADC | TS_REAR_ADC);
+    
     /* LEFT SENSOR */
     
         // Trigger Pin
         IO_PortsSetPortOutputs(TS_PORT, TS_LEFT_TRIG_PIN);
         IO_SOURCE(TS_PORT, TS_LEFT_TRIG_PIN); // Start emitter off
-        // ADC Pin
-        AD_AddPins(TS_LEFT_ADC);
         // LED Indicator
         IO_PortsSetPortOutputs(TS_PORT, TS_LEFT_LED_PIN);
         IO_SOURCE(TS_PORT, TS_LEFT_LED_PIN); // Set indicator off
@@ -97,12 +104,28 @@ uint8_t InitializeTapeSensors(void){
         // Trigger Pin
         IO_PortsSetPortOutputs(TS_PORT, TS_RIGHT_TRIG_PIN);
         IO_SOURCE(TS_PORT, TS_RIGHT_TRIG_PIN); // Start emitter off
-        // ADC Pin
-        AD_AddPins(TS_RIGHT_ADC);
         // LED Indicator
         IO_PortsSetPortOutputs(TS_PORT, TS_RIGHT_LED_PIN);
         IO_SOURCE(TS_PORT, TS_RIGHT_LED_PIN); // Set indicator off
     
+    /* CENTER SENSOR*/
+        
+        // Trigger Pin
+        IO_PortsSetPortOutputs(TS_PORT, TS_CENTER_TRIG_PIN);
+        IO_SOURCE(TS_PORT, TS_CENTER_TRIG_PIN); // Start emitter off
+        // LED Indicator
+        IO_PortsSetPortOutputs(TS_PORT, TS_CENTER_LED_PIN);
+        IO_SOURCE(TS_PORT, TS_CENTER_LED_PIN); // Set indicator off
+        
+    /* REAR SENSOR*/
+        
+        // Trigger Pin
+        IO_PortsSetPortOutputs(TS_PORT, TS_REAR_TRIG_PIN);
+        IO_SOURCE(TS_PORT, TS_REAR_TRIG_PIN); // Start emitter off
+        // LED Indicator
+        IO_PortsSetPortOutputs(TS_PORT, TS_REAR_LED_PIN);
+        IO_SOURCE(TS_PORT, TS_REAR_LED_PIN); // Set indicator off
+        
   
     
 }
@@ -117,6 +140,7 @@ uint8_t InitializeTapeSensors(void){
  * @author David Kooi, 2017.11.21
  * @modified */
 void TS_StartSampling(void){
+    
     if(TS_SAMPLING_ACTIVE){
         return;
     }
@@ -127,7 +151,7 @@ void TS_StartSampling(void){
     TS_EMITTER_STATE      = TS_RIGHT_SAMPLE;
     
     // Start sampling timer to begin sampling
-    ES_Timer_InitTimer(TS_SYNC_TIMER, TS_SAMPLE_TIME); // 2ms Tape Sensor Sampling
+    ES_Timer_InitTimer(TS_SYNC_TIMER, TS_SAMPLE_TIME); // ms Tape Sensor Sampling
 
 }
 
@@ -140,13 +164,14 @@ void TS_StartSampling(void){
  * @author David Kooi, 2017.11.21
  * @modified */
 void TS_DriveSampling(void){
+    TAPE_PRINT("DRIVE");
     static uint16_t firstRun                = 1; 
     
     // Sensor Variables
-    static uint16_t leftSensorVal[2]        = {0};
-    static uint16_t rightSensorVal[2]       = {0};
-    static uint16_t centerSensorVal[2]      = {0};
-    static uint16_t rearSensorVal[2]        = {0};
+    static uint32_t leftSensorVal[2]        = {0};
+    static uint32_t rightSensorVal[2]       = {0};
+    static uint32_t centerSensorVal[2]      = {0};
+    static uint32_t rearSensorVal[2]        = {0};
 
 
     
@@ -159,10 +184,10 @@ void TS_DriveSampling(void){
     switch(TS_EMITTER_STATE){
         
         case TS_RIGHT_SAMPLE:
-            TAPE_PRINT("TS RIGHT SAMPLE");            
+            //TAPE_PRINT("TS RIGHT SAMPLE");            
                    
-            IO_SINK(TS_LEFT_TRIG_PIN); // Turn emitter on
-            leftSensorVal[TS_VAL_CURR] = CheckTapeSensor_LEFT("RIGHT", TS_RIGHT_ADC);
+            IO_SINK(TS_PORT, TS_LEFT_TRIG_PIN); // Turn emitter on
+            leftSensorVal[TS_VAL_CURR] = CheckTapeSensor("RIGHT", TS_RIGHT_ADC);
             
                 
             // Change State and Restart Sensor
@@ -172,12 +197,12 @@ void TS_DriveSampling(void){
             break;
                     
         case TS_LEFT_SAMPLE:
-            TAPE_PRINT("TS LEFT SAMPLE");
+            //TAPE_PRINT("TS LEFT SAMPLE");
                 
-            IO_SOURCE(TS_RIGHT_TRIG_PIN); // Turn previous emitter off
+            IO_SOURCE(TS_PORT, TS_RIGHT_TRIG_PIN); // Turn previous emitter off
                 
-            IO_SINK(TS_LEFT_TRIG_PIN); // Turn emitter on
-            leftSensorVal[TS_VAL_CURR] = CheckTapeSensor_LEFT("LEFT", TS_LEFT_ADC);
+            IO_SINK(TS_PORT, TS_LEFT_TRIG_PIN); // Turn emitter on
+            leftSensorVal[TS_VAL_CURR] = CheckTapeSensor("LEFT", TS_LEFT_ADC);
                 
             // Change State and Restart Sensor
             TS_EMITTER_STATE = TS_CENTER_SAMPLE;
@@ -185,12 +210,12 @@ void TS_DriveSampling(void){
 
             break;
         case TS_CENTER_SAMPLE:
-            TAPE_PRINT("TS CENTER SAMPLE");
+            //TAPE_PRINT("TS CENTER SAMPLE");
 
-            IO_SOURCE(TS_LEFT_TRIG_PIN); // Turn previous emitter off
+            IO_SOURCE(TS_PORT, TS_LEFT_TRIG_PIN); // Turn previous emitter off
 
-            IO_SINK(TS_CENTER_TRIG_PIN); // Turn emitter on
-            centerSensorVal[TS_VAL_CURR] = CheckTapeSensor_CENTER("CENTER", TS_CENTER_ADC);
+            IO_SINK(TS_PORT, TS_CENTER_TRIG_PIN); // Turn emitter on
+            centerSensorVal[TS_VAL_CURR] = CheckTapeSensor("CENTER", TS_CENTER_ADC);
 
             // Change State and Restart Sensor
             TS_EMITTER_STATE = TS_REAR_SAMPLE;
@@ -199,10 +224,10 @@ void TS_DriveSampling(void){
             break;
                 
         case TS_REAR_SAMPLE:
-            TAPE_PRINT("TS REAR SAMPLE");
+            //TAPE_PRINT("TS REAR SAMPLE");
 
-            IO_SOURCE(TS_CENTER_TRIG_PIN); // Turn previous emitter off
-            rearSensorVal[TS_VAL_CURR] = CheckTapeSensor_REAR("REAR", TS_REAR_ADC);
+            IO_SOURCE(TS_PORT, TS_CENTER_TRIG_PIN); // Turn previous emitter off
+            rearSensorVal[TS_VAL_CURR] = CheckTapeSensor("REAR", TS_REAR_ADC);
 
             // Change State and Restart Sensor
             TS_EMITTER_STATE = TS_CHECK_SAMPLES;
@@ -211,18 +236,36 @@ void TS_DriveSampling(void){
             break;
 
         case TS_CHECK_SAMPLES:
+            
+            /*
+            void HandleTapeSensorEvent(uint8_t firstRun, uint8_t prevVal, uint8_t currVal, 
+                            uint8_t ledPin, uint8_t ON_EVENT, uint8_t OFF_EVENT,
+                            uint32_t lowerThresh, uint32_t upperThresh,
+                            ES_Event thisEvent){
+            */
+            
+            TAPE_PRINT("TAPE SENSOR RIGHT: %u\r\n",  rightSensorVal[TS_VAL_CURR]);
+            TAPE_PRINT("TAPE SENSOR CENTER: %u\r\n", centerSensorVal[TS_VAL_CURR]);
+            TAPE_PRINT("TAPE SENSOR LEFT: %u\r\n",   leftSensorVal[TS_VAL_CURR]);
+            TAPE_PRINT("TAPE SENSOR REAR: %u\r\n",   rearSensorVal[TS_VAL_CURR]);
+            
+            
             // Check Left
             HandleTapeSensorEvent(firstRun, leftSensorVal[TS_VAL_PREV], leftSensorVal[TS_VAL_CURR],
-                                  TS_LEFT_ON, TS_LEFT_OFF, thisEvent);
+                                  TS_LEFT_LED_PIN, TS_LEFT_ON, TS_LEFT_OFF, 
+                                  TS_LEFT_LO_THRESH, TS_LEFT_HI_THRESH, thisEvent);
             // Check Right
             HandleTapeSensorEvent(firstRun, rightSensorVal[TS_VAL_PREV], rightSensorVal[TS_VAL_CURR],
-                                  TS_RIGHT_ON, TS_RIGHT_OFF, thisEvent);
+                                  TS_RIGHT_LED_PIN, TS_RIGHT_ON, TS_RIGHT_OFF, 
+                                  TS_RIGHT_LO_THRESH, TS_RIGHT_HI_THRESH, thisEvent);
             // Check Center
             HandleTapeSensorEvent(firstRun, centerSensorVal[TS_VAL_PREV], centerSensorVal[TS_VAL_CURR],
-                                  TS_CENTER_ON, TS_CENTER_OFF, thisEvent);
+                                  TS_CENTER_LED_PIN, TS_CENTER_ON, TS_CENTER_OFF, 
+                                  TS_CENTER_LO_THRESH, TS_CENTER_HI_THRESH, thisEvent);
             // Check Rear
             HandleTapeSensorEvent(firstRun, rearSensorVal[TS_VAL_PREV], rearSensorVal[TS_VAL_CURR],
-                                  TS_REAR_ON, TS_REAR_OFF, thisEvent);
+                                  TS_REAR_LED_PIN, TS_REAR_ON, TS_REAR_OFF,
+                                  TS_REAR_LO_THRESH, TS_REAR_HI_THRESH, thisEvent);
 
 
             if(firstRun){ // First run initializes previous values
@@ -253,9 +296,9 @@ void TS_DriveSampling(void){
  * @note 
  * @author David Kooi, 2017.11.21
  * @modified */
-void HandleTapeSensorEvent(uint8_t firstRun, uint8_t prevVal, uint8_t currVal, 
-                            uint8_t ledPin, uint8_t ON_EVENT, uint8_t OFF_EVENT,
-                            uint16_t lowerThresh, uint16_t upperThresh,
+void HandleTapeSensorEvent(uint8_t firstRun, uint32_t prevVal, uint32_t currVal, 
+                            uint32_t ledPin, uint16_t ON_EVENT, uint16_t OFF_EVENT,
+                            uint32_t lowerThresh, uint32_t upperThresh,
                             ES_Event thisEvent){
     if(firstRun){
         prevVal = currVal;
@@ -271,10 +314,12 @@ void HandleTapeSensorEvent(uint8_t firstRun, uint8_t prevVal, uint8_t currVal,
     else if(prevVal > lowerThresh && currVal < lowerThresh){
         thisEvent.EventType = OFF_EVENT;
         IO_SOURCE(TS_PORT, ledPin); // Turn LED OFF
+    }else{
+        thisEvent.EventType = ES_NO_EVENT;
     }
 
     // Set param
-    thisEvent.EventParam = sensorVal;
+    thisEvent.EventParam = currVal;
    // Post
     PostHsmTopLevel(thisEvent);
                 
@@ -288,10 +333,10 @@ void HandleTapeSensorEvent(uint8_t firstRun, uint8_t prevVal, uint8_t currVal,
  * @note 
  * @author David Kooi, 2017.11.21
  * @modified */
-uint16_t CheckTapeSensor(char* desc, uint8_t adcPin){
+uint16_t CheckTapeSensor(char* desc, uint32_t adcPin){
     uint16_t val = 0;
-    val = AD_ReadADPin(pin);
-    TAPE_PRINT("TAPE SENSOR %s: %d\r\n", desc, val);
+    val = AD_ReadADPin(adcPin);
+    //TAPE_PRINT("TAPE SENSOR %s: %d\r\n", desc, val);
     
     return val;
 }
