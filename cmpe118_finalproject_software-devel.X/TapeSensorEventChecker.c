@@ -116,9 +116,12 @@ void TS_StartSampling(void){
     TS_SAMPLING_ACTIVE    = 1;
     TS_EMITTER_STATE      = TS_RIGHT_SAMPLE;
     
+    IO_SINK(TS_PORT, TS_RIGHT_TRIG_PIN); // Turn emitter on
+    
     // Start sampling timer to begin sampling
     ES_Timer_InitTimer(TS_SYNC_TIMER, TS_SAMPLE_TIME); // ms Tape Sensor Sampling
 
+    
 }
 
 /**
@@ -130,7 +133,6 @@ void TS_StartSampling(void){
  * @author David Kooi, 2017.11.21
  * @modified */
 void TS_DriveSampling(void){
-    TAPE_PRINT("DRIVE");
     static uint16_t firstRun                = 1; 
     
     // Sensor Variables
@@ -152,9 +154,9 @@ void TS_DriveSampling(void){
         case TS_RIGHT_SAMPLE:
             //TAPE_PRINT("TS RIGHT SAMPLE");            
                    
-            IO_SINK(TS_PORT, TS_LEFT_TRIG_PIN); // Turn emitter on
-            leftSensorVal[TS_VAL_CURR] = CheckTapeSensor("RIGHT", TS_RIGHT_ADC);
-            
+            rightSensorVal[TS_VAL_CURR] = CheckTapeSensor("RIGHT", TS_RIGHT_ADC);
+            IO_SOURCE(TS_PORT, TS_RIGHT_TRIG_PIN); // Turn emitter off
+            IO_SINK(TS_PORT, TS_LEFT_TRIG_PIN); // Turn next emitter on
                 
             // Change State and Restart Sensor
             TS_EMITTER_STATE = TS_LEFT_SAMPLE;
@@ -165,11 +167,10 @@ void TS_DriveSampling(void){
         case TS_LEFT_SAMPLE:
             //TAPE_PRINT("TS LEFT SAMPLE");
                 
-            IO_SOURCE(TS_PORT, TS_RIGHT_TRIG_PIN); // Turn previous emitter off
-                
-            IO_SINK(TS_PORT, TS_LEFT_TRIG_PIN); // Turn emitter on
             leftSensorVal[TS_VAL_CURR] = CheckTapeSensor("LEFT", TS_LEFT_ADC);
-                
+            IO_SOURCE(TS_PORT, TS_LEFT_TRIG_PIN); // Turn emitter off
+            IO_SINK(TS_PORT, TS_CENTER_TRIG_PIN); // Turn emitter on
+            
             // Change State and Restart Sensor
             TS_EMITTER_STATE = TS_CENTER_SAMPLE;
             ES_Timer_InitTimer(TS_SYNC_TIMER, TS_SAMPLE_TIME); // ms Tape Sensor Sampling 
@@ -178,10 +179,9 @@ void TS_DriveSampling(void){
         case TS_CENTER_SAMPLE:
             //TAPE_PRINT("TS CENTER SAMPLE");
 
-            IO_SOURCE(TS_PORT, TS_LEFT_TRIG_PIN); // Turn previous emitter off
-
-            IO_SINK(TS_PORT, TS_CENTER_TRIG_PIN); // Turn emitter on
             centerSensorVal[TS_VAL_CURR] = CheckTapeSensor("CENTER", TS_CENTER_ADC);
+            IO_SOURCE(TS_PORT, TS_CENTER_TRIG_PIN); // Turn previous emitter off
+            IO_SINK(TS_PORT, TS_REAR_TRIG_PIN);
 
             // Change State and Restart Sensor
             TS_EMITTER_STATE = TS_REAR_SAMPLE;
@@ -191,8 +191,6 @@ void TS_DriveSampling(void){
                 
         case TS_REAR_SAMPLE:
             //TAPE_PRINT("TS REAR SAMPLE");
-
-            IO_SOURCE(TS_PORT, TS_CENTER_TRIG_PIN); // Turn previous emitter off
             rearSensorVal[TS_VAL_CURR] = CheckTapeSensor("REAR", TS_REAR_ADC);
 
             // Change State and Restart Sensor

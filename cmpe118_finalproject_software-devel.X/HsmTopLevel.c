@@ -62,7 +62,6 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
     switch (CurrentState) {
         case INIT:
             if (ThisEvent.EventType == ES_INIT) {
-                printf("Got this far\r\n");
                 //EnableDriveMotors();
                 //SetForwardSpeed(MAX_FORWARD_SPEED);
                 //SetTurningSpeed(0);

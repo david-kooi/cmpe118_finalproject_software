@@ -154,7 +154,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 //break;
                 
             case TS_SYNC_TIMER:
-                DEBUG_PRINT("TS_SYNC_TIMER TICK");
+                //DEBUG_PRINT("TS_SYNC_TIMER TICK");
                 TS_DriveSampling();
                 
                 break;
