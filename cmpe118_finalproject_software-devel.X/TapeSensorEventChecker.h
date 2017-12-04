@@ -15,29 +15,29 @@
  
 #define TS_RIGHT_TRIG_PIN      PIN7
 #define TS_RIGHT_ADC           AD_PORTW7
-#define TS_RIGHT_LED_PIN       PIN8
+#define TS_RIGHT_LED_PIN       PIN4
 
 #define TS_CENTER_TRIG_PIN      PIN5
 #define TS_CENTER_ADC           AD_PORTW5
-#define TS_CENTER_LED_PIN       PIN6
+#define TS_CENTER_LED_PIN       PIN8
  
 #define TS_REAR_TRIG_PIN      PIN3
 #define TS_REAR_ADC           AD_PORTW3
-#define TS_REAR_LED_PIN       PIN4
+#define TS_REAR_LED_PIN       PIN6
 
 
 // Sensor Thresholds
-#define TS_LEFT_HI_THRESH 900
-#define TS_LEFT_LO_THRESH 700
+#define TS_LEFT_HI_THRESH 850
+#define TS_LEFT_LO_THRESH 650
 
-#define TS_RIGHT_HI_THRESH 900
-#define TS_RIGHT_LO_THRESH 700
+#define TS_RIGHT_HI_THRESH 850
+#define TS_RIGHT_LO_THRESH 650
  
-#define TS_CENTER_HI_THRESH 900
-#define TS_CENTER_LO_THRESH 700
+#define TS_CENTER_HI_THRESH 850
+#define TS_CENTER_LO_THRESH 650
 
-#define TS_REAR_HI_THRESH 900
-#define TS_REAR_LO_THRESH 700
+#define TS_REAR_HI_THRESH 850
+#define TS_REAR_LO_THRESH 650
 
 /**
  * @Function InitializeTapeSensors(void)

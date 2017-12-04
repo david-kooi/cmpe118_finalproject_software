@@ -36,8 +36,8 @@ static uint8_t TS_SAMPLING_ACTIVE = 0;
  // Forward Declared Functions
 uint16_t CheckTapeSensor(char* desc, uint32_t adcPin);
 
-void HandleTapeSensorEvent(uint8_t firstRun, uint32_t prevVal, uint32_t currVal, 
-                            uint32_t ledPin, uint16_t ON_EVENT, uint16_t OFF_EVENT,
+void HandleTapeSensorEvent(uint8_t firstRun, uint32_t prevVal, uint32_t currVal,  
+                            uint32_t ledPin, uint16_t ON_TAPE_EVENT, uint16_t OFF_TAPE_EVENT,
                             uint32_t lowerThresh, uint32_t upperThresh,
                             ES_Event thisEvent);
 
@@ -192,6 +192,7 @@ void TS_DriveSampling(void){
         case TS_REAR_SAMPLE:
             //TAPE_PRINT("TS REAR SAMPLE");
             rearSensorVal[TS_VAL_CURR] = CheckTapeSensor("REAR", TS_REAR_ADC);
+            IO_SOURCE(TS_PORT, TS_REAR_TRIG_PIN);
 
             // Change State and Restart Sensor
             TS_EMITTER_STATE = TS_CHECK_SAMPLES;
@@ -214,27 +215,37 @@ void TS_DriveSampling(void){
             TAPE_PRINT("TAPE SENSOR REAR: %u\r\n",   rearSensorVal[TS_VAL_CURR]);
             
             
+            if(firstRun){
+                leftSensorVal[TS_VAL_PREV]   = leftSensorVal[TS_VAL_CURR];
+                rightSensorVal[TS_VAL_PREV]  = rightSensorVal[TS_VAL_CURR];
+                centerSensorVal[TS_VAL_PREV] = centerSensorVal[TS_VAL_CURR];
+                rearSensorVal[TS_VAL_PREV]   = rearSensorVal[TS_VAL_CURR];
+
+                firstRun = 0;
+            }
+            
             // Check Left
             HandleTapeSensorEvent(firstRun, leftSensorVal[TS_VAL_PREV], leftSensorVal[TS_VAL_CURR],
-                                  TS_LEFT_LED_PIN, TS_LEFT_ON, TS_LEFT_OFF, 
+                                  TS_LEFT_LED_PIN, TS_LEFT_ON_TAPE, TS_LEFT_OFF_TAPE, 
                                   TS_LEFT_LO_THRESH, TS_LEFT_HI_THRESH, thisEvent);
             // Check Right
             HandleTapeSensorEvent(firstRun, rightSensorVal[TS_VAL_PREV], rightSensorVal[TS_VAL_CURR],
-                                  TS_RIGHT_LED_PIN, TS_RIGHT_ON, TS_RIGHT_OFF, 
+                                  TS_RIGHT_LED_PIN, TS_RIGHT_ON_TAPE, TS_RIGHT_OFF_TAPE, 
                                   TS_RIGHT_LO_THRESH, TS_RIGHT_HI_THRESH, thisEvent);
             // Check Center
             HandleTapeSensorEvent(firstRun, centerSensorVal[TS_VAL_PREV], centerSensorVal[TS_VAL_CURR],
-                                  TS_CENTER_LED_PIN, TS_CENTER_ON, TS_CENTER_OFF, 
+                                  TS_CENTER_LED_PIN, TS_CENTER_ON_TAPE, TS_CENTER_OFF_TAPE, 
                                   TS_CENTER_LO_THRESH, TS_CENTER_HI_THRESH, thisEvent);
             // Check Rear
             HandleTapeSensorEvent(firstRun, rearSensorVal[TS_VAL_PREV], rearSensorVal[TS_VAL_CURR],
-                                  TS_REAR_LED_PIN, TS_REAR_ON, TS_REAR_OFF,
+                                  TS_REAR_LED_PIN, TS_REAR_ON_TAPE, TS_REAR_OFF_TAPE,
                                   TS_REAR_LO_THRESH, TS_REAR_HI_THRESH, thisEvent);
-
-
-            if(firstRun){ // First run initializes previous values
-                firstRun = 0;
-            }
+            
+            // Set prev values
+            leftSensorVal[TS_VAL_PREV]   = leftSensorVal[TS_VAL_CURR];
+            rightSensorVal[TS_VAL_PREV]  = rightSensorVal[TS_VAL_CURR];
+            centerSensorVal[TS_VAL_PREV] = centerSensorVal[TS_VAL_CURR];
+            rearSensorVal[TS_VAL_PREV]   = rearSensorVal[TS_VAL_CURR];
 
             // We are finished sampling
             TS_SAMPLING_ACTIVE = 0;
@@ -261,23 +272,19 @@ void TS_DriveSampling(void){
  * @author David Kooi, 2017.11.21
  * @modified */
 void HandleTapeSensorEvent(uint8_t firstRun, uint32_t prevVal, uint32_t currVal, 
-                            uint32_t ledPin, uint16_t ON_EVENT, uint16_t OFF_EVENT,
+                            uint32_t ledPin, uint16_t ON_TAPE_EVENT, uint16_t OFF_TAPE_EVENT,
                             uint32_t lowerThresh, uint32_t upperThresh,
                             ES_Event thisEvent){
-    if(firstRun){
-        prevVal = currVal;
-        return;
-    }
 
-    // On tape event
-    if      (prevVal < upperThresh && currVal > upperThresh){
-        thisEvent.EventType = ON_EVENT;
-        IO_SINK(TS_PORT, ledPin); //Turn LED ON
-    }
     // Off tape event
+    if      (prevVal < upperThresh && currVal > upperThresh){
+        thisEvent.EventType = OFF_TAPE_EVENT;
+        IO_SOURCE(TS_PORT, ledPin); //Turn LED OFF
+    }
+    // On tape event
     else if(prevVal > lowerThresh && currVal < lowerThresh){
-        thisEvent.EventType = OFF_EVENT;
-        IO_SOURCE(TS_PORT, ledPin); // Turn LED OFF
+        thisEvent.EventType = ON_TAPE_EVENT;
+        IO_SINK(TS_PORT, ledPin); // Turn LED ON
     }else{
         thisEvent.EventType = ES_NO_EVENT;
     }

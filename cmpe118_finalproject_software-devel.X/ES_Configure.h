@@ -67,14 +67,14 @@ typedef enum {
     RL_BUMPER_OFF,    
             
     // Tape Sensor Events
-    TS_LEFT_ON,
-    TS_LEFT_OFF,
-    TS_CENTER_ON,
-    TS_CENTER_OFF,
-    TS_RIGHT_ON,
-    TS_RIGHT_OFF,
-    TS_REAR_ON,
-    TS_REAR_OFF,
+    TS_LEFT_ON_TAPE,
+    TS_LEFT_OFF_TAPE,
+    TS_CENTER_ON_TAPE,
+    TS_CENTER_OFF_TAPE,
+    TS_RIGHT_ON_TAPE,
+    TS_RIGHT_OFF_TAPE,
+    TS_REAR_ON_TAPE,
+    TS_REAR_OFF_TAPE,
             
     NUMBEROFEVENTS,
 } ES_EventTyp_t;
@@ -102,14 +102,14 @@ static const char *EventNames[] = {
 	"RR_BUMPER_OFF",
 	"RL_BUMPER_ON",
 	"RL_BUMPER_OFF",
-	"TS_LEFT_ON",
-	"TS_LEFT_OFF",
-	"TS_CENTER_ON",
-	"TS_CENTER_OFF",
-	"TS_RIGHT_ON",
-	"TS_RIGHT_OFF",
-	"TS_REAR_ON",
-	"TS_REAR_OFF",
+	"TS_LEFT_ON_TAPE",
+	"TS_LEFT_OFF_TAPE",
+	"TS_CENTER_ON_TAPE",
+	"TS_CENTER_OFF_TAPE",
+	"TS_RIGHT_ON_TAPE",
+	"TS_RIGHT_OFF_TAPE",
+	"TS_REAR_ON_TAPE",
+	"TS_REAR_OFF_TAPE",
 	"NUMBEROFEVENTS",
 };
 
@@ -221,7 +221,7 @@ static const char *EventNames[] = {
 // the name of the run function
 #define SERV_3_RUN RunHsmTopLevel
 // How big should this services Queue be?
-#define SERV_3_QUEUE_SIZE 3
+#define SERV_3_QUEUE_SIZE 4
 #endif
 
 /****************************************************************************/
