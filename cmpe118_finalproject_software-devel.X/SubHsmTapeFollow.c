@@ -44,13 +44,13 @@ typedef enum {
     REAR_OFF_STATE,
 } TapeFollowSubHSMState_t;
 
-
 static const char *StateNames[] = {
-    "IDLE_STATE",
+	"IDLE_STATE",
 	"INIT_STATE",
 	"REAR_ON_STATE",
-    "REAR_OFF_STATE"
+	"REAR_OFF_STATE",
 };
+
 
 
 /*******************************************************************************
