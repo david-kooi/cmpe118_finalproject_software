@@ -13,6 +13,7 @@
 #include "HsmTopLevel.h"
 #include "DriveService.h"
 //#include sub-sm's here
+#include "SubHsmTapeFollow.h"
 #include <stdio.h>
 
 typedef enum {
@@ -53,29 +54,25 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         SWITCH_STATE(IDLE);
         printf("Battery disconnected, stop everything!\r\n");
     }
+    
+    RunTapeFollowSubHSM(ThisEvent);
+    
     switch (CurrentState) {
         case INIT:
             if (ThisEvent.EventType == ES_INIT) {
                 EnableDriveMotors();
-                SetForwardSpeed(0);
-                SetTurningSpeed(180);
+                SetForwardSpeed(MAX_FORWARD_SPEED);
+                SetTurningSpeed(0);
+                
+                
+                //InitTapeFollowSubHSM();
                 SWITCH_STATE(STARTUP);
             }
             break;
         case STARTUP:
-            // Look for beacon
             
-            switch(ThisEvent.EventType){
-                case TS_REAR_ON_TAPE:
-                    
-                    
-                    
-                    break;
-                default:
-                    break;
-                
-                
-            }
+            
+
             
             break;
         case DESTROYING_ATM6:

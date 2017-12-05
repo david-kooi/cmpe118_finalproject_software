@@ -39,6 +39,32 @@
 #define TS_REAR_HI_THRESH 850
 #define TS_REAR_LO_THRESH 650
 
+typedef enum {
+    LCR_OFF  = 0b000,
+    LR_ON    = 0b101,
+    L_ON     = 0b100,
+    LC_ON    = 0b110,
+    C_ON     = 0b010,
+    RC_ON    = 0b011,
+    R_ON     = 0b001,
+    LCR_ON   = 0b111,
+} TsFrontStatus;
+
+ // Status Bit masks and vector
+static uint8_t TS_leftBitmask   = 0b0100;
+static uint8_t TS_centerBitmask = 0b0010;
+static uint8_t TS_rightBitmask  = 0b0001;
+ 
+/**
+ * @Function TS_GetCurrentSensors(void)
+ * @param none
+ * @return TRUE or FALSE
+ * @brief ...
+ * @note 
+ * @author David Kooi, Ben Swandon, 2017.10.3 14:08
+ * @modified */
+uint8_t TS_GetCurrentSensors(void);
+
 /**
  * @Function InitializeTapeSensors(void)
  * @param none

@@ -32,20 +32,24 @@
 #include "BOARD.h"
 #include "HsmTopLevel.h"
 #include "SubHsmTapeFollow.h"
-
+#include <stdio.h>
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 typedef enum {
+    IDLE_STATE,
     INIT_STATE,
-    REAR_STATE,
+    REAR_ON_STATE,
+    REAR_OFF_STATE,
 } TapeFollowSubHSMState_t;
 
-static const char *StateNames[] = {
-	"INIT_STATE",
-	"REAR_STATE",
-};
 
+static const char *StateNames[] = {
+    "IDLE_STATE",
+	"INIT_STATE",
+	"REAR_ON_STATE",
+    "REAR_OFF_STATE"
+};
 
 
 /*******************************************************************************
@@ -109,10 +113,11 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
 {
     uint8_t makeTransition = FALSE; // use to flag transition
     TapeFollowSubHSMState_t nextState; // <- change type to correct enum
-
     ES_Tattle(); // trace call stack
-
     switch (CurrentState) {
+    case IDLE_STATE:
+            break;
+        
     case INIT_STATE: // If current state is initial Psedudo State
         if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
         {
@@ -120,20 +125,16 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
             // transition from the initial pseudo-state into the actual
             // initial state
             
-            // Set bot to rotate 
             
             
             // now put the machine into the actual initial state
-            SWITCH_STATE(REAR_STATE);
+            SWITCH_STATE(REAR_ON_STATE);
         }
         break;
 
-    case REAR_STATE: // in the first state, replace this with correct names
+    case REAR_ON_STATE: // in the first state, replace this with correct names
         switch (ThisEvent.EventType) {
-            case TS_LEFT_ON_TAPE:
-            case TS_RIGHT_ON_TAPE:
-            case TS_CENTER_ON_TAPE:
-                
+
                 
             case ES_NO_EVENT:
             default: // all unhandled events pass the event back up to the next level

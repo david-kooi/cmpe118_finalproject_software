@@ -12,6 +12,8 @@ uint8_t sensorState_PREV = 0x00;
 // Sampling States
  uint8_t TS_EMITTER_STATE = 0;
 
+ static TsFrontStatus tapeSensorStatus;
+
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -38,10 +40,58 @@ uint16_t CheckTapeSensor(char* desc, uint32_t adcPin);
 
 void HandleTapeSensorEvent(uint8_t firstRun, uint32_t prevVal, uint32_t currVal,  
                             uint32_t ledPin, uint16_t ON_TAPE_EVENT, uint16_t OFF_TAPE_EVENT,
-                            uint32_t lowerThresh, uint32_t upperThresh,
+                            uint32_t lowerThresh, uint32_t upperThresh, uint8_t bitmask, 
                             ES_Event thisEvent);
 
  
+/**
+ * @Function TS_GetCurrentSensors(void)
+ * @param none
+ * @return TRUE or FALSE
+ * @brief ...
+ * @note 
+ * @author David Kooi, Ben Swandon, 2017.10.3 14:08
+ * @modified */
+uint8_t TS_GetCurrentSensors(void){
+    return tapeSensorStatus;
+}
+
+
+
+/**
+ * @Function GetFrontTapeError(void)
+ * @param none
+ * @return TRUE or FALSE
+ * @brief ...
+ * @note 
+ * @author David Kooi, 2017.11.21
+ * @modified */
+int GetFrontTapeError(void){
+    switch(tapeSensorStatus){
+        case(L_ON):
+            return -2;
+        case(LC_ON):
+            return -1;
+        case(C_ON):
+            return 0;
+            break;
+        case(RC_ON):
+            return 1;
+            break;
+        case(R_ON):
+            return 2;
+            break;
+        case(LCR_ON):
+        case(LCR_OFF):
+        case(LR_ON):
+        default:
+            return -10;
+
+    }
+}
+
+
+
 /**
  * @Function InitializeTapeSensors(void)
  * @param none
@@ -51,6 +101,8 @@ void HandleTapeSensorEvent(uint8_t firstRun, uint32_t prevVal, uint32_t currVal,
  * @author David Kooi, 2017.11.21
  * @modified */
 uint8_t InitializeTapeSensors(void){
+    tapeSensorStatus = 0;
+    
     
     // Sensors start as sourcing. (Photo Emitter ) 
     
@@ -227,19 +279,19 @@ void TS_DriveSampling(void){
             // Check Left
             HandleTapeSensorEvent(firstRun, leftSensorVal[TS_VAL_PREV], leftSensorVal[TS_VAL_CURR],
                                   TS_LEFT_LED_PIN, TS_LEFT_ON_TAPE, TS_LEFT_OFF_TAPE, 
-                                  TS_LEFT_LO_THRESH, TS_LEFT_HI_THRESH, thisEvent);
+                                  TS_LEFT_LO_THRESH, TS_LEFT_HI_THRESH, TS_leftBitmask, thisEvent);
             // Check Right
             HandleTapeSensorEvent(firstRun, rightSensorVal[TS_VAL_PREV], rightSensorVal[TS_VAL_CURR],
                                   TS_RIGHT_LED_PIN, TS_RIGHT_ON_TAPE, TS_RIGHT_OFF_TAPE, 
-                                  TS_RIGHT_LO_THRESH, TS_RIGHT_HI_THRESH, thisEvent);
+                                  TS_RIGHT_LO_THRESH, TS_RIGHT_HI_THRESH, TS_rightBitmask, thisEvent);
             // Check Center
             HandleTapeSensorEvent(firstRun, centerSensorVal[TS_VAL_PREV], centerSensorVal[TS_VAL_CURR],
                                   TS_CENTER_LED_PIN, TS_CENTER_ON_TAPE, TS_CENTER_OFF_TAPE, 
-                                  TS_CENTER_LO_THRESH, TS_CENTER_HI_THRESH, thisEvent);
+                                  TS_CENTER_LO_THRESH, TS_CENTER_HI_THRESH, TS_centerBitmask, thisEvent);
             // Check Rear
             HandleTapeSensorEvent(firstRun, rearSensorVal[TS_VAL_PREV], rearSensorVal[TS_VAL_CURR],
                                   TS_REAR_LED_PIN, TS_REAR_ON_TAPE, TS_REAR_OFF_TAPE,
-                                  TS_REAR_LO_THRESH, TS_REAR_HI_THRESH, thisEvent);
+                                  TS_REAR_LO_THRESH, TS_REAR_HI_THRESH, TS_centerBitmask | TS_leftBitmask | TS_rightBitmask, thisEvent);
             
             // Set prev values
             leftSensorVal[TS_VAL_PREV]   = leftSensorVal[TS_VAL_CURR];
@@ -273,7 +325,7 @@ void TS_DriveSampling(void){
  * @modified */
 void HandleTapeSensorEvent(uint8_t firstRun, uint32_t prevVal, uint32_t currVal, 
                             uint32_t ledPin, uint16_t ON_TAPE_EVENT, uint16_t OFF_TAPE_EVENT,
-                            uint32_t lowerThresh, uint32_t upperThresh,
+                            uint32_t lowerThresh, uint32_t upperThresh, uint8_t bitmask,
                             ES_Event thisEvent){
 
     static uint8_t port = 0;
@@ -287,11 +339,13 @@ void HandleTapeSensorEvent(uint8_t firstRun, uint32_t prevVal, uint32_t currVal,
     if      (prevVal < upperThresh && currVal > upperThresh){
         thisEvent.EventType = OFF_TAPE_EVENT;
         IO_SOURCE(port, ledPin); //Turn LED OFF
+        tapeSensorStatus &= ~bitmask; // Turn the bit off
     }
     // On tape event
     else if(prevVal > lowerThresh && currVal < lowerThresh){
         thisEvent.EventType = ON_TAPE_EVENT;
         IO_SINK(port, ledPin); // Turn LED ON
+        tapeSensorStatus |= bitmask; // Turn the bit on
     }else{
         // Nothing to do
         return;
