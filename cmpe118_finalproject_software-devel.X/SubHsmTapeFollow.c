@@ -141,7 +141,7 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
             case TS_CENTER_OFF_TAPE:
             case TS_RIGHT_ON_TAPE:
             case TS_RIGHT_OFF_TAPE:
-                SetForwardSpeed((3000 * MAX_FORWARD_SPEED) / 2000);
+                SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
                 // Get the status of all front sensors:
                 TsFrontStatus frontSensors = LCR_ON & TS_GetCurrentSensors(); // (b0b111 = 0bLCR)
                 switch(frontSensors) {
