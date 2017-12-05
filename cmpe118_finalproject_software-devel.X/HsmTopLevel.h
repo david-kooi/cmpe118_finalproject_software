@@ -10,6 +10,12 @@
 
 #include "ES_Configure.h"
 
+#define SWITCH_STATE(s) do{\
+            nextState = s;\
+            makeTransition = TRUE;\
+            ThisEvent.EventType = ES_NO_EVENT;\
+        } while(0)
+
 uint8_t InitHsmTopLevel(uint8_t priority);
 
 uint8_t PostHsmTopLevel(ES_Event thisEvent);

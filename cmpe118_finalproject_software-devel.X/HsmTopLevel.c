@@ -15,12 +15,6 @@
 //#include sub-sm's here
 #include <stdio.h>
 
-#define SWITCH_STATE(s) do{\
-            nextState = s;\
-            makeTransition = TRUE;\
-            ThisEvent.EventType = ES_NO_EVENT;\
-        } while(0)
-
 typedef enum {
     INIT,
     STARTUP,
@@ -69,6 +63,20 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             }
             break;
         case STARTUP:
+            // Look for beacon
+            
+            switch(ThisEvent.EventType){
+                case TS_REAR_ON_TAPE:
+                    
+                    
+                    
+                    break;
+                default:
+                    break;
+                
+                
+            }
+            
             break;
         case DESTROYING_ATM6:
             break;
