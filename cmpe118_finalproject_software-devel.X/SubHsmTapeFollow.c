@@ -32,6 +32,7 @@
 #include "BOARD.h"
 #include "HsmTopLevel.h"
 #include "SubHsmTapeFollow.h"
+#include "TapeSensorEventChecker.h"
 #include <stdio.h>
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -134,7 +135,45 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
 
     case REAR_ON_STATE: // in the first state, replace this with correct names
         switch (ThisEvent.EventType) {
-
+            case TS_LEFT_ON_TAPE:
+            case TS_LEFT_OFF_TAPE:
+            case TS_CENTER_ON_TAPE:
+            case TS_CENTER_OFF_TAPE:
+            case TS_RIGHT_ON_TAPE:
+            case TS_RIGHT_OFF_TAPE:
+                SetForwardSpeed((3000 * MAX_FORWARD_SPEED) / 2000);
+                // Get the status of all front sensors:
+                TsFrontStatus frontSensors = LCR_ON & TS_GetCurrentSensors(); // (b0b111 = 0bLCR)
+                switch(frontSensors) {
+                    case LCR_OFF:
+                        SetForwardSpeed((1000 * MAX_FORWARD_SPEED) / 2000);
+                        SetTurnRadius(MIN_TURN_RADIUS); // Turn Left
+//                    case LR_ON:
+//                        break;
+                        break;
+                    case L_ON:
+                        SetTurnRadius(6*MIN_TURN_RADIUS); // Turn Left
+                        break;
+                    case LC_ON:
+                        SetTurnRadius(8*MIN_TURN_RADIUS);
+                        break;
+                    case C_ON:
+                        SetTurnRadius(PLUS_INFINITY);
+                        break;
+                    case RC_ON:
+                        SetTurnRadius(-8*MIN_TURN_RADIUS);
+                        break;
+                    case R_ON:
+                        SetTurnRadius(-6*MIN_TURN_RADIUS);
+                        break;
+//                    case LCR_ON:
+//                        SetForwardSpeed(0); //This shouldn't happen
+//                        break;
+                    default:
+                        printf("Unexpected front tape sensor state!\r\n");
+                        break;
+                }
+                break;
                 
             case ES_NO_EVENT:
             default: // all unhandled events pass the event back up to the next level

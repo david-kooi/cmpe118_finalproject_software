@@ -30,7 +30,7 @@ void main(void)
     PWM_Init();
     
     //TestADCPins(); // Cycles through and prints values from pins forever
-    //Stepper_Test(100, 100);
+//    Stepper_Test(300, 300);
   
     /* Initialize Event Checkers */
     

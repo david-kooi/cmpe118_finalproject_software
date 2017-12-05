@@ -31,7 +31,7 @@
 // HALF_TRACKWIDTH = trackwidth/2 [milli-inches]
 #define HALF_TRACKWIDTH 4450
 // MIN_TURN_RADIUS = tightest turn we can make. More gradual turns = faster robot.
-#define MIN_TURN_RADIUS 4450
+#define MIN_TURN_RADIUS 3000
 // Kv = speed-voltage conversion constant [milli-inches/s per volt]
 #define Kv 2727
 // MAX_VOLTAGE = highest voltage [mV] we want to apply to the motors.

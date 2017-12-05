@@ -291,7 +291,7 @@ void TS_DriveSampling(void){
             // Check Rear
             HandleTapeSensorEvent(firstRun, rearSensorVal[TS_VAL_PREV], rearSensorVal[TS_VAL_CURR],
                                   TS_REAR_LED_PIN, TS_REAR_ON_TAPE, TS_REAR_OFF_TAPE,
-                                  TS_REAR_LO_THRESH, TS_REAR_HI_THRESH, TS_centerBitmask | TS_leftBitmask | TS_rightBitmask, thisEvent);
+                                  TS_REAR_LO_THRESH, TS_REAR_HI_THRESH, 0x0, thisEvent);
             
             // Set prev values
             leftSensorVal[TS_VAL_PREV]   = leftSensorVal[TS_VAL_CURR];

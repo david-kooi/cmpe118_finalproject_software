@@ -138,7 +138,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 //TS_StartSampling();
                 
                 // Restart Timer
-                ES_Timer_InitTimer(HZ_20_TIMER, 50); //50 ms 
+                ES_Timer_InitTimer(HZ_20_TIMER, 20); //50 ms 
                 break;
    
             //case HZ_500_TIMER:
