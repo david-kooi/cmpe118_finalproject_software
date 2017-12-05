@@ -4,10 +4,10 @@
 *.log
 *.d
 *.elf
-*.map
-*.xml
-*.properties
+
+
+
 
 cmpe118_finalproject_software-devel.X/build/*
 cmpe118_finalproject_software-devel.X/dist/*
-cmpe118_finalproject_software-devel.X/nbproject/*
+
