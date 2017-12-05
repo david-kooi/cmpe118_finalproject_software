@@ -57,8 +57,8 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case INIT:
             if (ThisEvent.EventType == ES_INIT) {
                 EnableDriveMotors();
-                SetForwardSpeed(MAX_FORWARD_SPEED);
-                SetTurningSpeed(0);
+                SetForwardSpeed(0);
+                SetTurningSpeed(180);
                 SWITCH_STATE(STARTUP);
             }
             break;
