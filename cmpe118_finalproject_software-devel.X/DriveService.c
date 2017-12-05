@@ -209,7 +209,7 @@ void InitHeadingTimer(int32_t degrees) {
 
 void setMotors(int32_t forwardSpeed, int32_t turningSpeed) {
     batteryVoltage = GetBatteryVoltage();
-    printf("Batt: %d\r\n", batteryVoltage);
+    //printf("Batt: %d\r\n", batteryVoltage);
     int32_t leftSpeed = forwardSpeed - ((turningSpeed * HALF_TRACKWIDTH) / 1000);
     int32_t rightSpeed = forwardSpeed + ((turningSpeed * HALF_TRACKWIDTH) / 1000);
     int32_t leftVoltage = (LEFT_BIAS * leftSpeed) / Kv;

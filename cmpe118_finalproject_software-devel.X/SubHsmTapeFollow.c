@@ -31,7 +31,7 @@
 #include "ES_Framework.h"
 #include "BOARD.h"
 #include "HsmTopLevel.h"
-#include "TapeFollowSubHSM.h"
+#include "SubHsmTapeFollow.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -42,8 +42,8 @@ typedef enum {
 } TapeFollowSubHSMState_t;
 
 static const char *StateNames[] = {
-    "INIT_STATE",
-    "REAR_STATE",
+	"INIT_STATE",
+	"REAR_STATE",
 };
 
 
@@ -60,7 +60,7 @@ static const char *StateNames[] = {
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
 
-static TapeFollowSubHSMState_t CurrentState = INIT;
+static TapeFollowSubHSMState_t CurrentState = INIT_STATE;
 static uint8_t MyPriority;
 
 
@@ -124,7 +124,7 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
             
             
             // now put the machine into the actual initial state
-            SWITCH_STATE(SubFirstState);
+            SWITCH_STATE(REAR_STATE);
         }
         break;
 
