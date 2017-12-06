@@ -32,6 +32,7 @@
 #include "BOARD.h"
 #include "HsmTopLevel.h"
 #include "SubHsmTrackWireAlign.h"
+#include <stdio.h>
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *

@@ -10,16 +10,16 @@
 
 #include <stdint.h>
 
-typedef struct {
-    int32_t v;
-    int32_t vDot;
-    int32_t w;
-    int32_t wDot;
+typedef struct motion {
+    int16_t v;
+    int16_t vDot;
+    int16_t w;
+    int16_t wDot;
 } MotionState;
 
-typedef struct {
+typedef struct traj {
     uint16_t length;
-    MotionState *motionState;
+    MotionState motionState[];
 } Trajectory;
 
 Trajectory DriveForward10 = {
@@ -74,7 +74,7 @@ Trajectory DriveForward10 = {
     {103, -2940, 0, 0},
     {10, -980, 0, 0},
     {0, 0, 0, 0}}
-}
+};
 
 
 #endif

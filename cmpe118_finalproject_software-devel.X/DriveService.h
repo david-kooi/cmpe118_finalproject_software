@@ -61,6 +61,6 @@ void setRightMotor(int32_t voltage);
 void setLeftMotor(int32_t voltage);
 void InitDistanceTimer(int32_t mInches);
 void InitHeadingTimer(int32_t degrees);
-uint8_t InitTrajectory(Trajectory t)
+uint8_t InitTrajectory(Trajectory t);
 
 #endif  /* DRIVESUBSM_H */
