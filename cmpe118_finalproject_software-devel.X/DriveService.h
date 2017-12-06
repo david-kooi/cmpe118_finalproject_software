@@ -25,7 +25,7 @@
 #define DRIVE_DIRECTION_PORT PORTY
 #define DRIVE_PWM_FREQ PWM_10KHZ
 #define LEFT_BIAS 1000              // Out of 1000
-#define RIGHT_BIAS 835              // Out of 1000
+#define RIGHT_BIAS 850              // Out of 1000
 
 // TRACKWIDTH = distance between wheels [milli-inches]
 #define TRACKWIDTH 8900
@@ -40,8 +40,8 @@
 //#define Kv 1540
 //#define Ka 1000 // perfect 90, pretty good 180
 //#define Ke 7610
-#define Kv 1900
-#define Ka 25000 
+#define Kv 1950
+#define Ka 9000 
 #define Kw 1600 // pretty good 90, pretty good 180
 #define Ke 8000
 //#define Kw 1545 // pretty good 90, pretty good 180
