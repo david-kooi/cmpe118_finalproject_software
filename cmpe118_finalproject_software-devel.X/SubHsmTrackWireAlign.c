@@ -148,8 +148,8 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent)
         rightValue = TW_GetRightReading();
         leftValue  = TW_GetLeftReading();
         
-        printf("RIGHT %d\r\n", rightValue);
-        printf("LEFT %d\r\n", leftValue);
+//        printf("RIGHT %d\r\n", rightValue);
+//        printf("LEFT %d\r\n", leftValue);
         
         // Shifted Right 
         if(leftValue > 500 && rightValue < 100){

@@ -31,7 +31,7 @@ uint8_t RightTrackWireCheck(void){
     ES_EventTyp_t curEvent;
     
     rightADCReading = AD_ReadADPin(TW_RIGHT_ADC); //------------------------------------------------edit
-    TWIRE_PRINT("RIGHT TWIRE: %d", rightADCReading);        
+//    TWIRE_PRINT("RIGHT TWIRE: %d", rightADCReading);        
     
     if((rightADCReading < TRACKWIRE_IN_SIGHT_THRESHOLD)&&(leftADCReading < TRACKWIRE_IN_SIGHT_THRESHOLD)){ //check if the ATM6 is off to trigger a ATM6 Killed event below
        curEvent = TW_OFF;
@@ -77,7 +77,7 @@ uint8_t LeftTrackWireCheck(void){
     ES_EventTyp_t curEvent;
     
     leftADCReading = AD_ReadADPin(TW_LEFT_ADC); //------------------------------------------------edit
-    TWIRE_PRINT("LEFT TWIRE: %d", leftADCReading);        
+//    TWIRE_PRINT("LEFT TWIRE: %d", leftADCReading);        
         
     if((leftADCReading < TRACKWIRE_IN_SIGHT_THRESHOLD)&&(rightADCReading < TRACKWIRE_IN_SIGHT_THRESHOLD)){ //check if the ATM6 is off to trigger a ATM6 Killed event below
         curEvent = TW_OFF;

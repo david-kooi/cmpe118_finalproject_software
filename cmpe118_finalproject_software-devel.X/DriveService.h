@@ -10,7 +10,7 @@
 
 #include "ES_Configure.h"
 #include "IO_Ports.h"
-#include "stdint.h"
+#include <stdint.h>
 #include "pwm.h"
 #include "Trajectory.h"
 
@@ -23,18 +23,23 @@
 #define DRIVE_DIRECTION_B PIN5      // Digital Out
 #define DRIVE_DIRECTION_A PIN3      // Digital Out
 #define DRIVE_DIRECTION_PORT PORTY
-#define DRIVE_PWM_FREQ PWM_1KHZ
-#define LEFT_BIAS 1100              // Out of 1000
-#define RIGHT_BIAS 900              // Out of 1000
+#define DRIVE_PWM_FREQ PWM_10KHZ
+#define LEFT_BIAS 1000              // Out of 1000
+#define RIGHT_BIAS 800              // Out of 1000
 
 // TRACKWIDTH = distance between wheels [milli-inches]
 #define TRACKWIDTH 8900
 // HALF_TRACKWIDTH = trackwidth/2 [milli-inches]
 #define HALF_TRACKWIDTH 4450
 // MIN_TURN_RADIUS = tightest turn we can make. More gradual turns = faster robot.
-#define MIN_TURN_RADIUS 3000
+#define MIN_TURN_RADIUS 4450
 // Kv = speed-voltage conversion constant [milli-inches/s per volt]
-#define Kv 2727
+#define Kv 1545
+#define Ka 1000
+#define Ke 7600
+//#define Kv 1480
+//#define Ka 1000
+//#define Ke 7600
 // MAX_VOLTAGE = highest voltage [mV] we want to apply to the motors.
 #define MAX_VOLTAGE 9000
 // MAX_WHEEL_SPEEED units = [milli-inches/s]. Comes out to ~19 in/s @ 7V.

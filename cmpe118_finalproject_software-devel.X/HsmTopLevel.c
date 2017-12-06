@@ -17,6 +17,10 @@
 #include "SubHsmTrackWireAlign.h"
 #include <stdio.h>
 
+#include "Trajectory.h"
+extern Trajectory pivot180degrees;
+extern Trajectory pivot90degrees;
+
 typedef enum {
     INIT,
     STARTUP,
@@ -57,11 +61,11 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
     }
     
     
-    
     switch (CurrentState) {
         case INIT:
             if (ThisEvent.EventType == ES_INIT) {
                 EnableDriveMotors();
+                printf("here\r\n");
 //                SetForwardSpeed(MAX_FORWARD_SPEED);
 //                SetTurningSpeed(0);
                 
@@ -72,14 +76,14 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             }
             
             
-            ON_EXIT{
+            ON_EXIT {
                 //InitTapeFollowSubHSM();
-                InitTrackWireAlignSubHSM();
+//                InitTrackWireAlignSubHSM();
             }
             break;
         case STARTUP:
             //RunTapeFollowSubHSM(ThisEvent);
-          RunTrackWireAlignSubHSM(ThisEvent);
+//          RunTrackWireAlignSubHSM(ThisEvent);
             
 //            switch(ThisEvent.EventType){
 //                    
@@ -87,7 +91,11 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
 //                    break;
 //            }
             
-            
+
+            ON_ENTRY {
+                InitTrajectory(pivot180degrees);
+            }
+
             break;
         case DESTROYING_ATM6:
             break;

@@ -136,7 +136,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 RightTrackWireCheck();
                 LeftTrackWireCheck();
                 
-                PostHsmTopLevel(ThisEvent); // Provide a periodic signal
+                //PostHsmTopLevel(ThisEvent); // Provide a periodic signal
                                 
                 // Restart Timer
                 ES_Timer_InitTimer(HZ_50_TIMER, 20); //50 hz
