@@ -93,7 +93,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             
 
             ON_ENTRY {
-                InitTrajectory(pivot180degrees);
+                InitTrajectory(pivot90degrees);
             }
 
             break;
