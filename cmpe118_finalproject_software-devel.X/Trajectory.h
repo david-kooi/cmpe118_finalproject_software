@@ -19,7 +19,7 @@ typedef struct {
 
 typedef struct {
     uint16_t length;
-    MotionState *MotionState;
+    MotionState *motionState;
 } Trajectory;
 
 Trajectory DriveForward10 = {

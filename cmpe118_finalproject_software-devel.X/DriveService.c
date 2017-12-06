@@ -12,6 +12,7 @@
 #include "BatteryEventChecker.h"
 #include "pwm.h"
 #include "AD.h"
+#include "Trajectory.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -34,6 +35,9 @@ static int32_t timerDistance;           // [micro-inches]
 static int32_t timerHeading;            // [micro-radians]
 static int32_t timeoutDistance;         // [micro-inches]
 static int32_t timeoutHeading;          // [micro-radians]
+
+static uint16_t trajectoryIndex;
+static Trajectory activeTrajectory;
 
 typedef enum {
     DISABLED,
@@ -85,18 +89,24 @@ ES_Event RunDriveService(ES_Event thisEvent){
                         actualTurningSpeed = 0;
                     break;
                     case ENABLED:
-//                        if (newCommand) {
-//                            newCommand = FALSE;
-//                            setMotors(forwardSpeed, turningSpeed);
-//                        }
                         setMotors(forwardSpeed, turningSpeed);
                         actualForwardSpeed = forwardSpeed;
                         actualTurningSpeed = turningSpeed;
                     break;
                     case TRAJECTORY:
-                        // Do trajectory magic
-                        actualForwardSpeed = 0; // fix these too
-                        actualTurningSpeed = 0;
+                        if (trajectoryIndex > activeTrajectory.length) {
+                            controlState = ENABLED;
+                            setMotors(0, 0);
+                            returnEvent.EventType = TRAJECTORY_COMPLETE;
+                            POST_DRIVE_EVENT(returnEvent);
+                        } else {
+                            forwardSpeed = activeTrajectory.motionState[trajectoryIndex].v;
+                            turningSpeed = activeTrajectory.motionState[trajectoryIndex].w;
+                            setMotors(forwardSpeed, turningSpeed);
+                            actualForwardSpeed = forwardSpeed;
+                            actualTurningSpeed = turningSpeed;
+                            ++trajectoryIndex;
+                        }
                     break;
                     default:
                         printf("Illegal drive control state encountered.\r\n");
@@ -243,4 +253,14 @@ void setRightMotor(int32_t voltage) {
     PWM_SetDutyCycle(RIGHT_ENABLE_PIN, dutyCycle);
     
     return;
+}
+
+uint8_t InitTrajectory(Trajectory t) {
+    if (controlState == TRAJECTORY) {
+        return ERROR;
+    }
+    activeTrajectory = t;
+    trajectoryIndex = 0;
+    controlState = TRAJECTORY;
+    return SUCCESS;
 }

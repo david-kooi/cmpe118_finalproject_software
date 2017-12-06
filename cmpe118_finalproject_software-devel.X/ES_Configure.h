@@ -55,6 +55,7 @@ typedef enum {
     // Drive Events
     DISTANCE_TIMEOUT,
     HEADING_TIMEOUT,
+    TRAJECTORY_COMPLETE,
     
     // Bumper events
     FR_BUMPER_ON,
