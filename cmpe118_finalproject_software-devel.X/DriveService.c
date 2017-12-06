@@ -104,8 +104,8 @@ ES_Event RunDriveService(ES_Event thisEvent){
                         } else {
                             forwardSpeed = activeTrajectory.motionState[trajectoryIndex].v;
                             turningSpeed = activeTrajectory.motionState[trajectoryIndex].w;
-                            uint32_t forwardAcc = activeTrajectory.motionState[trajectoryIndex].vDot;
-                            uint32_t turningAcc = activeTrajectory.motionState[trajectoryIndex].wDot;
+                            int32_t forwardAcc = activeTrajectory.motionState[trajectoryIndex].vDot;
+                            int32_t turningAcc = activeTrajectory.motionState[trajectoryIndex].wDot;
 //                            printf("v: %d\t\tw: %d\r\n", forwardSpeed, turningSpeed);
                             setMotion(forwardSpeed, turningSpeed, forwardAcc, turningAcc);
                             actualForwardSpeed = forwardSpeed;
@@ -237,12 +237,12 @@ void setMotors(int32_t forwardSpeed, int32_t turningSpeed) {
 static void setMotion(int32_t forwardSpeed, int32_t turningSpeed, int32_t forwardAcc, int32_t turningAcc) {
     batteryVoltage = GetBatteryVoltage();
     //printf("Batt: %d\r\n", batteryVoltage);
-    int32_t leftSpeed = forwardSpeed - ((turningSpeed * HALF_TRACKWIDTH) / 1000);
-    leftSpeed += (1000*forwardAcc)/Ka - (1000*((turningAcc * HALF_TRACKWIDTH) / (1000*Ke)));
-    int32_t rightSpeed = forwardSpeed + ((turningSpeed * HALF_TRACKWIDTH) / 1000);
-    rightSpeed += (1000*forwardAcc)/Ka + (1000*((turningAcc * HALF_TRACKWIDTH) / (1000*Ke)));
-    int32_t leftVoltage = (LEFT_BIAS * leftSpeed) / Kv;
-    int32_t rightVoltage = (RIGHT_BIAS * rightSpeed) / Kv;
+    int32_t leftSpeed = (1000*forwardSpeed)/Kv - ((turningSpeed * HALF_TRACKWIDTH) / (Kw));
+    leftSpeed += (1000*forwardAcc)/Ka - ((turningAcc * HALF_TRACKWIDTH) / (Ke));
+    int32_t rightSpeed = (1000*forwardSpeed)/Kv + ((turningSpeed * HALF_TRACKWIDTH) / (Kw));
+    rightSpeed += (1000*forwardAcc)/Ka + ((turningAcc * HALF_TRACKWIDTH) / (Ke));
+    int32_t leftVoltage = (LEFT_BIAS * leftSpeed)/1000;
+    int32_t rightVoltage = (RIGHT_BIAS * rightSpeed)/1000;
     setLeftMotor(leftVoltage);
     setRightMotor(rightVoltage);
     return;

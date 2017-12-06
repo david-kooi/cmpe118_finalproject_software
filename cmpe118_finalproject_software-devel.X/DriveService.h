@@ -25,7 +25,7 @@
 #define DRIVE_DIRECTION_PORT PORTY
 #define DRIVE_PWM_FREQ PWM_10KHZ
 #define LEFT_BIAS 1000              // Out of 1000
-#define RIGHT_BIAS 800              // Out of 1000
+#define RIGHT_BIAS 835              // Out of 1000
 
 // TRACKWIDTH = distance between wheels [milli-inches]
 #define TRACKWIDTH 8900
@@ -34,11 +34,17 @@
 // MIN_TURN_RADIUS = tightest turn we can make. More gradual turns = faster robot.
 #define MIN_TURN_RADIUS 4450
 // Kv = speed-voltage conversion constant [milli-inches/s per volt]
-#define Kv 1545
-#define Ka 1000
-#define Ke 7600
-//#define Kv 1480
-//#define Ka 1000
+//#define Kv 1550
+//#define Ka 1000 // on average good, but slightly inconsistent?
+//#define Ke 7595
+//#define Kv 1540
+//#define Ka 1000 // perfect 90, pretty good 180
+//#define Ke 7610
+#define Kv 1900
+#define Ka 25000 
+#define Kw 1600 // pretty good 90, pretty good 180
+#define Ke 8000
+//#define Kw 1545 // pretty good 90, pretty good 180
 //#define Ke 7600
 // MAX_VOLTAGE = highest voltage [mV] we want to apply to the motors.
 #define MAX_VOLTAGE 9000
