@@ -78,7 +78,14 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case STARTUP:
             RunTapeFollowSubHSM(ThisEvent);
             
-            
+            switch(ThisEvent.EventType){
+                case TW_LEFT_IN_SIGHT:
+                case TW_RIGHT_IN_SIGHT:
+                    
+                    break;
+                default:
+                    break;
+            }
             
             
             break;
