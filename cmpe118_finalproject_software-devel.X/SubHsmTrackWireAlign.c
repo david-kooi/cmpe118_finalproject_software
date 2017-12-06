@@ -151,7 +151,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent)
         printf("LEFT %d\r\n", leftValue);
         
         // Shifted Right 
-        if(leftValue > 650 && rightValue < 100){
+        if(leftValue > 500 && rightValue < 100){
             SetForwardSpeed((MAX_FORWARD_SPEED) /2 );
             SetTurningSpeed(90);
         }
@@ -161,8 +161,8 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent)
             SetForwardSpeed(0);
         }
         
-        // Shifted Left
-        else if(leftValue < 100 && rightValue < 10){
+        // Shifte  d Left
+        else if(leftValue > 100 && rightValue < 10){
             SetForwardSpeed((MAX_FORWARD_SPEED) /2 );
             SetTurningSpeed(-90);
         }
