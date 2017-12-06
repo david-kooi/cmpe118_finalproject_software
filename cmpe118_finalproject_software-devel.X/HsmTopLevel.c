@@ -19,8 +19,8 @@
 
 #include "Trajectory.h"
 //extern Trajectory pivot180degrees;
-//extern Trajectory pivot90degrees;
-extern Trajectory step10inches;
+extern Trajectory pivot90degrees;
+//extern Trajectory step10inches;
 //extern Trajectory step5inches;
 
 typedef enum {
@@ -95,10 +95,10 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             
 
             ON_ENTRY {
-//                InitTrajectory(pivot180degrees);
-//                InitTrajectory(pivot90degrees);
-                InitTrajectory(step10inches);
-//                InitTrajectory(step5inches);
+//                InitForwardTrajectory(pivot180degrees);
+//                InitBackwardTrajectory(pivot90degrees);
+                InitBackwardTrajectory(step10inches);
+//                InitForwardTrajectory(step5inches);
             }
 
             break;

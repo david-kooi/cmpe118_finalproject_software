@@ -38,6 +38,7 @@ static int32_t timeoutHeading;          // [micro-radians]
 
 static uint16_t trajectoryIndex;
 static Trajectory activeTrajectory;
+static int32_t sign = 1;
 
 typedef enum {
     DISABLED,
@@ -47,6 +48,7 @@ typedef enum {
 static DriveServiceState controlState;
 
 static void setMotion(int32_t forwardSpeed, int32_t turningSpeed, int32_t forwardAcc, int32_t turningAcc);
+static uint8_t InitTrajectory(Trajectory t);
 
 static uint8_t myPriority;
 
@@ -102,14 +104,14 @@ ES_Event RunDriveService(ES_Event thisEvent){
                             returnEvent.EventType = TRAJECTORY_COMPLETE;
                             POST_DRIVE_EVENT(returnEvent);
                         } else {
-                            forwardSpeed = activeTrajectory.motionState[trajectoryIndex].v;
-                            turningSpeed = activeTrajectory.motionState[trajectoryIndex].w;
-                            int32_t forwardAcc = activeTrajectory.motionState[trajectoryIndex].vDot;
-                            int32_t turningAcc = activeTrajectory.motionState[trajectoryIndex].wDot;
+                            forwardSpeed = sign*activeTrajectory.motionState[trajectoryIndex].v;
+                            turningSpeed = sign*activeTrajectory.motionState[trajectoryIndex].w;
+                            int32_t forwardAcc = sign*activeTrajectory.motionState[trajectoryIndex].vDot;
+                            int32_t turningAcc = sign*activeTrajectory.motionState[trajectoryIndex].wDot;
 //                            printf("v: %d\t\tw: %d\r\n", forwardSpeed, turningSpeed);
                             setMotion(forwardSpeed, turningSpeed, forwardAcc, turningAcc);
-                            actualForwardSpeed = forwardSpeed;
-                            actualTurningSpeed = turningSpeed;
+                            actualForwardSpeed = sign*forwardSpeed;
+                            actualTurningSpeed = sign*turningSpeed;
                             ++trajectoryIndex;
                         }
                     break;
@@ -275,7 +277,7 @@ void setRightMotor(int32_t voltage) {
     return;
 }
 
-uint8_t InitTrajectory(Trajectory t) {
+static uint8_t InitTrajectory(Trajectory t) {
     if (controlState == TRAJECTORY) {
         return ERROR;
     }
@@ -283,4 +285,15 @@ uint8_t InitTrajectory(Trajectory t) {
     trajectoryIndex = 0;
     controlState = TRAJECTORY;
     return SUCCESS;
+}
+
+uint8_t InitForwardTrajectory(Trajectory t) {
+    sign = 1;
+    return InitTrajectory(t);
+}
+
+
+uint8_t InitBackwardTrajectory(Trajectory t) {
+    sign = -1;
+    return InitTrajectory(t);
 }
