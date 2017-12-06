@@ -55,7 +55,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         printf("Battery disconnected, stop everything!\r\n");
     }
     
-    RunTapeFollowSubHSM(ThisEvent);
+    
     
     switch (CurrentState) {
         case INIT:
@@ -65,14 +65,28 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 SetTurningSpeed(0);
                 
                 
-                //InitTapeFollowSubHSM();
+                
                 SWITCH_STATE(STARTUP);
+
+            }
+            
+            
+            ON_EXIT{
+                InitTapeFollowSubHSM();
             }
             break;
         case STARTUP:
+            RunTapeFollowSubHSM(ThisEvent);
             
+            switch(ThisEvent.EventType){
+                case TW_LEFT_IN_SIGHT:
+                case TW_RIGHT_IN_SIGHT:
+                    
+                    break;
+                default:
+                    break;
+            }
             
-
             
             break;
         case DESTROYING_ATM6:

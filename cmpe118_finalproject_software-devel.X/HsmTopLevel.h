@@ -16,6 +16,9 @@
             ThisEvent.EventType = ES_NO_EVENT;\
         } while(0)
 
+#define ON_ENTRY if(ThisEvent.EventType == ES_ENTRY)
+#define ON_EXIT if(ThisEvent.EventType == ES_EXIT)
+
 uint8_t InitHsmTopLevel(uint8_t priority);
 
 uint8_t PostHsmTopLevel(ES_Event thisEvent);
