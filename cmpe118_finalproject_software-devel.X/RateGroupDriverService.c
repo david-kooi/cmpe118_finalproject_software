@@ -69,7 +69,7 @@ uint8_t InitRateGroupDriverService(uint8_t Priority)
     
     // Start all required timers
     ES_Timer_InitTimer(HZ_1_TIMER, 1000);
-    ES_Timer_InitTimer(HZ_20_TIMER, 50);
+    ES_Timer_InitTimer(HZ_50_TIMER, 20);
    // ES_Timer_InitTimer(HZ_500_TIMER, 2);
 
     
@@ -130,16 +130,16 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 break;
                 
                 
-            case HZ_20_TIMER:
+            case HZ_50_TIMER:
                 //DEBUG_PRINT("20HZ TICK");
                 TS_StartSampling();
                 RightTrackWireCheck();
                 LeftTrackWireCheck();
                 
-                //TS_StartSampling();
-                
+                PostHsmTopLevel(ThisEvent); // Provide a periodic signal
+                                
                 // Restart Timer
-                ES_Timer_InitTimer(HZ_20_TIMER, 20); //50 ms 
+                ES_Timer_InitTimer(HZ_50_TIMER, 20); //50 hz
                 break;
    
             //case HZ_500_TIMER:

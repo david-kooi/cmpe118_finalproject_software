@@ -14,6 +14,7 @@
 #include "DriveService.h"
 //#include sub-sm's here
 #include "SubHsmTapeFollow.h"
+#include "SubHsmTrackWireAlign.h"
 #include <stdio.h>
 
 typedef enum {
@@ -61,8 +62,8 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case INIT:
             if (ThisEvent.EventType == ES_INIT) {
                 EnableDriveMotors();
-                SetForwardSpeed(MAX_FORWARD_SPEED);
-                SetTurningSpeed(0);
+//                SetForwardSpeed(MAX_FORWARD_SPEED);
+//                SetTurningSpeed(0);
                 
                 
                 
@@ -72,20 +73,19 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             
             
             ON_EXIT{
-                InitTapeFollowSubHSM();
+                //InitTapeFollowSubHSM();
+                InitTrackWireAlignSubHSM();
             }
             break;
         case STARTUP:
-            RunTapeFollowSubHSM(ThisEvent);
+            //RunTapeFollowSubHSM(ThisEvent);
+          RunTrackWireAlignSubHSM(ThisEvent);
             
-            switch(ThisEvent.EventType){
-                case TW_LEFT_IN_SIGHT:
-                case TW_RIGHT_IN_SIGHT:
-                    
-                    break;
-                default:
-                    break;
-            }
+//            switch(ThisEvent.EventType){
+//                    
+//                default:
+//                    break;
+//            }
             
             
             break;

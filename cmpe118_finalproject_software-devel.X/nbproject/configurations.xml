@@ -41,8 +41,10 @@
       <logicalFolder name="f4" displayName="StateMachines" projectFiles="true">
         <itemPath>HsmTopLevel.h</itemPath>
         <itemPath>SubHsmTapeFollow.h</itemPath>
+        <itemPath>SubHsmTrackWireAlign.h</itemPath>
       </logicalFolder>
       <itemPath>ES_Configure.h</itemPath>
+      <itemPath>Trajectory.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -82,6 +84,7 @@
       <logicalFolder name="f4" displayName="StateMachines" projectFiles="true">
         <itemPath>HsmTopLevel.c</itemPath>
         <itemPath>SubHsmTapeFollow.c</itemPath>
+        <itemPath>SubHsmTrackWireAlign.c.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
     </logicalFolder>
@@ -96,6 +99,7 @@
     <Elem>C:/Users/dkooi/Desktop/Resistance_Brain.X</Elem>
     <Elem>C:\Users\dkooi\Desktop\CMPE118\templates</Elem>
     <Elem>C:\Users\dkooi\Desktop\cmpe118_finalproject_software\cmpe118_finalproject_software-devel.X</Elem>
+    <Elem>.</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

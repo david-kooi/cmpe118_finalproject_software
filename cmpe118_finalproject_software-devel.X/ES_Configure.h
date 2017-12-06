@@ -171,7 +171,7 @@ static const char *EventNames[] = {
 #define DRIVE_TIMER_TICKS 50
 
 #define HZ_1_TIMER     1 /*make sure this is enabled above and posting to the correct state machine*/
-#define HZ_20_TIMER   6
+#define HZ_50_TIMER   6
 #define TS_SYNC_TIMER 15
 
 /****************************************************************************/
@@ -222,7 +222,7 @@ static const char *EventNames[] = {
 // the name of the run function
 #define SERV_2_RUN RunRateGroupDriverService
 // How big should this services Queue be?
-#define SERV_2_QUEUE_SIZE 3
+#define SERV_2_QUEUE_SIZE 5
 #endif
 
 /****************************************************************************/
