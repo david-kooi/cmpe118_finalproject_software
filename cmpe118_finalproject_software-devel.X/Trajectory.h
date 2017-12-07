@@ -20,10 +20,11 @@ typedef struct motion {
 
 typedef struct traj {
     uint16_t length;
-    MotionState motionState[35];
+    MotionState motionState[100];
 } Trajectory;
 
-__attribute__((space(prog))) Trajectory pivot180degrees = {
+
+__attribute__((space(prog))) Trajectory pivot180Degrees = {
 	34,
 	{{0, 0, 0, 0},
 	{0, 0, 54, 1978},
@@ -60,7 +61,7 @@ __attribute__((space(prog))) Trajectory pivot180degrees = {
 	{0, 0, 0, 0}}
 } ;
 
-__attribute__((space(prog))) Trajectory pivot90degrees = {
+__attribute__((space(prog))) Trajectory pivot90Degrees = {
 	23,
 	{{0, 0, 0, 0},
 	{0, 0, 54, 1977},
@@ -87,34 +88,8 @@ __attribute__((space(prog))) Trajectory pivot90degrees = {
 	{0, 0, 0, 0}}
 };
 
-__attribute__((space(prog))) Trajectory minusPivot90degrees = {
-    23,
-	{{0, 0, 0, 0},
-	{0, 0, 54, 1977},
-	{0, 0, 208, 3954},
-	{0, 0, 460, 5930},
-	{0, 0, 810, 7907},
-	{0, 0, 1260, 9884},
-	{0, 0, 1767, 9489},
-	{0, 0, 2187, 7512},
-	{0, 0, 2509, 5535},
-	{0, 0, 2731, 3558},
-	{0, 0, 2855, 1581},
-	{0, 0, 2881, -198},
-	{0, 0, 2817, -2174},
-	{0, 0, 2654, -4151},
-	{0, 0, 2392, -6128},
-	{0, 0, 2031, -8105},
-	{0, 0, 1572, -10082},
-	{0, 0, 1068, -9291},
-	{0, 0, 658, -7314},
-	{0, 0, 347, -5337},
-	{0, 0, 134, -3361},
-	{0, 0, 21, -1384},
-	{0, 0, 0, 0}}
-};
 
-__attribute__((space(prog)))Trajectory step10inches = {
+__attribute__((space(prog)))Trajectory step10Inches = {
 	29,
 	{{0, 0, 0, 0},
 	{205, 7470, 0, 0},
@@ -147,7 +122,25 @@ __attribute__((space(prog)))Trajectory step10inches = {
 	{0, 0, 0, 0}}
 };
 
-__attribute__((space(prog)))Trajectory step5inches = {
+__attribute__((space(prog)))Trajectory step2Inches = {
+	14,
+	{{0, 0, 0, 0},
+	{546, 19871, 0, 0},
+	{1937, 29806, 0, 0},
+	{3428, 29806, 0, 0},
+	{4918, 29806, 0, 0},
+	{6200, 17884, 0, 0},
+	{6557, 0, 0, 0},
+	{6110, -17884, 0, 0},
+	{4769, -29806, 0, 0},
+	{3279, -29806, 0, 0},
+	{1788, -29806, 0, 0},
+	{447, -19871, 0, 0},
+	{0, 0, 0, 0}}
+};
+
+
+__attribute__((space(prog)))Trajectory step5Inches = {
 	22,
 	{{0, 0, 0, 0},
 	{205, 7440, 0, 0},
@@ -172,5 +165,7 @@ __attribute__((space(prog)))Trajectory step5inches = {
 	{134, -6696, 0, 0},
 	{0, 0, 0, 0}}
 };
+
+
 
 #endif

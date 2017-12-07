@@ -135,6 +135,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 TS_StartSampling();
                 RightTrackWireCheck();
                 LeftTrackWireCheck();
+                CheckBumpers();
                 
                 //PostHsmTopLevel(ThisEvent); // Provide a periodic signal
                                 

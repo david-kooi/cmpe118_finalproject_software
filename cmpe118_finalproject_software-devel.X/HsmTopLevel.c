@@ -10,18 +10,21 @@
 #include "roach.h"
 #include "ES_Configure.h"
 #include "ES_Framework.h"
+ 
 #include "HsmTopLevel.h"
+#include "serial.h"
 #include "DriveService.h"
+#include "Trajectory.h"
 //#include sub-sm's here
 #include "SubHsmTapeFollow.h"
 #include "SubHsmTrackWireAlign.h"
 #include <stdio.h>
 
-#include "Trajectory.h"
-//extern Trajectory pivot180degrees;
-//extern Trajectory pivot90degrees;
-extern Trajectory step10inches;
-//extern Trajectory step5inches;
+
+extern Trajectory pivot90Degrees;
+extern Trajectory pivot180Degrees;
+extern Trajectory step2Inches;
+
 
 typedef enum {
     INIT,
@@ -32,15 +35,16 @@ typedef enum {
 } TopLevelState;
 
 static const char *StateNames[] = {
-    "TOP_INIT",
-    "TOP_STRT",
+    "INIT",
+    "STARTUP",
     "TOP_ATM6",
-    "TOP_REN",
-    "TOP_IDLE",
+    "DESTROYING_ATM6",
+    "DESTROYING_REN",
+    "IDLE",
+    
 };
 
 static TopLevelState CurrentState;
-
 static uint8_t myPriority;
 
 uint8_t InitHsmTopLevel(uint8_t priority) {
@@ -66,56 +70,45 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
     switch (CurrentState) {
         case INIT:
             if (ThisEvent.EventType == ES_INIT) {
+                printf("Initializing Top Level State Machine\r\n");
                 EnableDriveMotors();
-                printf("here\r\n");
 //                SetForwardSpeed(MAX_FORWARD_SPEED);
 //                SetTurningSpeed(0);
                 
-                
-                
+
                 SWITCH_STATE(STARTUP);
 
             }
             
-            
             ON_EXIT {
-                //InitTapeFollowSubHSM();
+                
             }
             break;
         case STARTUP:
             ON_ENTRY {
-                InitTrajectory(pivot90degrees);
-                 //InitTrajectory(minusPivot90degrees);
                 
-                //InitTrajectory(pivot180degrees);
-//                InitTrajectory(step5inches);
+                InitTrajectory(pivot90Degrees);
+                //SWITCH_STATE(DESTROYING_ATM6);
             }
+            switch(ThisEvent.EventType){
+                case TRAJECTORY_COMPLETE:
+                    InitTrajectory(pivot180Degrees);
+            }
+                    
 
-            
             
             
             ON_EXIT{
+                InitTapeFollowSubHSM();
             }
-            //SWITCH_STATE(IDLE);
-            
-            
-//          RunTrackWireAlignSubHSM(ThisEvent);
-            
-//            switch(ThisEvent.EventType){
-//                    
-//                default:
-//                    break;
-//            }
-            
-
-
             break;
         case DESTROYING_ATM6:
             RunTapeFollowSubHSM(ThisEvent);
+            
             switch(ThisEvent.EventType){
                 case TW_LEFT_TOUCHING:
                     SetForwardSpeed(0);
-                    InitTrajectory(pivot90degrees);
+                    
                     break;
                 
             }
@@ -124,16 +117,23 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             break;
         case DESTROYING_REN:
             break;
-        default:
-            break;
         case IDLE:
             DisableDriveMotors();
             break;
+    
+        default:
+            break;
     }
     if (makeTransition) {
+        printf("Make Transistion\r\n");
+        IsTransmitEmpty();
         RunHsmTopLevel(EXIT_EVENT);
+        printf("After EXIT_EVENT\r\n");
+        IsTransmitEmpty();
         CurrentState = nextState;
         RunHsmTopLevel(ENTRY_EVENT);
+        printf("After ENTRY_EVENT\r\n");
+        IsTransmitEmpty();
     }
     ES_Tail();
     return ThisEvent;

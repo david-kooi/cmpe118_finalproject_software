@@ -71,13 +71,15 @@ static uint8_t currentBumperStates = 0x00; // Initialize in InitializeBumperEven
 uint8_t ReadBumpers(){
     uint8_t bumperState = 0;
     
-    uint16_t portState = IO_PortsReadPort(PORTZ);
+    uint16_t portState = IO_PortsReadPort(PORTY);
+    
+    //printf("PORT STATE: 0x%x\r\n",portState);
     
     // If the BUMPER_PIN is greater than 0, toggle the bumperState bit. Else, do nothing
-    (portState & RR_BUMPER_PIN) ? (bumperState ^= RR_BUMPER_MASK) : (bumperState = bumperState);
-    (portState & RL_BUMPER_PIN) ? (bumperState ^= RL_BUMPER_MASK) : (bumperState = bumperState);
-    (portState & FR_BUMPER_PIN) ? (bumperState ^= FR_BUMPER_MASK) : (bumperState = bumperState);
-    (portState & FL_BUMPER_PIN) ? (bumperState ^= FL_BUMPER_MASK) : (bumperState = bumperState);
+    (~portState & RR_BUMPER_PIN) ? (bumperState ^= RR_BUMPER_MASK) : (bumperState = bumperState);
+    (~portState & RL_BUMPER_PIN) ? (bumperState ^= RL_BUMPER_MASK) : (bumperState = bumperState);
+    (~portState & FR_BUMPER_PIN) ? (bumperState ^= FR_BUMPER_MASK) : (bumperState = bumperState);
+    (~portState & FL_BUMPER_PIN) ? (bumperState ^= FL_BUMPER_MASK) : (bumperState = bumperState);
 
     return bumperState;
 }
@@ -95,7 +97,6 @@ uint8_t ReadBumpers(){
  * @modified */
 uint8_t CheckSpecificBumper(BumperState_t* bumperState); // Forward Declare
 uint8_t CheckBumpers(void) {  
-    return 0; // Return until ReadBumpers function is created
     
     // TODO: Create ReadBumpersFunction
     
@@ -164,7 +165,7 @@ uint8_t CheckSpecificBumper(BumperState_t* bumperState){
             #ifdef TEST_HARNESS_SERVICE_TEST           // keep this as is for test harness
                 PostTestHarnessService(thisEvent);
             #else
-                //PostHSM(thisEvent);
+                PostHsmTopLevel(thisEvent);
             #endif   
                 return TRUE;
             

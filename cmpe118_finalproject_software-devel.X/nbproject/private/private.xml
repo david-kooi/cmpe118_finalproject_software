@@ -3,13 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/jwloughb/MPLABXProjects/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/TapeSensorEventChecker.c</file>
-            <file>file:/C:/Users/jwloughb/MPLABXProjects/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/SubHsmTapeFollow.h</file>
-            <file>file:/C:/Users/jwloughb/MPLABXProjects/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/TapeSensorEventChecker.h</file>
-            <file>file:/C:/Users/jwloughb/MPLABXProjects/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/DriveService.h</file>
-            <file>file:/C:/Users/jwloughb/MPLABXProjects/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/ES_Configure.h</file>
-            <file>file:/C:/Users/jwloughb/MPLABXProjects/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/DriveService.c</file>
-            <file>file:/C:/Users/jwloughb/MPLABXProjects/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/SubHsmTapeFollow.c</file>
+            <file>file:/C:/Users/dkooi/Desktop/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/TrackWireEventChecker.c</file>
+            <file>file:/C:/Users/dkooi/Desktop/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/Trajectory.h</file>
+            <file>file:/C:/Users/dkooi/Desktop/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/main.c</file>
+            <file>file:/C:/Users/dkooi/Desktop/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/ES_Configure.h</file>
+            <file>file:/C:/CMPE118/Trajectory.c</file>
+            <file>file:/C:/Users/dkooi/Desktop/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/DriveService.h</file>
+            <file>file:/C:/Users/dkooi/Desktop/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/HsmTopLevel.c</file>
+            <file>file:/C:/Users/dkooi/Desktop/cmpe118_finalproject_software/cmpe118_finalproject_software-devel.X/DriveService.c</file>
         </group>
     </open-files>
 </project-private>
