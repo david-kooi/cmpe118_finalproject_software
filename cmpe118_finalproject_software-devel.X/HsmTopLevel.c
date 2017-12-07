@@ -19,6 +19,7 @@
 #include "SubHsmTapeFollow.h"
 #include "SubHsmTrackWireAlign.h"
 #include <stdio.h>
+#include "Elevator.h"
 
 
 extern Trajectory pivot90Degrees;
@@ -85,7 +86,8 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 
                 //                SetForwardSpeed(MAX_FORWARD_SPEED);
                 //                SetTurningSpeed(0);
-
+                InitElevator();
+                LiftToAtM6();
 
                 SWITCH_STATE(STARTUP);
 
@@ -98,7 +100,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case STARTUP:
             ON_ENTRY
         {
-            InitTrackWireAlignSubHSM();
+//            InitTrackWireAlignSubHSM();
             
             //SWITCH_STATE(DESTROYING_ATM6);
         }
