@@ -134,7 +134,6 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
 
     case REAR_ON_STATE: // in the first state, replace this with correct names
         switch (ThisEvent.EventType) {
-            case TW_OFF:
             case TS_LEFT_ON_TAPE:
             case TS_LEFT_OFF_TAPE:
             case TS_CENTER_ON_TAPE:
@@ -175,11 +174,7 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
                         break;
                 }
                 break;
-            // Stop motors for track wire sensor
-            case TW_LEFT_IN_SIGHT:
-            case TW_RIGHT_IN_SIGHT:
-                    StopDrive();
-                    break;
+
                 
             case ES_NO_EVENT:
             default: // all unhandled events pass the event back up to the next level

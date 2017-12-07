@@ -204,30 +204,22 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
             ON_ENTRY
         {
             maneuverStep = 1;
-            InitForwardTrajectory(step5Inches);
+            InitBackwardTrajectory(pivot45Degrees);
         }
             if (ThisEvent.EventType == TRAJECTORY_COMPLETE) {
                 switch (maneuverStep) {
                     case 1:
-                        InitBackwardTrajectory(pivot90Degrees);
+                        InitForwardTrajectory(step5Inches);
                         break;
                     case 2:
-                        InitForwardTrajectory(step5Inches);
+                        InitForwardTrajectory(pivot135Degrees);
                         break;
                     case 3:
                         InitForwardTrajectory(step5Inches);
                         break;
                     case 4:
-                        InitForwardTrajectory(pivot90Degrees);
-                        break;
-                    case 5:
-                        InitForwardTrajectory(pivot90Degrees);
-                        break;
-                    case 6:
-                        InitForwardTrajectory(step5Inches);
-                        break;
-                    case 7:
-                        SWITCH_STATE(ORIENT_STATE_LEFT);
+                        StopDrive();
+                        //SWITCH_STATE(ORIENT_STATE_LEFT);
                         break;
                     default:
                         break;

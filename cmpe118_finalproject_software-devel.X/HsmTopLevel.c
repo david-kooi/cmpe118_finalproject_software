@@ -33,6 +33,11 @@ typedef enum {
     IDLE,
 } TopLevelState;
 
+typedef enum{
+    AT_TAPE_FOLLOW,
+    AT_ALIGN_MANUVER,
+} ATM6State;
+
 static const char *StateNames[] = {
     "INIT",
     "STARTUP",
@@ -67,6 +72,9 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         printf("Battery disconnected, stop everything!\r\n");
     }
     
+    
+    static ATM6State ATM6_STATE = AT_TAPE_FOLLOW;
+    
     ThisEvent = RunTrackWireAlignSubHSM(ThisEvent);
     ThisEvent = RunTapeFollowSubHSM(ThisEvent);
     
@@ -98,20 +106,31 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
 
             ON_EXIT{
                 SetForwardSpeed(MAX_FORWARD_SPEED);
-                InitTapeFollowSubHSM();
             }
             break;
         case DESTROYING_ATM6:
             
             ON_ENTRY{
-                //InitTrackWireAlignSubHSM();
+                InitTapeFollowSubHSM();
+                ATM6_STATE = AT_TAPE_FOLLOW;
             }
-            switch (ThisEvent.EventType) {
-                case TW_LEFT_TOUCHING:
-                    InitTrackWireAlignSubHSM();
-                    break;
+            switch(ATM6_STATE){
+                case AT_TAPE_FOLLOW:
+                    
+                    if(ThisEvent.EventType == TW_RIGHT_TOUCHING){
+                        printf("RECEIVED EVEN\r\n");
+                        InitTrackWireAlignSubHSM();
+                        ATM6_STATE = AT_ALIGN_MANUVER;
+                    }
+                    
 
+                    break;
+                case AT_ALIGN_MANUVER:
+                    break;
+                default:
+                    break;
             }
+            
 
 
             break;
