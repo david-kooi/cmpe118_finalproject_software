@@ -65,7 +65,7 @@ static const char *StateNames[] = {
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
 
-static TapeFollowSubHSMState_t CurrentState = INIT_STATE;
+static TapeFollowSubHSMState_t CurrentState = IDLE_STATE;
 static uint8_t MyPriority;
 
 /*******************************************************************************

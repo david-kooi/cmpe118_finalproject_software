@@ -80,12 +80,17 @@ typedef enum {
     // Trackwire Events
     TW_LEFT_TOUCHING,
     TW_LEFT_IN_SIGHT,
+    TW_LEFT_OFF,
     TW_RIGHT_TOUCHING,
     TW_RIGHT_IN_SIGHT,
+    TW_RIGHT_OFF,
+            
+
+            
     TW_OFF,
-    SHIFTED_LEFT,
-    CENTER,
-    SHIFTED_RIGHT,
+    TW_SHIFTED_LEFT,
+    TW_CENTER,
+    TW_SHIFTED_RIGHT,
 
 
 
@@ -126,12 +131,14 @@ static const char *EventNames[] = {
 	"TS_REAR_OFF_TAPE",
 	"TW_LEFT_TOUCHING",
 	"TW_LEFT_IN_SIGHT",
+	"TW_LEFT_OFF",
 	"TW_RIGHT_TOUCHING",
 	"TW_RIGHT_IN_SIGHT",
+	"TW_RIGHT_OFF",
 	"TW_OFF",
-	"SHIFTED_LEFT",
-	"CENTER",
-	"SHIFTED_RIGHT",
+	"TW_SHIFTED_LEFT",
+	"TW_CENTER",
+	"TW_SHIFTED_RIGHT",
 	"NUMBEROFEVENTS",
 };
 

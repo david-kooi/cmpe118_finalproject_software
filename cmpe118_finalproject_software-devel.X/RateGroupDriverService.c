@@ -24,7 +24,6 @@
 #include "ES_Framework.h"
 #include "RateGroupDriverService.h"
 #include "ES_Timers.h"
-
 #include "TrackWireEventChecker.h"
 
 #include <stdio.h>
@@ -124,7 +123,6 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
         switch(ThisEvent.EventParam){
             case HZ_1_TIMER:
                 /*DEBUG_PRINT("1HZ TICK");*/
-                
                 // Restart Timer
                 ES_Timer_InitTimer(HZ_1_TIMER, 1000); //1000 ms 
                 break;
@@ -133,8 +131,8 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
             case HZ_50_TIMER:
                 //DEBUG_PRINT("20HZ TICK");
                 TS_StartSampling();
-                //RightTrackWireCheck();
-                //LeftTrackWireCheck();
+                RightTrackWireCheck();
+                LeftTrackWireCheck();
 //                CheckBumpers();
                 
                                 

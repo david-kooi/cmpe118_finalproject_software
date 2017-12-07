@@ -12,7 +12,7 @@
 static uint16_t rightADCReading = 0;
 static uint16_t leftADCReading = 0;
 typedef enum {
-    SHIFTED_L,
+            SHIFTED_L,
             CENTR,
             SHIFTED_R,
             INVALID
@@ -40,36 +40,21 @@ uint8_t RightTrackWireCheck(void){
     ES_EventTyp_t curEvent;
     
     rightADCReading = AD_ReadADPin(TW_RIGHT_ADC); //------------------------------------------------edit
-    TWIRE_PRINT("RIGHT TWIRE: %d", rightADCReading);        
+    //TWIRE_PRINT("RIGHT TWIRE: %d", rightADCReading);       
+    
 
-//    if(rightADCReading >= TRACKWIRE_TOUCHING_THRESHOLD){
-//        TWIRE_PRINT("RIGHT_TOUCHING_THRESHOLD_REACHED %d", rightADCReading);
-//        curEvent = RIGHT_TRACKWIRE_TOUCHING_DETECTED;
-//    } else if(rightADCReading >= TRACKWIRE_IN_SIGHT_THRESHOLD){
-//         TWIRE_PRINT("RIGHT_IN_SIGHT_THRESHOLD_REACHED %d", rightADCReading);
-//        curEvent = TW_RIGHT_IN_SIGHT;     
-//    } else {
-//        curEvent = ES_NO_EVENT;
-//    }
+    if(rightADCReading >= TRACKWIRE_TOUCHING_THRESHOLD){
+        //TWIRE_PRINT("RIGHT_TOUCHING_THRESHOLD_REACHED %d", rightADCReading);
+        curEvent = TW_RIGHT_TOUCHING;
+    } else if(rightADCReading >= TRACKWIRE_IN_SIGHT_THRESHOLD){
+         //TWIRE_PRINT("RIGHT_IN_SIGHT_THRESHOLD_REACHED %d", rightADCReading);
+        curEvent = TW_RIGHT_IN_SIGHT;     
+    } else if((lastEvent == TW_RIGHT_TOUCHING) || (lastEvent == TW_RIGHT_IN_SIGHT)){
+        curEvent = TW_RIGHT_OFF;
+    } else {
+        curEvent = ES_NO_EVENT;
+    }
         
-    //shifted right
-       if ((leftADCReading > 500 && rightADCReading < 100)) {
-           position = SHIFTED_R;
-           curEvent = SHIFTED_RIGHT;
-//           ReturnEvent.EventParam = SHIFTED_RIGHT;          
-            }                // Centered 
-            else if ((leftADCReading > 500 && rightADCReading > 500)) {
-           position = CENTR;
-           curEvent = CENTER;
-//           ReturnEvent.EventParam = CENTER;          
-            }
-                // Shifted Left
-            else if ((leftADCReading > 100 && rightADCReading < 10 && rightADCReading > 1)) {
-           position = SHIFTED_L;
-           curEvent = SHIFTED_LEFT;
-//           ReturnEvent.EventParam = SHIFTED_LEFT;    
-           }
-
      if (curEvent != lastEvent) { // check for change from last time
             ReturnEvent.EventType = curEvent;
             ReturnEvent.EventParam = rightADCReading;
@@ -97,38 +82,23 @@ uint8_t LeftTrackWireCheck(void){
     
     leftADCReading = AD_ReadADPin(TW_LEFT_ADC); //------------------------------------------------edit
     TWIRE_PRINT("LEFT TWIRE: %d", leftADCReading);        
-//        
-//    if(leftADCReading >= TRACKWIRE_TOUCHING_THRESHOLD){
-//        TWIRE_PRINT("LEFT_TOUCHING_THRESHOLD_REACHED %d", leftADCReading);
-//        curEvent = TW_LEFT_TOUCHING;
-//    } else if(leftADCReading >= TRACKWIRE_IN_SIGHT_THRESHOLD){
-//         TWIRE_PRINT("LEFT_IN_SIGHT_THRESHOLD_REACHED %d", leftADCReading);
-//         curEvent = TW_LEFT_IN_SIGHT;       
-//    }else {
-//        curEvent = ES_NO_EVENT;
-//    }
+        
+    if(leftADCReading >= TRACKWIRE_TOUCHING_THRESHOLD){
+        //TWIRE_PRINT("LEFT_TOUCHING_THRESHOLD_REACHED %d", leftADCReading);
+        curEvent = TW_LEFT_TOUCHING;
+    } else if(leftADCReading >= TRACKWIRE_IN_SIGHT_THRESHOLD){
+         //TWIRE_PRINT("LEFT_IN_SIGHT_THRESHOLD_REACHED %d", leftADCReading);
+         curEvent = TW_LEFT_IN_SIGHT;       
+    }else  if((lastEvent == TW_LEFT_TOUCHING) || (lastEvent == TW_LEFT_IN_SIGHT)){
+        curEvent = TW_LEFT_OFF;
+    } else {
+        curEvent = ES_NO_EVENT;
+    }
     
-    //shifted right
-       if ((leftADCReading > 500 && rightADCReading < 100)) {
-           position = SHIFTED_R;
-           curEvent = SHIFTED_RIGHT;
-//           ReturnEvent.EventParam = SHIFTED_RIGHT;          
-            }                // Centered 
-            else if ((leftADCReading > 500 && rightADCReading > 500)) {
-           position = CENTR;
-           curEvent = CENTER;
-//           ReturnEvent.EventParam = CENTER;          
-            }
-                // Shifted Left
-            else if ((leftADCReading > 100 && rightADCReading < 10 && rightADCReading > 1)) {
-           position = SHIFTED_L;
-           curEvent = SHIFTED_LEFT;
-//           ReturnEvent.EventParam = SHIFTED_LEFT;    
-           }
     
      if (curEvent != lastEvent) { // check for change from last time
             ReturnEvent.EventType = curEvent;
-            //ReturnEvent.EventParam = leftADCReading;
+            ReturnEvent.EventParam = leftADCReading;
             lastEvent = curEvent; // update history
             //TWIRE_PRINT("LEFT_TW_EVENT, EventType: %p, EventParam %u",ReturnEvent.EventType,ReturnEvent.EventParam);
 

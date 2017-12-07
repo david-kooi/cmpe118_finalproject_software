@@ -66,13 +66,13 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
     }
     
     ThisEvent = RunTrackWireAlignSubHSM(ThisEvent);
-    ThisEvent = RunTapeFollowSubHSM(ThisEvent);
-
+    //ThisEvent = RunTapeFollowSubHSM(ThisEvent);
+    
     switch (CurrentState) {
         case INIT:
             if (ThisEvent.EventType == ES_INIT) {
                 printf("Initializing Top Level State Machine\r\n");
-                EnableDriveMotors();
+                
                 //                SetForwardSpeed(MAX_FORWARD_SPEED);
                 //                SetTurningSpeed(0);
 
@@ -100,7 +100,9 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             break;
         case DESTROYING_ATM6:
             
-            InitTrackWireAlignSubHSM();
+            ON_ENTRY{
+                InitTrackWireAlignSubHSM();
+            }
             switch (ThisEvent.EventType) {
                 case TW_LEFT_TOUCHING:
                     //InitTrackWireAlignSubHSM();

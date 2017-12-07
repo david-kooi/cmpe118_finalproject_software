@@ -51,14 +51,18 @@ extern Trajectory step10Inches;
 typedef enum {
     IDLE_STATE,
     INIT_STATE,
-    ORIENT_STATE,
+    ORIENT_STATE_LEFT,
+    ORIENT_STATE_RIGHT,
+    ORIENT_STATE_CENTER,
     ALIGN_STATE,
 } TrackWireAlignSubHSMState_t;
 
 static const char *StateNames[] = {
 	"IDLE_STATE",
 	"INIT_STATE",
-	"ORIENT_STATE",
+	"ORIENT_STATE_LEFT",
+	"ORIENT_STATE_RIGHT",
+	"ORIENT_STATE_CENTER",
 	"ALIGN_STATE",
 };
 
@@ -144,45 +148,56 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                 // Turn off motors?
 
 //                SWITCH_STATE(ORIENT_STATE);
-                SWITCH_STATE(ALIGN_STATE);
+                SWITCH_STATE(ORIENT_STATE_LEFT);
             }
             break;
-
-        case ORIENT_STATE: // in the first state, replace this with correct names
+            
+        case ORIENT_STATE_LEFT: // in the first state, replace this with correct names
             ON_ENTRY
-        {
-            SetForwardSpeed((MAX_FORWARD_SPEED) / 2);
-        }
-        rightValue = TW_GetRightReading();
-        leftValue  = TW_GetLeftReading();                                                        
-
-                    printf("RIGHT %d\r\n", rightValue);
-                    printf("LEFT %d\r\n", leftValue);
-
-            // Shifted Right 
-            switch (ThisEvent.EventParam) {
-                case SHIFTED_RIGHT:
-                    SetForwardSpeed((MAX_FORWARD_SPEED) / 2);
-                    SetTurningSpeed(90);
-                    break;
-                case CENTER:
-                    SetTurningSpeed(0);
-                    SetForwardSpeed(0);
-                    break;
-                case SHIFTED_LEFT:
-                    SetForwardSpeed((MAX_FORWARD_SPEED) / 2);
-                    SetTurningSpeed(-90);
-                    break;
+            {
+                EnableDriveMotors();
+                SetForwardSpeed((MAX_FORWARD_SPEED) / 2);
+                SetTurnRadius(5000);
             }
 
             switch (ThisEvent.EventType) {
-
+                case TW_LEFT_IN_SIGHT:
+                    SWITCH_STATE(ORIENT_STATE_RIGHT);
+                    break;                
                 case ES_NO_EVENT:
+                    break;
                 default: // all unhandled events pass the event back up to the next level
                     break;
             }
             break;
-
+            
+        case ORIENT_STATE_RIGHT:
+            switch (ThisEvent.EventType) {
+                case TW_LEFT_OFF:
+                    SetTurnRadius(-5000);
+                    break;            
+                case TW_LEFT_TOUCHING:
+                    SetTurnRadius(0);
+                    SWITCH_STATE(ORIENT_STATE_CENTER);
+                    break;                                    
+                case ES_NO_EVENT:
+                    break;                   
+                default: // all unhandled events pass the event back up to the next level
+                    break;
+            }
+            break;
+            
+        case ORIENT_STATE_CENTER:
+            switch(ThisEvent.EventType){
+                case TW_RIGHT_TOUCHING:
+                    SetForwardSpeed(0);
+                    break;
+                default:
+                    break;
+            }
+            
+            break;
+            
         case ALIGN_STATE:
             ON_ENTRY
         {
@@ -201,13 +216,16 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                         InitForwardTrajectory(step5Inches);
                         break;
                     case 4:
-                        InitForwardTrajectory(pivot180Degrees);
+                        InitForwardTrajectory(pivot90Degrees);
                         break;
                     case 5:
-                        InitForwardTrajectory(step5Inches);
+                        InitForwardTrajectory(pivot90Degrees);
                         break;
                     case 6:
-                        nextState = ORIENT_STATE;
+                        InitForwardTrajectory(step5Inches);
+                        break;
+                    case 7:
+                        SWITCH_STATE(ORIENT_STATE_LEFT);
                         break;
                     default:
                         break;
@@ -221,7 +239,11 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
             //forward 5 inches
             //180 degrees
             //nextstate = orientstate
-
+            
+            
+            ON_EXIT{
+                SetForwardSpeed((MAX_FORWARD_SPEED) / 2);
+            }
             break;
 
         default: // all unhandled states fall into here
