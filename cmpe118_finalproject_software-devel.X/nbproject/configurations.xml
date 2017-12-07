@@ -45,6 +45,7 @@
         <itemPath>SubHsmTrackWireAlign.h</itemPath>
       </logicalFolder>
       <itemPath>ES_Configure.h</itemPath>
+      <itemPath>../../Project_REDO/cmpe118_finalproject_software.X/Trajectory.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -100,6 +101,7 @@
     <Elem>C:\Users\dkooi\Desktop\CMPE118\templates</Elem>
     <Elem>C:\Users\dkooi\Desktop\cmpe118_finalproject_software\cmpe118_finalproject_software-devel.X</Elem>
     <Elem>.</Elem>
+    <Elem>../../Project_REDO/cmpe118_finalproject_software.X</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -312,7 +314,8 @@
         <property key="memories.instruction.ram.ranges"
                   value="${memories.instruction.ram.ranges}"/>
         <property key="memories.programmemory" value="true"/>
-        <property key="memories.programmemory.ranges" value="1d000000-1d01ffff"/>
+        <property key="memories.programmemory.ranges"
+                  value="${memories.programmemory.ranges.default}"/>
         <property key="poweroptions.powerenable" value="false"/>
         <property key="programmertogo.imagename" value=""/>
         <property key="programoptions.donoteraseauxmem" value="false"/>

@@ -8,7 +8,6 @@
 #ifndef HSMTOPLEVEL_H
 #define HSMTOPLEVEL_H
 
-#include "ES_Configure.h"
 
 #define SWITCH_STATE(s) do{\
             nextState = s;\
