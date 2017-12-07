@@ -32,12 +32,13 @@
 #include "BOARD.h"
 #include "HsmTopLevel.h"
 #include "SubHsmTrackWireAlign.h"
+#include "TrackWireEventChecker.h"
 #include <stdio.h>
 #include "DriveService.h"
 #include "Trajectory.h"
 //extern Trajectory pivot180degrees;
-extern Trajectory pivot90degrees;
-extern Trajectory step10inches;
+extern Trajectory pivot90Degrees;
+extern Trajectory step10Inches;
 //extern Trajectory step5inches;
 
 /*******************************************************************************
@@ -142,7 +143,8 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
 
                 // Turn off motors?
 
-                SWITCH_STATE(ORIENT_STATE);
+//                SWITCH_STATE(ORIENT_STATE);
+                SWITCH_STATE(ALIGN_STATE);
             }
             break;
 
@@ -185,27 +187,27 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
             ON_ENTRY
         {
             maneuverStep = 1;
-            InitForwardTrajectory(step5inches);
+            InitForwardTrajectory(step5Inches);
         }
             if (ThisEvent.EventType == TRAJECTORY_COMPLETE) {
                 switch (maneuverStep) {
                     case 1:
-                        InitBackwardTrajectory(pivot90degrees);
+                        InitBackwardTrajectory(pivot90Degrees);
                         break;
                     case 2:
-                        InitForwardTrajectory(step5inches);
+                        InitForwardTrajectory(step5Inches);
                         break;
                     case 3:
-                        InitForwardTrajectory(step5inches);
+                        InitForwardTrajectory(step5Inches);
                         break;
                     case 4:
-                        InitForwardTrajectory(pivot90degrees);
+                        InitForwardTrajectory(pivot90Degrees);
                         break;
                     case 5:
-                        InitForwardTrajectory(pivot90degrees);
+                        InitForwardTrajectory(pivot90Degrees);
                         break;
                     case 6:
-                        InitForwardTrajectory(step5inches);
+                        InitForwardTrajectory(step5Inches);
                         break;
                     case 7:
                         nextState = ORIENT_STATE;

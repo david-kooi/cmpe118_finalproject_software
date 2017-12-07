@@ -31,7 +31,7 @@
 //#define TAPE_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
 #define TAPE_PRINT(fmt,...) 
 
-#define TWIRE_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
-//#define TWIRE_PRINT(fmt,...) 
+//#define TWIRE_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
+#define TWIRE_PRINT(fmt,...) 
 
 #endif 

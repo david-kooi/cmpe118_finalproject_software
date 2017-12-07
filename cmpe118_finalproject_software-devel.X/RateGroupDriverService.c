@@ -133,11 +133,10 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
             case HZ_50_TIMER:
                 //DEBUG_PRINT("20HZ TICK");
                 TS_StartSampling();
-                RightTrackWireCheck();
-                LeftTrackWireCheck();
-                CheckBumpers();
+                //RightTrackWireCheck();
+                //LeftTrackWireCheck();
+//                CheckBumpers();
                 
-                //PostHsmTopLevel(ThisEvent); // Provide a periodic signal
                                 
                 // Restart Timer
                 ES_Timer_InitTimer(HZ_50_TIMER, 20); //50 hz

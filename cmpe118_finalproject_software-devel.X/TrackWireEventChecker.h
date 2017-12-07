@@ -30,5 +30,8 @@ uint8_t RightTrackWireCheck(void);
 
 uint8_t LeftTrackWireCheck(void);
 
+uint16_t TW_GetRightReading();
+uint16_t TW_GetLeftReading();
+
 #endif	/* TRACKWIREEVENTCHECKER_H */
 
