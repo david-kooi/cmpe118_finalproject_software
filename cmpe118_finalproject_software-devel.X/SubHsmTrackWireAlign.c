@@ -36,7 +36,7 @@
 #include <stdio.h>
 #include "DriveService.h"
 #include "Trajectory.h"
-//extern Trajectory pivot180degrees;
+extern Trajectory pivot180degrees;
 extern Trajectory pivot90Degrees;
 extern Trajectory step10Inches;
 //extern Trajectory step5inches;
@@ -201,15 +201,12 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                         InitForwardTrajectory(step5Inches);
                         break;
                     case 4:
-                        InitForwardTrajectory(pivot90Degrees);
+                        InitForwardTrajectory(pivot180Degrees);
                         break;
                     case 5:
-                        InitForwardTrajectory(pivot90Degrees);
-                        break;
-                    case 6:
                         InitForwardTrajectory(step5Inches);
                         break;
-                    case 7:
+                    case 6:
                         nextState = ORIENT_STATE;
                         break;
                     default:
