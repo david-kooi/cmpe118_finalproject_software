@@ -33,6 +33,12 @@
 #include "HsmTopLevel.h"
 #include "SubHsmTrackWireAlign.h"
 #include <stdio.h>
+#include "DriveService.h"
+#include "Trajectory.h"
+//extern Trajectory pivot180degrees;
+extern Trajectory pivot90degrees;
+extern Trajectory step10inches;
+//extern Trajectory step5inches;
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -42,12 +48,14 @@
 #define CENTER_TW_VAL 600
 
 typedef enum {
+    IDLE_STATE,
     INIT_STATE,
     ORIENT_STATE,
     ALIGN_STATE,
 } TrackWireAlignSubHSMState_t;
 
 static const char *StateNames[] = {
+	"IDLE_STATE",
 	"INIT_STATE",
 	"ORIENT_STATE",
 	"ALIGN_STATE",
@@ -85,15 +93,14 @@ static uint8_t MyPriority;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitTrackWireAlignSubHSM(void)
-{
+uint8_t InitTrackWireAlignSubHSM(void) {
     ES_Event returnEvent;
 
     CurrentState = INIT_STATE;
     returnEvent = RunTrackWireAlignSubHSM(INIT_EVENT);
-    
-    
-    
+
+
+
     if (returnEvent.EventType == ES_NO_EVENT) {
         return TRUE;
     }
@@ -115,75 +122,111 @@ uint8_t InitTrackWireAlignSubHSM(void)
  *       not consumed as these need to pass pack to the higher level state machine.
  * @author J. Edward Carryer, 2011.10.23 19:25
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
-ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent)
-{
+ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
     static uint16_t rightValue = 0;
-    static uint16_t leftValue  = 0;
-    
+    static uint16_t leftValue = 0;
+    static int maneuverStep;
+
     uint8_t makeTransition = FALSE; // use to flag transition
     TrackWireAlignSubHSMState_t nextState; // <- change type to correct enum
 
     ES_Tattle(); // trace call stack
 
     switch (CurrentState) {
-    case INIT_STATE: // If current state is initial Psedudo State
-        if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
+        case INIT_STATE: // If current state is initial Psedudo State
+            if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
+            {
+                // this is where you would put any actions associated with the
+                // transition from the initial pseudo-state into the actual
+                // initial state
+
+                // Turn off motors?
+
+                SWITCH_STATE(ORIENT_STATE);
+            }
+            break;
+
+        case ORIENT_STATE: // in the first state, replace this with correct names
+            ON_ENTRY
         {
-            // this is where you would put any actions associated with the
-            // transition from the initial pseudo-state into the actual
-            // initial state
-
-            // Turn off motors?
-            
-            SWITCH_STATE(ORIENT_STATE);
+            SetForwardSpeed((MAX_FORWARD_SPEED) / 2);
         }
-        break;
-
-    case ORIENT_STATE: // in the first state, replace this with correct names
-        ON_ENTRY{
-
-                SetForwardSpeed((MAX_FORWARD_SPEED) /2 );
-        }
-        
         rightValue = TW_GetRightReading();
-        leftValue  = TW_GetLeftReading();
-        
-//        printf("RIGHT %d\r\n", rightValue);
-//        printf("LEFT %d\r\n", leftValue);
-        
-        // Shifted Right 
-        if(leftValue > 500 && rightValue < 100){
-            SetForwardSpeed((MAX_FORWARD_SPEED) /2 );
-            SetTurningSpeed(90);
-        }
-        // Centered 
-        else if(leftValue > 500 && rightValue > 500){
-            SetTurningSpeed(0);
-            SetForwardSpeed(0);
-        }
-        
-        // Shifte  d Left
-        else if(leftValue > 100 && rightValue < 10){
-            SetForwardSpeed((MAX_FORWARD_SPEED) /2 );
-            SetTurningSpeed(-90);
-        }
-        
-        
-        switch (ThisEvent.EventType) {
+        leftValue  = TW_GetLeftReading();                                                        
 
-            case ES_NO_EVENT:         
-            default: // all unhandled events pass the event back up to the next level
-                break;
-        }
-        break;
-        
+                    printf("RIGHT %d\r\n", rightValue);
+                    printf("LEFT %d\r\n", leftValue);
+
+            // Shifted Right 
+            switch (ThisEvent.EventParam) {
+                case SHIFTED_RIGHT:
+                    SetForwardSpeed((MAX_FORWARD_SPEED) / 2);
+                    SetTurningSpeed(90);
+                    break;
+                case CENTER:
+                    SetTurningSpeed(0);
+                    SetForwardSpeed(0);
+                    break;
+                case SHIFTED_LEFT:
+                    SetForwardSpeed((MAX_FORWARD_SPEED) / 2);
+                    SetTurningSpeed(-90);
+                    break;
+            }
+
+            switch (ThisEvent.EventType) {
+
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
+            }
+            break;
+
         case ALIGN_STATE:
-            
+            ON_ENTRY
+        {
+            maneuverStep = 1;
+            InitForwardTrajectory(step5inches);
+        }
+            if (ThisEvent.EventType == TRAJECTORY_COMPLETE) {
+                switch (maneuverStep) {
+                    case 1:
+                        InitBackwardTrajectory(pivot90degrees);
+                        break;
+                    case 2:
+                        InitForwardTrajectory(step5inches);
+                        break;
+                    case 3:
+                        InitForwardTrajectory(step5inches);
+                        break;
+                    case 4:
+                        InitForwardTrajectory(pivot90degrees);
+                        break;
+                    case 5:
+                        InitForwardTrajectory(pivot90degrees);
+                        break;
+                    case 6:
+                        InitForwardTrajectory(step5inches);
+                        break;
+                    case 7:
+                        nextState = ORIENT_STATE;
+                        break;
+                    default:
+                        break;
+
+                }
+                maneuverStep++;
+            }
+            //GAME PLAN
+            //forward trajectory 10 inches linear
+            //right 90 degrees
+            //forward 5 inches
+            //180 degrees
+            //nextstate = orientstate
 
             break;
-        
-    default: // all unhandled states fall into here
-        break;
+
+        default: // all unhandled states fall into here
+            break;
     } // end switch on Current State
 
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY

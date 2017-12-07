@@ -47,7 +47,7 @@ typedef enum {
     ES_TIMEOUT, /* signals that the timer has expired */
     ES_TIMERACTIVE, /* signals that a timer has become active */
     ES_TIMERSTOPPED, /* signals that a timer has stopped*/
-            
+
     /* User-defined events start here */
     BATTERY_CONNECTED,
     BATTERY_DISCONNECTED,
@@ -56,7 +56,7 @@ typedef enum {
     DISTANCE_TIMEOUT,
     HEADING_TIMEOUT,
     TRAJECTORY_COMPLETE,
-    
+
     // Bumper events
     FR_BUMPER_ON,
     FR_BUMPER_OFF,
@@ -65,8 +65,8 @@ typedef enum {
     RR_BUMPER_ON,
     RR_BUMPER_OFF,
     RL_BUMPER_ON,
-    RL_BUMPER_OFF,    
-            
+    RL_BUMPER_OFF,
+
     // Tape Sensor Events
     TS_LEFT_ON_TAPE,
     TS_LEFT_OFF_TAPE,
@@ -76,16 +76,19 @@ typedef enum {
     TS_RIGHT_OFF_TAPE,
     TS_REAR_ON_TAPE,
     TS_REAR_OFF_TAPE,
-            
+
     // Trackwire Events
     TW_LEFT_TOUCHING,
     TW_LEFT_IN_SIGHT,
     TW_RIGHT_TOUCHING,
     TW_RIGHT_IN_SIGHT,
     TW_OFF,
-            
-            
-            
+    SHIFTED_LEFT,
+    CENTER,
+    SHIFTED_RIGHT,
+
+
+
     NUMBEROFEVENTS,
 } ES_EventTyp_t;
 
@@ -126,6 +129,9 @@ static const char *EventNames[] = {
 	"TW_RIGHT_TOUCHING",
 	"TW_RIGHT_IN_SIGHT",
 	"TW_OFF",
+	"SHIFTED_LEFT",
+	"CENTER",
+	"SHIFTED_RIGHT",
 	"NUMBEROFEVENTS",
 };
 

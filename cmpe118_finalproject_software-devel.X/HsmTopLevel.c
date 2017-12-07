@@ -19,7 +19,7 @@
 
 #include "Trajectory.h"
 //extern Trajectory pivot180degrees;
-extern Trajectory pivot90degrees;
+//extern Trajectory pivot90degrees;
 //extern Trajectory step10inches;
 //extern Trajectory step5inches;
 
@@ -80,12 +80,12 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             
             ON_EXIT {
                 //InitTapeFollowSubHSM();
-//                InitTrackWireAlignSubHSM();
+                InitTrackWireAlignSubHSM();
             }
             break;
         case STARTUP:
             //RunTapeFollowSubHSM(ThisEvent);
-//          RunTrackWireAlignSubHSM(ThisEvent);
+          RunTrackWireAlignSubHSM(ThisEvent);
             
 //            switch(ThisEvent.EventType){
 //                    
@@ -97,8 +97,9 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             ON_ENTRY {
 //                InitForwardTrajectory(pivot180degrees);
 //                InitBackwardTrajectory(pivot90degrees);
-                InitBackwardTrajectory(step10inches);
+//                InitBackwardTrajectory(step10inches);
 //                InitForwardTrajectory(step5inches);
+                
             }
 
             break;

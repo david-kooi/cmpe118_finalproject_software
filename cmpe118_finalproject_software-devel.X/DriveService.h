@@ -25,7 +25,7 @@
 #define DRIVE_DIRECTION_PORT PORTY
 #define DRIVE_PWM_FREQ PWM_10KHZ
 #define LEFT_BIAS 1000              // Out of 1000
-#define RIGHT_BIAS 850              // Out of 1000
+#define RIGHT_BIAS 900              // Out of 1000
 
 // TRACKWIDTH = distance between wheels [milli-inches]
 #define TRACKWIDTH 8900
