@@ -6,6 +6,12 @@
 #include "Stepper.h"
 #include <stdint.h>
 
+#define ELEVATOR_STEP_RATE 300
+
+#define ATM6_HEIGHT 200
+#define REN_HEIGHT 400
+#define SAFE_HEIGHT 600
+
 #define POST_ELEVATOR_EVENT PostHsmTopLevel
 
 /* Periodic Drive Service Functions */
