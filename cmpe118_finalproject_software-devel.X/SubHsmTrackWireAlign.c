@@ -80,7 +80,7 @@ static const char *StateNames[] = {
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
 
-static TrackWireAlignSubHSMState_t CurrentState = INIT_STATE; // <- change name to match ENUM
+static TrackWireAlignSubHSMState_t CurrentState = IDLE_STATE; // <- change name to match ENUM
 static uint8_t MyPriority;
 
 
@@ -138,6 +138,8 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
     ES_Tattle(); // trace call stack
 
     switch (CurrentState) {
+        case IDLE_STATE:
+            break;
         case INIT_STATE: // If current state is initial Psedudo State
             if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
             {
@@ -148,7 +150,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                 // Turn off motors?
 
 //                SWITCH_STATE(ORIENT_STATE);
-                SWITCH_STATE(ORIENT_STATE_LEFT);
+                SWITCH_STATE(ALIGN_STATE);
             }
             break;
             

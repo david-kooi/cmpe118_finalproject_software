@@ -20,11 +20,11 @@ typedef struct motion {
 
 typedef struct traj {
     uint16_t length;
-    MotionState motionState[100];
+    MotionState motionState[30];
 } Trajectory;
 
 
-__attribute__((space(prog))) Trajectory pivot135Degrees = = {
+__attribute__((space(prog))) Trajectory pivot135Degrees = {
 	28,
 	{{0, 0, 0, 0},
 	{0, 0, 54, 1972},
@@ -54,7 +54,7 @@ __attribute__((space(prog))) Trajectory pivot135Degrees = = {
 	{0, 0, 151, -3549},
 	{0, 0, 28, -1578},
 	{0, 0, 0, 0}}
-}
+};
 
 __attribute__((space(prog))) Trajectory pivot90Degrees = {
 	23,

@@ -47,6 +47,8 @@ static TopLevelState CurrentState;
 static uint8_t myPriority;
 
 uint8_t InitHsmTopLevel(uint8_t priority) {
+    EnableDriveMotors();
+    
     myPriority = priority;
     CurrentState = INIT;
     return ES_PostToService(myPriority, INIT_EVENT);
@@ -66,7 +68,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
     }
     
     ThisEvent = RunTrackWireAlignSubHSM(ThisEvent);
-    //ThisEvent = RunTapeFollowSubHSM(ThisEvent);
+    ThisEvent = RunTapeFollowSubHSM(ThisEvent);
     
     switch (CurrentState) {
         case INIT:
@@ -95,17 +97,18 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         }
 
             ON_EXIT{
-                //InitTapeFollowSubHSM();
+                SetForwardSpeed(MAX_FORWARD_SPEED);
+                InitTapeFollowSubHSM();
             }
             break;
         case DESTROYING_ATM6:
             
             ON_ENTRY{
-                InitTrackWireAlignSubHSM();
+                //InitTrackWireAlignSubHSM();
             }
             switch (ThisEvent.EventType) {
                 case TW_LEFT_TOUCHING:
-                    //InitTrackWireAlignSubHSM();
+                    InitTrackWireAlignSubHSM();
                     break;
 
             }
