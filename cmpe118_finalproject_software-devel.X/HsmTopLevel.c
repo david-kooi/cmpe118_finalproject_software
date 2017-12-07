@@ -80,11 +80,25 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             
             ON_EXIT {
                 //InitTapeFollowSubHSM();
-//                InitTrackWireAlignSubHSM();
             }
             break;
         case STARTUP:
-            //RunTapeFollowSubHSM(ThisEvent);
+            ON_ENTRY {
+                InitTrajectory(pivot90degrees);
+                 //InitTrajectory(minusPivot90degrees);
+                
+                //InitTrajectory(pivot180degrees);
+//                InitTrajectory(step5inches);
+            }
+
+            
+            
+            
+            ON_EXIT{
+            }
+            //SWITCH_STATE(IDLE);
+            
+            
 //          RunTrackWireAlignSubHSM(ThisEvent);
             
 //            switch(ThisEvent.EventType){
@@ -94,15 +108,19 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
 //            }
             
 
-            ON_ENTRY {
-//                InitTrajectory(pivot180degrees);
-//                InitTrajectory(pivot90degrees);
-                InitTrajectory(step10inches);
-//                InitTrajectory(step5inches);
-            }
 
             break;
         case DESTROYING_ATM6:
+            RunTapeFollowSubHSM(ThisEvent);
+            switch(ThisEvent.EventType){
+                case TW_LEFT_TOUCHING:
+                    SetForwardSpeed(0);
+                    InitTrajectory(pivot90degrees);
+                    break;
+                
+            }
+            
+            
             break;
         case DESTROYING_REN:
             break;

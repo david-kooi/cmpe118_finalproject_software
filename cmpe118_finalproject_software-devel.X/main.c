@@ -33,7 +33,8 @@ void main(void)
 //    Stepper_Test(300, 300);
   
     /* Initialize Event Checkers */
-    
+  
+    //InitializeTrajectory();
     InitializeBumperChecker();
     InitializeTrackWire();
     InitializeTapeSensors(); 

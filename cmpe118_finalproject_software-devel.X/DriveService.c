@@ -255,7 +255,7 @@ void setLeftMotor(int32_t voltage) {
     }else{
         IO_PortsClearPortBits(DRIVE_DIRECTION_PORT, LEFT_DIRECTION_PIN);
     }
-    printf("LEFT DUTY %d\r\n", dutyCycle);
+    //printf("LEFT DUTY %d\r\n", dutyCycle);
     PWM_SetDutyCycle(LEFT_ENABLE_PIN, dutyCycle);
     return;
 }
@@ -269,7 +269,7 @@ void setRightMotor(int32_t voltage) {
         IO_PortsClearPortBits(DRIVE_DIRECTION_PORT, RIGHT_DIRECTION_PIN);
     }
     
-    printf("RIGHT DUTY %d\r\n",dutyCycle);
+    //printf("RIGHT DUTY %d\r\n",dutyCycle);
     PWM_SetDutyCycle(RIGHT_ENABLE_PIN, dutyCycle);
     
     return;
