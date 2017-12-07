@@ -46,6 +46,7 @@
       </logicalFolder>
       <itemPath>ES_Configure.h</itemPath>
       <itemPath>../../Project_REDO/cmpe118_finalproject_software.X/Trajectory.h</itemPath>
+      <itemPath>LsDerivative.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -88,6 +89,7 @@
         <itemPath>SubHsmTrackWireAlign.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
+      <itemPath>LsDerivative.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

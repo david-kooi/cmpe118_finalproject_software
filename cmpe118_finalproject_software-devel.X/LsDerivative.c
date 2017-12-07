@@ -5,6 +5,7 @@
 // Date: 9/18/2017
 #include "LsDerivative.h"
 #include <stdint.h>
+#include <stdlib.h>
 
 #define LENGTH 64
 #define LENGTH_MINUS_1 63
@@ -31,7 +32,9 @@ Derivative newDerivative(int32_t dt){
         d->tMean = ((LENGTH - 1) * d->dt) >> 1;
         // Note the symmetry between this and the SStx() method:
         d->SStt = 0;
-        for(int32_t i = 0;  i < LENGTH; ++i){
+        
+        uint32_t i;
+        for(i = 0;  i < LENGTH; ++i){
             d->SStt += ((i * d->dt) - d->tMean)
                      * ((i * d->dt) - d->tMean);
         }
@@ -54,7 +57,8 @@ void resetDerivative(Derivative d){
     d->v = 0;
     d->frontIndex = 0;
     d->preMean = 0;
-    for (int32_t i = 0; i < LENGTH; ++i) {
+    uint32_t i;
+    for (i = 0; i < LENGTH; ++i) {
         d->yData[i] = 0;
     }
     return;
@@ -77,7 +81,8 @@ int32_t getDerivative(Derivative d) {
 static int32_t SStx(Derivative d){
     int32_t mean  = d->preMean >> LOG2_LENGTH;
     int32_t sum = 0;
-    for (int32_t i = 0; i < LENGTH; ++i) {
+    uint32_t i;
+    for (i = 0; i < LENGTH; ++i) {
         sum += ((i * d->dt) - d->tMean)
              * (d->yData[MOD_LENGTH(i + d->frontIndex)] - mean);
     }

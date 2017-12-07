@@ -26,6 +26,8 @@
 #include "ES_Timers.h"
 #include "TrackWireEventChecker.h"
 
+#include "LsDerivative.h"
+
 #include <stdio.h>
 
 /*******************************************************************************
@@ -45,10 +47,13 @@
  * as well. */
 
 static uint8_t MyPriority;
+static uint8_t dtSamplingTrackWire;
 
+static Derivative dtTrackWire;
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
+void DerivativeSampleTrackWire(void);
 
 /**
  * @Function InitRateGroupService(uint8_t Priority)
@@ -62,6 +67,11 @@ static uint8_t MyPriority;
  * @author J. Edward Carryer, 2011.10.23 19:25 */
 uint8_t InitRateGroupDriverService(uint8_t Priority)
 {
+
+    dtSamplingTrackWire = FALSE;
+    dtTrackWire = newDerivative(2);
+    
+    
     ES_Event ThisEvent;
 
     MyPriority = Priority;
@@ -69,7 +79,7 @@ uint8_t InitRateGroupDriverService(uint8_t Priority)
     // Start all required timers
     ES_Timer_InitTimer(HZ_1_TIMER, 1000);
     ES_Timer_InitTimer(HZ_50_TIMER, 20);
-   // ES_Timer_InitTimer(HZ_500_TIMER, 2);
+    ES_Timer_InitTimer(HZ_500_TIMER, 2);
 
     
        
@@ -121,12 +131,17 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
     case ES_TIMEOUT:
         // Handle the various rate groups
         switch(ThisEvent.EventParam){
+            
+            case TW_START_DERIVATIVE:
+                dtSamplingTrackWire = TRUE;
+                break;
+            
+            
             case HZ_1_TIMER:
                 /*DEBUG_PRINT("1HZ TICK");*/
                 // Restart Timer
                 ES_Timer_InitTimer(HZ_1_TIMER, 1000); //1000 ms 
                 break;
-                
                 
             case HZ_50_TIMER:
                 //DEBUG_PRINT("20HZ TICK");
@@ -135,30 +150,29 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 LeftTrackWireCheck();
 //                CheckBumpers();
                 
+                
                                 
                 // Restart Timer
                 ES_Timer_InitTimer(HZ_50_TIMER, 20); //50 hz
                 break;
    
-            //case HZ_500_TIMER:
+            case HZ_500_TIMER:
                 //DEBUG_PRINT_("500HZ TICK");
-                
+                DerivativeSampleTrackWire();    
 
                 
                 
                 
                 
                 // Restart Timer
-                //ES_Timer_InitTimer(HZ_500_TIMER, 2); //2 ms 
-                //break;
+                ES_Timer_InitTimer(HZ_500_TIMER, 2); //2 ms 
+                break;
                 
             case TS_SYNC_TIMER:
                 //DEBUG_PRINT("TS_SYNC_TIMER TICK");
                 TS_DriveSampling();
                 
                 break;
-
-
 
             default:
 
@@ -180,4 +194,42 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
 /*******************************************************************************
  * PRIVATE FUNCTIONs                                                           *
  ******************************************************************************/
+#define LOWER_VAL_THRESHOLD 30
+#define LOWER_DT_THRESHOLD 10
+#define NUM_SAMPLES 64
+#define MIN_VAL_THRESHOLD 300
+void DerivativeSampleTrackWire(void){
+    static uint16_t counter = 0;
+    static uint16_t val = 0;
+    static uint16_t maxVal = 0;
+    static ES_Event returnEvent;
+    
+    
+    if(dtSamplingTrackWire == FALSE){
+        return;
+    }
+    val = TW_GetLeftReading();
+    estimateDerivative(dtTrackWire, val);
+    counter++;
+    
+    if(counter > NUM_SAMPLES){
+        ES_Event returnEvent;
+        returnEvent.EventType = TW_NULL_DERIVATIVE;
+        returnEvent.EventParam = 0;
 
+        val = getDerivative(dtTrackWire);
+        if(val < LOWER_DT_THRESHOLD){ // The derivative is low enough
+            returnEvent.EventType = TW_ZERO_DERIVATIVE;    
+        }
+        
+        PostHsmTopLevel(returnEvent);
+        
+    }
+        
+        // Reset Variables
+        dtSamplingTrackWire = FALSE;
+        counter = 0;
+        val     = 0;
+        maxVal  = 0;
+        resetDerivative(dtTrackWire);
+}

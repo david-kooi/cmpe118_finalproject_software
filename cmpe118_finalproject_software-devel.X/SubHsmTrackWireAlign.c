@@ -51,21 +51,16 @@ extern Trajectory step10Inches;
 typedef enum {
     IDLE_STATE,
     INIT_STATE,
-    ORIENT_STATE_LEFT,
-    ORIENT_STATE_RIGHT,
-    ORIENT_STATE_CENTER,
+    ORIENT_STATE,
     ALIGN_STATE,
 } TrackWireAlignSubHSMState_t;
 
 static const char *StateNames[] = {
 	"IDLE_STATE",
 	"INIT_STATE",
-	"ORIENT_STATE_LEFT",
-	"ORIENT_STATE_RIGHT",
-	"ORIENT_STATE_CENTER",
+	"ORIENT_STATE",
 	"ALIGN_STATE",
 };
-
 
 
 /*******************************************************************************
@@ -128,9 +123,12 @@ uint8_t InitTrackWireAlignSubHSM(void) {
  * @author J. Edward Carryer, 2011.10.23 19:25
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
 ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
+    static ES_Event dtEvent; // Derivative event
+    
     static uint16_t rightValue = 0;
     static uint16_t leftValue = 0;
     static int maneuverStep;
+    static int parity = 0;
 
     uint8_t makeTransition = FALSE; // use to flag transition
     TrackWireAlignSubHSMState_t nextState; // <- change type to correct enum
@@ -147,58 +145,35 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                 // transition from the initial pseudo-state into the actual
                 // initial state
 
-                // Turn off motors?
-
-//                SWITCH_STATE(ORIENT_STATE);
-                SWITCH_STATE(ALIGN_STATE);
+                SWITCH_STATE(ORIENT_STATE);
+                //SWITCH_STATE(ALIGN_STATE);
             }
             break;
             
-        case ORIENT_STATE_LEFT: // in the first state, replace this with correct names
+        case ORIENT_STATE: // in the first state, replace this with correct names
             ON_ENTRY
             {
-                EnableDriveMotors();
-                SetForwardSpeed((MAX_FORWARD_SPEED) / 2);
-                SetTurnRadius(5000);
+                SetTurningSpeed(20);
+                dtEvent.EventType = TW_START_DERIVATIVE;
+                dtEvent.EventParam = 0;
+                PostRateGroupDriverService(dtEvent);
+                parity = 1; // Toggle parity
             }
-
-            switch (ThisEvent.EventType) {
-                case TW_LEFT_IN_SIGHT:
-                    SWITCH_STATE(ORIENT_STATE_RIGHT);
-                    break;                
-                case ES_NO_EVENT:
-                    break;
-                default: // all unhandled events pass the event back up to the next level
-                    break;
-            }
-            break;
             
-        case ORIENT_STATE_RIGHT:
-            switch (ThisEvent.EventType) {
-                case TW_LEFT_OFF:
-                    SetTurnRadius(-5000);
-                    break;            
-                case TW_LEFT_TOUCHING:
-                    SetTurnRadius(0);
-                    SWITCH_STATE(ORIENT_STATE_CENTER);
-                    break;                                    
-                case ES_NO_EVENT:
-                    break;                   
-                default: // all unhandled events pass the event back up to the next level
-                    break;
-            }
-            break;
-            
-        case ORIENT_STATE_CENTER:
             switch(ThisEvent.EventType){
-                case TW_RIGHT_TOUCHING:
-                    SetForwardSpeed(0);
+                 case TW_NULL_DERIVATIVE:
+                    dtEvent.EventType = TW_START_DERIVATIVE;
+                    dtEvent.EventParam = 0;
+                    PostRateGroupDriverService(dtEvent);
                     break;
-                default:
+                case TW_ZERO_DERIVATIVE:
+                    StopDrive();
                     break;
             }
+                    
             
-            break;
+            break; //ORIENT_STATE
+            
             
         case ALIGN_STATE:
             ON_ENTRY
@@ -219,7 +194,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                         break;
                     case 4:
                         StopDrive();
-                        //SWITCH_STATE(ORIENT_STATE_LEFT);
+                        SWITCH_STATE(ORIENT_STATE);
                         break;
                     default:
                         break;

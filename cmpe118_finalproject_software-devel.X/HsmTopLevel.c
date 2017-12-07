@@ -98,10 +98,9 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case STARTUP:
             ON_ENTRY
         {
-
+            InitTrackWireAlignSubHSM();
             
-            //                InitForwardTrajectory(pivot90Degrees);
-            SWITCH_STATE(DESTROYING_ATM6);
+            //SWITCH_STATE(DESTROYING_ATM6);
         }
 
             ON_EXIT{
@@ -126,6 +125,10 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
 
                     break;
                 case AT_ALIGN_MANUVER:
+                    
+                    
+                    
+                    
                     break;
                 default:
                     break;

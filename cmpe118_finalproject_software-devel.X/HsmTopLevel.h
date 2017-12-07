@@ -8,6 +8,7 @@
 #ifndef HSMTOPLEVEL_H
 #define HSMTOPLEVEL_H
 
+#include <stdint.h>
 
 #define SWITCH_STATE(s) do{\
             nextState = s;\

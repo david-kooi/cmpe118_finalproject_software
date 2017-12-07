@@ -15,6 +15,9 @@
 #ifndef CONFIGURE_H
 #define CONFIGURE_H
 
+//#include "HsmTopLevel.h"
+
+
 // General DEBUG_PRINT macros
 
 #define DEBUG_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
@@ -84,15 +87,16 @@ typedef enum {
     TW_RIGHT_TOUCHING,
     TW_RIGHT_IN_SIGHT,
     TW_RIGHT_OFF,
-            
-
-            
+                   
     TW_OFF,
     TW_SHIFTED_LEFT,
     TW_CENTER,
     TW_SHIFTED_RIGHT,
 
-
+    // Derivative Sampling
+    TW_START_DERIVATIVE,
+    TW_ZERO_DERIVATIVE,
+    TW_NULL_DERIVATIVE,
 
     NUMBEROFEVENTS,
 } ES_EventTyp_t;
@@ -139,6 +143,9 @@ static const char *EventNames[] = {
 	"TW_SHIFTED_LEFT",
 	"TW_CENTER",
 	"TW_SHIFTED_RIGHT",
+	"TW_START_DERIVATIVE",
+	"TW_ZERO_DERIVATIVE",
+	"TW_NULL_DERIVATIVE",
 	"NUMBEROFEVENTS",
 };
 
@@ -159,13 +166,13 @@ static const char *EventNames[] = {
 // a timers, then you can use TIMER_UNUSED
 #define TIMER_UNUSED ((pPostFunc)0)
 #define TIMER0_RESP_FUNC (PostDriveService)
-#define TIMER1_RESP_FUNC (PostRateGroupDriverService) // 50 Hz
-#define TIMER2_RESP_FUNC TIMER_UNUSED
+#define TIMER1_RESP_FUNC (PostRateGroupDriverService) // 1 Hz
+#define TIMER2_RESP_FUNC (PostHsmTopLevel) // 1 s
 #define TIMER3_RESP_FUNC TIMER_UNUSED
 #define TIMER4_RESP_FUNC TIMER_UNUSED
 #define TIMER5_RESP_FUNC TIMER_UNUSED
 #define TIMER6_RESP_FUNC (PostRateGroupDriverService) // 20 Hz
-#define TIMER7_RESP_FUNC TIMER_UNUSED
+#define TIMER7_RESP_FUNC (PostRateGroupDriverService) // 500 Hz
 #define TIMER8_RESP_FUNC TIMER_UNUSED
 #define TIMER9_RESP_FUNC TIMER_UNUSED
 #define TIMER10_RESP_FUNC TIMER_UNUSED
@@ -173,7 +180,7 @@ static const char *EventNames[] = {
 #define TIMER12_RESP_FUNC TIMER_UNUSED
 #define TIMER13_RESP_FUNC TIMER_UNUSED
 #define TIMER14_RESP_FUNC TIMER_UNUSED
-#define TIMER15_RESP_FUNC (PostRateGroupDriverService)
+#define TIMER15_RESP_FUNC (PostRateGroupDriverService) // TS Sync Timer
 
 
 /****************************************************************************/
@@ -186,7 +193,9 @@ static const char *EventNames[] = {
 #define DRIVE_TIMER_TICKS 50
 
 #define HZ_1_TIMER     1 /*make sure this is enabled above and posting to the correct state machine*/
+#define HZ_1_TIMER_HSM 2
 #define HZ_50_TIMER   6
+#define HZ_500_TIMER  7
 #define TS_SYNC_TIMER 15
 
 /****************************************************************************/
