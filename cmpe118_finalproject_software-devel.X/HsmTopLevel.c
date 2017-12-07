@@ -64,7 +64,9 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         SWITCH_STATE(IDLE);
         printf("Battery disconnected, stop everything!\r\n");
     }
+    
     ThisEvent = RunTrackWireAlignSubHSM(ThisEvent);
+    ThisEvent = RunTapeFollowSubHSM(ThisEvent);
 
     switch (CurrentState) {
         case INIT:
@@ -87,30 +89,21 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             ON_ENTRY
         {
 
-            InitTrackWireAlignSubHSM();
+            
             //                InitForwardTrajectory(pivot90Degrees);
-            //                SWITCH_STATE(DESTROYING_ATM6);
+            SWITCH_STATE(DESTROYING_ATM6);
         }
-            switch (ThisEvent.EventType) {
-                case TRAJECTORY_COMPLETE:
-                    //                    InitForwardTrajectory(pivot180Degrees);
-                    break;
-            }
-
-
-
 
             ON_EXIT{
-                InitTapeFollowSubHSM();
+                //InitTapeFollowSubHSM();
             }
             break;
         case DESTROYING_ATM6:
-            RunTapeFollowSubHSM(ThisEvent);
-
+            
+            InitTrackWireAlignSubHSM();
             switch (ThisEvent.EventType) {
                 case TW_LEFT_TOUCHING:
-                    SetForwardSpeed(0);
-
+                    //InitTrackWireAlignSubHSM();
                     break;
 
             }
