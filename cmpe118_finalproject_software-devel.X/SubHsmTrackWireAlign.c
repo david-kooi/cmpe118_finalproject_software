@@ -200,14 +200,11 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                         InitForwardTrajectory(step5Inches);
                         break;
                     case 2:
-                        InitForwardTrajectory(pivot135Degrees);
+                        InitForwardTrajectory(pivot90Degrees);
                         break;
                     case 3:
-                        InitForwardTrajectory(step2Inches);
-                        break;
-                    case 4:
                         StopDrive();
-                        SWITCH_STATE(ORIENT_STATE); // Set to idle without transitioning 
+                        SWITCH_STATE(ORIENT_STATE); 
                         break;
                     default:
                         break;
@@ -217,7 +214,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
             }
             
             ON_EXIT{
-                SetForwardSpeed((MAX_FORWARD_SPEED) / 3);
+                //SetForwardSpeed((MAX_FORWARD_SPEED) / 3);
             }
             break;  
             
@@ -234,6 +231,10 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
 
     ES_Tail(); // trace call stack end
     return ThisEvent;
+}
+
+void TW_SetIdle(void){
+    CurrentState = IDLE_STATE;
 }
 
 

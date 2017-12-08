@@ -137,6 +137,7 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
             printf("TAPE TW_LEFT_OFF\r\n");
         }
         switch (ThisEvent.EventType) {
+            case TS_START:
             case TS_LEFT_ON_TAPE:
             case TS_LEFT_OFF_TAPE:
             case TS_CENTER_ON_TAPE:
@@ -200,6 +201,9 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
     return ThisEvent;
 }
 
+void TS_SetIdle(void){
+    CurrentState = IDLE_STATE;
+}
 
 /*******************************************************************************
  * PRIVATE FUNCTIONS                                                           *

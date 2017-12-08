@@ -41,6 +41,8 @@
  * PUBLIC FUNCTION PROTOTYPES                                                  *
  ******************************************************************************/
 
+void TW_SetIdle(void);
+
 /**
  * @Function InitTemplateSubHSM(void)
  * @param Priority - internal variable to track which event queue to use

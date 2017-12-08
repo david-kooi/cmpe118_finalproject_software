@@ -43,6 +43,9 @@
  * PUBLIC FUNCTION PROTOTYPES                                                  *
  ******************************************************************************/
 
+void TS_SetIdle(void);
+
+
 /**
  * @Function InitTapeFollowSubHSM(void)
  * @param Priority - internal variable to track which event queue to use

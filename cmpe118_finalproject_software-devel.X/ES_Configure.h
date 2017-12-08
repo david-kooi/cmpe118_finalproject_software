@@ -79,6 +79,8 @@ typedef enum {
     TS_RIGHT_OFF_TAPE,
     TS_REAR_ON_TAPE,
     TS_REAR_OFF_TAPE,
+    TS_START,
+    TS_SET_IDLE,
 
     // Trackwire Events
     TW_LEFT_TOUCHING,
@@ -139,6 +141,8 @@ static const char *EventNames[] = {
 	"TS_RIGHT_OFF_TAPE",
 	"TS_REAR_ON_TAPE",
 	"TS_REAR_OFF_TAPE",
+	"TS_START",
+	"TS_SET_IDLE",
 	"TW_LEFT_TOUCHING",
 	"TW_LEFT_IN_SIGHT",
 	"TW_LEFT_OFF",

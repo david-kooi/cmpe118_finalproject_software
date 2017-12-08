@@ -23,7 +23,7 @@
 
 
 extern Trajectory pivot90Degrees;
-extern Trajectory pivot180Degrees;
+extern Trajectory pivot135Degrees;
 extern Trajectory step5Inches;
 
 typedef enum {
@@ -39,6 +39,12 @@ typedef enum{
     AT_ALIGN_MANUVER,
     AT_RETURN_TO_TAPE,
 } ATM6State;
+
+typedef enum{
+    ST_FIND_BEACON,
+    ST_FIND_TAPE,
+    
+} StartupState;
 
 static const char *StateNames[] = {
     "INIT",
@@ -74,13 +80,14 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
     }
     
     
-    static ATM6State ATM6_STATE = AT_TAPE_FOLLOW;
+    static ATM6State    currATState = AT_TAPE_FOLLOW;
+    static StartupState currStartupState =  ST_FIND_BEACON;
+    
     
     ThisEvent = RunTrackWireAlignSubHSM(ThisEvent);
     ThisEvent = RunTapeFollowSubHSM(ThisEvent);
-        if(ThisEvent.EventType == TW_LEFT_OFF){
-     printf("TOP TW_LEFT_OFF\r\n");
-    }
+      
+    
       
     switch (CurrentState) {
         case INIT:
@@ -94,7 +101,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 //LiftToAtM6();
 
                 
-                SWITCH_STATE(DESTROYING_ATM6);
+                SWITCH_STATE(STARTUP);
 
             }
 
@@ -104,20 +111,37 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             break;
         case STARTUP:
             ON_ENTRY
-        {
-            SetTurningSpeed(90);
+            {
+                SetTurningSpeed(120);
             
-        }
-            switch(ThisEvent.EventType){
-                case BC_IN_SIGHT:
-                case BC_HEAD_ON:
-                    StopDrive();
-                    InitBackwardTrajectory(step5Inches);
-                    //SetForwardSpeed(-5000);
-                    //SWITCH_STATE(DESTROYING_ATM6);
-                    break;
-                    
             }
+            
+            switch(currStartupState){
+                case ST_FIND_BEACON:
+                    if(ThisEvent.EventType == BC_HEAD_ON || ThisEvent.EventType == BC_IN_SIGHT){
+                        StopDrive();
+                        SetForwardSpeed(-5000); // Backup
+                        currStartupState = ST_FIND_TAPE;
+                    }
+                    break;
+            
+                case ST_FIND_TAPE:
+                    if(ThisEvent.EventType == TS_REAR_ON_TAPE){
+                        
+                        StopDrive();
+                        SetTurningSpeed(120);
+                        
+                    }
+                    
+                    if(ThisEvent.EventType == TS_CENTER_ON_TAPE){
+                        StopDrive();
+                        SWITCH_STATE(DESTROYING_ATM6);
+                    }
+                    
+                    break;
+                
+            }
+            
             
             
             ON_EXIT{
@@ -127,37 +151,46 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case DESTROYING_ATM6:
             
             ON_ENTRY{
-                SetForwardSpeed(MAX_FORWARD_SPEED);
+                // Create an event to kickstart the tape follower
+                ES_Event tsStart;
+                tsStart.EventType = TS_START;
+                tsStart.EventParam = 0;
+                PostHsmTopLevel(tsStart);
+                
                 InitTapeFollowSubHSM();
-                ATM6_STATE = AT_TAPE_FOLLOW;
+                currATState = AT_TAPE_FOLLOW;
+                
             }
-            switch(ATM6_STATE){
+            switch(currATState){
                 case AT_TAPE_FOLLOW:
                     
                     if(ThisEvent.EventType == TW_RIGHT_TOUCHING){
-                        printf("RECEIVED EVEN\r\n");
+                        StopDrive();
+                        TS_SetIdle();
                         InitTrackWireAlignSubHSM();
-                        ATM6_STATE = AT_ALIGN_MANUVER;
+                        currATState = AT_ALIGN_MANUVER;
                     }
                     
 
                     break;
                 case AT_ALIGN_MANUVER:
                     
-                    if(ThisEvent.EventType == TW_LEFT_OFF){
-                        printf("HERER\r\n");
-                        InitBackwardTrajectory(step2Inches);
-                        ATM6_STATE = AT_RETURN_TO_TAPE;
-                        
+                    switch(ThisEvent.EventType){
+                        case TW_LEFT_OFF: // Finished with at destroy
+                            InitBackwardTrajectory(step2Inches);
+                            currATState = AT_RETURN_TO_TAPE;
+                            break;
                     }
                     
-                    
+
                     break;
                     
                 case AT_RETURN_TO_TAPE:
                     if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
                         InitBackwardTrajectory(pivot90Degrees);
-                        ATM6_STATE = AT_TAPE_FOLLOW;
+                        
+                        InitTapeFollowSubHSM();
+                        currATState = AT_TAPE_FOLLOW;
                     }
                    
                     
