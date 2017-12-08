@@ -150,21 +150,14 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             break;
         case DESTROYING_ATM6:
             
-            ON_ENTRY{
-                // Create an event to kickstart the tape follower
-                ES_Event tsStart;
-                tsStart.EventType = TS_START;
-                tsStart.EventParam = 0;
-                PostHsmTopLevel(tsStart);
-                
+            ON_ENTRY{       
                 InitTapeFollowSubHSM();
                 currATState = AT_TAPE_FOLLOW;
-                
             }
             switch(currATState){
                 case AT_TAPE_FOLLOW:
                     
-                    if(ThisEvent.EventType == TW_RIGHT_TOUCHING){
+                    if(ThisEvent.EventType == TW_RIGHT_IN_SIGHT){
                         StopDrive();
                         TS_SetIdle();
                         InitTrackWireAlignSubHSM();

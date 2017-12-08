@@ -192,7 +192,7 @@ static const char *EventNames[] = {
 #define TIMER11_RESP_FUNC TIMER_UNUSED
 #define TIMER12_RESP_FUNC TIMER_UNUSED
 #define TIMER13_RESP_FUNC TIMER_UNUSED
-#define TIMER14_RESP_FUNC TIMER_UNUSED
+#define TIMER14_RESP_FUNC (PostDeployerDriver)
 #define TIMER15_RESP_FUNC (PostRateGroupDriverService) // TS Sync Timer
 
 
@@ -209,6 +209,7 @@ static const char *EventNames[] = {
 #define HZ_1_TIMER_HSM 2
 #define HZ_50_TIMER   6
 #define HZ_500_TIMER  7
+#define BALL_DRIVER_TIMER 14
 #define TS_SYNC_TIMER 15
 
 /****************************************************************************/
@@ -220,7 +221,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 4
+#define NUM_SERVICES 5
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
@@ -279,11 +280,11 @@ static const char *EventNames[] = {
 // These are the definitions for Service 4
 #if NUM_SERVICES > 4
 // the header file with the public fuction prototypes
-#define SERV_4_HEADER "TestService.h"
+#define SERV_4_HEADER "DeployerDriver.h"
 // the name of the Init function
-#define SERV_4_INIT TestServiceInit
+#define SERV_4_INIT InitDeployerDriver
 // the name of the run function
-#define SERV_4_RUN TestServiceRun
+#define SERV_4_RUN RunBallDispenser
 // How big should this services Queue be?
 #define SERV_4_QUEUE_SIZE 3
 #endif

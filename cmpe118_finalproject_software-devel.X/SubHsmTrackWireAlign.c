@@ -160,7 +160,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
             ON_ENTRY
             {
                 //SetForwardSpeed(MAX_FORWARD_SPEED);
-                SetTurningSpeed(60);
+                SetTurningSpeed(90);
                 dtEvent.EventType = TW_START_DERIVATIVE;
                 dtEvent.EventParam = 0;
                 PostRateGroupDriverService(dtEvent);
