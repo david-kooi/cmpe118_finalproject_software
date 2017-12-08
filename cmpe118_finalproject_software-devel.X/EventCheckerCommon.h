@@ -34,8 +34,8 @@
 //#define TWIRE_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
 #define TWIRE_PRINT(fmt,...) 
 
-#define BEACON_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
-//#define BEACON_PRINT(fmt,...) 
+//#define BEACON_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
+#define BEACON_PRINT(fmt,...) 
 
 
 

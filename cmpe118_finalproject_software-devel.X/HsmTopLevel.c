@@ -93,7 +93,8 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 
                 //LiftToAtM6();
 
-                SWITCH_STATE(STARTUP);
+                
+                SWITCH_STATE(DESTROYING_ATM6);
 
             }
 
@@ -104,18 +105,29 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case STARTUP:
             ON_ENTRY
         {
-//            InitTrackWireAlignSubHSM();
+            SetTurningSpeed(90);
             
-            SWITCH_STATE(DESTROYING_ATM6);
         }
-
+            switch(ThisEvent.EventType){
+                case BC_IN_SIGHT:
+                case BC_HEAD_ON:
+                    StopDrive();
+                    InitBackwardTrajectory(step5Inches);
+                    //SetForwardSpeed(-5000);
+                    //SWITCH_STATE(DESTROYING_ATM6);
+                    break;
+                    
+            }
+            
+            
             ON_EXIT{
-                SetForwardSpeed(MAX_FORWARD_SPEED);
+                
             }
             break;
         case DESTROYING_ATM6:
             
             ON_ENTRY{
+                SetForwardSpeed(MAX_FORWARD_SPEED);
                 InitTapeFollowSubHSM();
                 ATM6_STATE = AT_TAPE_FOLLOW;
             }

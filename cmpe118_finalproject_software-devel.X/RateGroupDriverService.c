@@ -144,7 +144,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
             case HZ_1_TIMER:
                 /*DEBUG_PRINT("1HZ TICK");*/
                 
-                CheckBeacon();
+                
                 
                 // Restart Timer
                 ES_Timer_InitTimer(HZ_1_TIMER, 1000); //1000 ms 
@@ -152,9 +152,10 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 
             case HZ_50_TIMER:
                 //DEBUG_PRINT("20HZ TICK");
-                //TS_StartSampling();
-                //RightTrackWireCheck();
-                //LeftTrackWireCheck();
+                TS_StartSampling();
+                RightTrackWireCheck();
+                LeftTrackWireCheck();
+                CheckBeacon();
 //                CheckBumpers();
                 
                 
