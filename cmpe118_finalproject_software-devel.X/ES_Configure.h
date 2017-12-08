@@ -97,7 +97,13 @@ typedef enum {
     TW_START_DERIVATIVE,
     TW_ZERO_DERIVATIVE,
     TW_NULL_DERIVATIVE,
-
+            
+    // Beacon Events
+    BC_IN_SIGHT,
+    BC_HEAD_ON,
+    BC_OFF,
+            
+            
     NUMBEROFEVENTS,
 } ES_EventTyp_t;
 
@@ -146,6 +152,9 @@ static const char *EventNames[] = {
 	"TW_START_DERIVATIVE",
 	"TW_ZERO_DERIVATIVE",
 	"TW_NULL_DERIVATIVE",
+	"BC_IN_SIGHT",
+	"BC_HEAD_ON",
+	"BC_OFF",
 	"NUMBEROFEVENTS",
 };
 

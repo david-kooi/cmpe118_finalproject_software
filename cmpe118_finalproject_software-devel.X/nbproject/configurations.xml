@@ -33,7 +33,7 @@
         <itemPath>TapeSensorEventChecker.h</itemPath>
         <itemPath>TrackWireEventChecker.h</itemPath>
         <itemPath>BatteryEventChecker.h</itemPath>
-        <itemPath>BeaconEventChecker.h.h</itemPath>
+        <itemPath>BeaconEventChecker.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="Services" projectFiles="true">
         <itemPath>RateGroupDriverService.h</itemPath>

@@ -9,6 +9,7 @@
 #include "BumperEventChecker.h"
 #include "TapeSensorEventChecker.h"
 #include "TrackWireEventChecker.h"
+#include "BeaconEventChecker.h"
 #include "Stepper.h"
 
 //Test
@@ -26,7 +27,7 @@ void main(void)
 
     // Your hardware initialization function calls go here
     AD_Init();
-    AD_AddPins(TW_LEFT_ADC | TW_RIGHT_ADC | TS_LEFT_ADC | TS_RIGHT_ADC | TS_CENTER_ADC | TS_REAR_ADC);
+    AD_AddPins(TW_LEFT_ADC | TW_RIGHT_ADC | TS_LEFT_ADC | TS_RIGHT_ADC | TS_CENTER_ADC | TS_REAR_ADC | BEACON_ADC);
     PWM_Init();
     InitElevator();
     
