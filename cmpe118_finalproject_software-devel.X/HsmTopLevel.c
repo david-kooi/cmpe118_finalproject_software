@@ -37,6 +37,7 @@ typedef enum {
 typedef enum{
     AT_TAPE_FOLLOW,
     AT_ALIGN_MANUVER,
+    AT_RETURN_TO_TAPE,
 } ATM6State;
 
 static const char *StateNames[] = {
@@ -53,7 +54,6 @@ static TopLevelState CurrentState;
 static uint8_t myPriority;
 
 uint8_t InitHsmTopLevel(uint8_t priority) {
-    EnableDriveMotors();
     
     myPriority = priority;
     CurrentState = INIT;
@@ -78,16 +78,20 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
     
     ThisEvent = RunTrackWireAlignSubHSM(ThisEvent);
     ThisEvent = RunTapeFollowSubHSM(ThisEvent);
-    
+        if(ThisEvent.EventType == TW_LEFT_OFF){
+     printf("TOP TW_LEFT_OFF\r\n");
+    }
+      
     switch (CurrentState) {
         case INIT:
             if (ThisEvent.EventType == ES_INIT) {
                 printf("Initializing Top Level State Machine\r\n");
+                EnableDriveMotors();
                 
-                //                SetForwardSpeed(MAX_FORWARD_SPEED);
+//                                SetForwardSpeed(MAX_FORWARD_SPEED);
                 //                SetTurningSpeed(0);
-                InitElevator();
-                LiftToAtM6();
+                
+                //LiftToAtM6();
 
                 SWITCH_STATE(STARTUP);
 
@@ -102,7 +106,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         {
 //            InitTrackWireAlignSubHSM();
             
-            //SWITCH_STATE(DESTROYING_ATM6);
+            SWITCH_STATE(DESTROYING_ATM6);
         }
 
             ON_EXIT{
@@ -128,7 +132,22 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                     break;
                 case AT_ALIGN_MANUVER:
                     
+                    if(ThisEvent.EventType == TW_LEFT_OFF){
+                        printf("HERER\r\n");
+                        InitBackwardTrajectory(step2Inches);
+                        ATM6_STATE = AT_RETURN_TO_TAPE;
+                        
+                    }
                     
+                    
+                    break;
+                    
+                case AT_RETURN_TO_TAPE:
+                    if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
+                        InitBackwardTrajectory(pivot90Degrees);
+                        ATM6_STATE = AT_TAPE_FOLLOW;
+                    }
+                   
                     
                     
                     break;

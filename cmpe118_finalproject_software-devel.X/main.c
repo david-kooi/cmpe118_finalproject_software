@@ -28,9 +28,11 @@ void main(void)
     AD_Init();
     AD_AddPins(TW_LEFT_ADC | TW_RIGHT_ADC | TS_LEFT_ADC | TS_RIGHT_ADC | TS_CENTER_ADC | TS_REAR_ADC);
     PWM_Init();
+    InitElevator();
+    
     
     //TestADCPins(); // Cycles through and prints values from pins forever
-//    Stepper_Test(300, 300);
+    //Stepper_Test(300, 300);
   
     /* Initialize Event Checkers */
   

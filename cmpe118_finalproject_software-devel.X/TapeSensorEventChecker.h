@@ -1,5 +1,5 @@
-#ifndef EVENTCHECKER_H
-#define	EVENTCHECKER_H
+#ifndef TAPE_EVENTCHECKER_H
+#define	TAPE_EVENTCHECKER_H
 
 #include "EventCheckerCommon.h"
 
@@ -99,5 +99,5 @@ void TS_DriveSampling(void);
 
 
 
-#endif	/* TEMPLATEEVENTCHECKER_H */
+#endif	/* TAPE_EVENTCHECKER_H */
 

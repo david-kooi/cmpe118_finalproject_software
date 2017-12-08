@@ -128,13 +128,16 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
         DEBUG_PRINT("ES_INIT");
         break;
 
+    case TW_START_DERIVATIVE:
+        //printf("START\r\n");
+        dtSamplingTrackWire = TRUE;
+        break;
+        
     case ES_TIMEOUT:
         // Handle the various rate groups
         switch(ThisEvent.EventParam){
             
-            case TW_START_DERIVATIVE:
-                dtSamplingTrackWire = TRUE;
-                break;
+            
             
             
             case HZ_1_TIMER:
@@ -165,7 +168,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 
                 
                 // Restart Timer
-                ES_Timer_InitTimer(HZ_500_TIMER, 2); //2 ms 
+                ES_Timer_InitTimer(HZ_500_TIMER, 1); //2 ms 
                 break;
                 
             case TS_SYNC_TIMER:
@@ -195,41 +198,66 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
  * PRIVATE FUNCTIONs                                                           *
  ******************************************************************************/
 #define LOWER_VAL_THRESHOLD 30
-#define LOWER_DT_THRESHOLD 10
+#define LOWER_DT_THRESHOLD 5
+#define UPPER_THRESHOLD 300
 #define NUM_SAMPLES 64
 #define MIN_VAL_THRESHOLD 300
 void DerivativeSampleTrackWire(void){
+    static uint8_t  isTracking = 0;
     static uint16_t counter = 0;
     static uint16_t val = 0;
     static uint16_t maxVal = 0;
     static ES_Event returnEvent;
+    static uint16_t numBelow = 0;
     
     
     if(dtSamplingTrackWire == FALSE){
         return;
     }
-    val = TW_GetLeftReading();
-    estimateDerivative(dtTrackWire, val);
-    counter++;
     
-    if(counter > NUM_SAMPLES){
+    val = TW_GetLeftReading();
+    if(val > UPPER_THRESHOLD){
         ES_Event returnEvent;
-        returnEvent.EventType = TW_NULL_DERIVATIVE;
+        returnEvent.EventType = TW_ZERO_DERIVATIVE;
         returnEvent.EventParam = 0;
-
-        val = getDerivative(dtTrackWire);
-        if(val < LOWER_DT_THRESHOLD){ // The derivative is low enough
-            returnEvent.EventType = TW_ZERO_DERIVATIVE;    
-        }
-        
         PostHsmTopLevel(returnEvent);
-        
-    }
-        
-        // Reset Variables
         dtSamplingTrackWire = FALSE;
-        counter = 0;
-        val     = 0;
-        maxVal  = 0;
-        resetDerivative(dtTrackWire);
+    }
+    
+    
+//            printf("%d\r\n", val);
+
+    
+//    estimateDerivative(dtTrackWire, val);
+//    counter++;
+//    
+//    if(counter > NUM_SAMPLES){
+//        ES_Event returnEvent;
+//        returnEvent.EventType = TW_NULL_DERIVATIVE;
+//        returnEvent.EventParam = 0;
+//
+//        val = getDerivative(dtTrackWire);
+//        if(val > 6000){ return; }
+//        if(val > 300) { isTracking = 1; }
+//        
+////        if(val < LOWER_DT_THRESHOLD && isTracking){ 
+//        
+//        printf("%d\r\n", val);
+//        if( (val < LOWER_DT_THRESHOLD) && (isTracking == 1)){ // The derivative is low enough
+//            returnEvent.EventType = TW_ZERO_DERIVATIVE;          
+//
+//            
+//        }
+//        // Reset Variables
+//        isTracking = 0;
+//        counter = 0;
+//        val     = 0;
+//        maxVal  = 0;
+//        dtSamplingTrackWire = FALSE;
+//        resetDerivative(dtTrackWire);
+//        
+//        
+//        PostHsmTopLevel(returnEvent);       
+ //   }
+             
 }

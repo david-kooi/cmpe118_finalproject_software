@@ -33,6 +33,7 @@
         <itemPath>TapeSensorEventChecker.h</itemPath>
         <itemPath>TrackWireEventChecker.h</itemPath>
         <itemPath>BatteryEventChecker.h</itemPath>
+        <itemPath>BeaconEventChecker.h.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="Services" projectFiles="true">
         <itemPath>RateGroupDriverService.h</itemPath>
@@ -48,6 +49,7 @@
       <itemPath>../../Project_REDO/cmpe118_finalproject_software.X/Trajectory.h</itemPath>
       <itemPath>LsDerivative.h</itemPath>
       <itemPath>Elevator.h</itemPath>
+      <itemPath>Stepper.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -79,6 +81,7 @@
         <itemPath>TapeSensorEventChecker.c</itemPath>
         <itemPath>TrackWireEventChecker.c</itemPath>
         <itemPath>BatteryEventChecker.c</itemPath>
+        <itemPath>BeaconEventChecker.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="Services" projectFiles="true">
         <itemPath>RateGroupDriverService.c</itemPath>
@@ -92,6 +95,7 @@
       <itemPath>main.c</itemPath>
       <itemPath>LsDerivative.c</itemPath>
       <itemPath>Elevator.c</itemPath>
+      <itemPath>Stepper.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

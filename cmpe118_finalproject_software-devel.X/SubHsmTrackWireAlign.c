@@ -53,6 +53,7 @@ typedef enum {
     INIT_STATE,
     ORIENT_STATE,
     ALIGN_STATE,
+    RETURN_TO_TAPE,
 } TrackWireAlignSubHSMState_t;
 
 static const char *StateNames[] = {
@@ -60,6 +61,7 @@ static const char *StateNames[] = {
 	"INIT_STATE",
 	"ORIENT_STATE",
 	"ALIGN_STATE",
+	"RETURN_TO_TAPE",
 };
 
 
@@ -134,7 +136,11 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
     TrackWireAlignSubHSMState_t nextState; // <- change type to correct enum
 
     ES_Tattle(); // trace call stack
-
+    
+    if(ThisEvent.EventType == TW_LEFT_OFF){
+     printf("TRACK TW_LEFT_OFF\r\n");
+    }
+            
     switch (CurrentState) {
         case IDLE_STATE:
             break;
@@ -145,19 +151,19 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                 // transition from the initial pseudo-state into the actual
                 // initial state
 
-                SWITCH_STATE(ORIENT_STATE);
-                //SWITCH_STATE(ALIGN_STATE);
+//                SWITCH_STATE(ORIENT_STATE);
+                SWITCH_STATE(ALIGN_STATE);
             }
             break;
             
         case ORIENT_STATE: // in the first state, replace this with correct names
             ON_ENTRY
             {
-                SetTurningSpeed(20);
+                //SetForwardSpeed(MAX_FORWARD_SPEED);
+                SetTurningSpeed(60);
                 dtEvent.EventType = TW_START_DERIVATIVE;
                 dtEvent.EventParam = 0;
                 PostRateGroupDriverService(dtEvent);
-                parity = 1; // Toggle parity
             }
             
             switch(ThisEvent.EventType){
@@ -168,6 +174,13 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                     break;
                 case TW_ZERO_DERIVATIVE:
                     StopDrive();
+                    
+                    // Raise elevator
+                    
+                    
+                    break;
+                case TW_LEFT_OFF:
+                    CurrentState = IDLE_STATE;
                     break;
             }
                     
@@ -190,11 +203,11 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                         InitForwardTrajectory(pivot135Degrees);
                         break;
                     case 3:
-                        InitForwardTrajectory(step5Inches);
+                        InitForwardTrajectory(step2Inches);
                         break;
                     case 4:
                         StopDrive();
-                        SWITCH_STATE(ORIENT_STATE);
+                        SWITCH_STATE(ORIENT_STATE); // Set to idle without transitioning 
                         break;
                     default:
                         break;
@@ -202,19 +215,12 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                 }
                 maneuverStep++;
             }
-            //GAME PLAN
-            //forward trajectory 10 inches linear
-            //right 90 degrees
-            //forward 5 inches
-            //180 degrees
-            //nextstate = orientstate
-            
             
             ON_EXIT{
-                SetForwardSpeed((MAX_FORWARD_SPEED) / 2);
+                SetForwardSpeed((MAX_FORWARD_SPEED) / 3);
             }
-            break;
-
+            break;  
+            
         default: // all unhandled states fall into here
             break;
     } // end switch on Current State

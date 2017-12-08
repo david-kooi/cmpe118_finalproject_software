@@ -1,6 +1,6 @@
 #include "Elevator.h"
 #include "BOARD.h"
-#include "Stepper,h"
+#include "Stepper.h"
 
 #define DIRECTION(x) (((x) < 0) ? (REVERSE) : (FORWARD))
 #define ABS(x) (((x) < 0) ? (-(x)) : (x))
@@ -12,6 +12,15 @@ typedef enum {
     REN_STATE,
     SAFE_STATE,
 } ElevatorState_t;
+
+static const char *StateNames[] = {
+	"UNINIT_STATE",
+	"HOME_STATE",
+	"ATM6_STATE",
+	"REN_STATE",
+	"SAFE_STATE",
+};
+
 
 static ElevatorState_t elevatorState = UNINIT_STATE;
 static int16_t stepsToState(ElevatorState_t s);

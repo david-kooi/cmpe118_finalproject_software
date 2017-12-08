@@ -133,6 +133,9 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
         break;
 
     case REAR_ON_STATE: // in the first state, replace this with correct names
+        if(ThisEvent.EventType == TW_LEFT_OFF){
+            printf("TAPE TW_LEFT_OFF\r\n");
+        }
         switch (ThisEvent.EventType) {
             case TS_LEFT_ON_TAPE:
             case TS_LEFT_OFF_TAPE:
