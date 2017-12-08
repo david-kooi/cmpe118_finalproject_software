@@ -27,6 +27,10 @@ void DispenseBall(void){
 
 uint8_t InitDeployerDriver(uint8_t priority) {
     myPriority = priority;
+    
+    ES_Event thisEvent;
+    thisEvent.EventType = ES_INIT;
+    return ES_PostToService(myPriority, thisEvent);
 }
 
 uint8_t PostDeployerDriver(ES_Event thisEvent) {
