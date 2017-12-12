@@ -127,7 +127,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
 
     switch (ThisEvent.EventType) {
     case ES_INIT:
-        DEBUG_PRINT("ES_INIT");
+        //DEBUG_PRINT("ES_INIT");
         break;
 
     case TW_START_DERIVATIVE:

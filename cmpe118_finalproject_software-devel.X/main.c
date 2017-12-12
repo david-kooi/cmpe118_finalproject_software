@@ -37,7 +37,9 @@ void main(void)
     // Just for ghetto elevator test:
     RC_Init();
     RC_AddPins(RC_PORTX03);
-    RC_SetPulseTime(RC_PORTX03, 1000);
+    
+    
+//    RC_SetPulseTime(RC_PORTX03, 1000);
     
     
     

@@ -30,7 +30,7 @@
 //#define POSTFUNCTION_FOR_KEYBOARD_INPUT PostGenericService
 
 //define for TattleTale
-#define USE_TATTLETALE
+//#define USE_TATTLETALE
 
 //uncomment to supress the entry and exit events
 //#define SUPPRESS_EXIT_ENTRY_IN_TATTLE
@@ -191,8 +191,8 @@ static const char *EventNames[] = {
 #define TIMER10_RESP_FUNC TIMER_UNUSED
 #define TIMER11_RESP_FUNC TIMER_UNUSED
 #define TIMER12_RESP_FUNC TIMER_UNUSED
-#define TIMER13_RESP_FUNC TIMER_UNUSED
-#define TIMER14_RESP_FUNC (PostDeployerDriver)
+#define TIMER13_RESP_FUNC (PostDeployerDriver)
+#define TIMER14_RESP_FUNC TIMER_UNUSED
 #define TIMER15_RESP_FUNC (PostRateGroupDriverService) // TS Sync Timer
 
 
@@ -209,7 +209,7 @@ static const char *EventNames[] = {
 #define HZ_1_TIMER_HSM 2
 #define HZ_50_TIMER   6
 #define HZ_500_TIMER  7
-#define BALL_DRIVER_TIMER 14
+#define BALL_DRIVER_TIMER 13
 #define TS_SYNC_TIMER 15
 
 /****************************************************************************/

@@ -11,11 +11,10 @@
 #define LOAD_PWM 1000
 #define DISPENSE_PWM 1700
 
-static uint8_t myPriority;
 
 uint8_t InitDeployerDriver(uint8_t priority);
 uint8_t PostDeployerDriver(ES_Event thisEvent);
-uint8_t RunBallDispenser(ES_Event timerEvent);
+ES_Event RunBallDispenser(ES_Event timerEvent);
 
 void DispenseBall(void);
 

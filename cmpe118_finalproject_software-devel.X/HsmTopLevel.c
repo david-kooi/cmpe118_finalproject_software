@@ -13,6 +13,7 @@
 
 #include "HsmTopLevel.h"
 #include "serial.h"
+#include "DeployerDriver.h"
 #include "DriveService.h"
 #include "Trajectory.h"
 //#include sub-sm's here
@@ -99,9 +100,8 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 //                SetTurningSpeed(0);
                 
                 //LiftToAtM6();
-
                 
-                SWITCH_STATE(DESTROYING_ATM6);
+                SWITCH_STATE(STARTUP);
 
             }
 

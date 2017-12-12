@@ -182,11 +182,12 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                         case 1:
                             InitForwardTrajectory(step2Inches);
                             maneuverStep++;
-                            RC_SetPulseTime(RC_PORTX03, 1700);
+                            //RC_SetPulseTime(RC_PORTX03, 1700);
                             break;
                         case 2:
-                            RC_SetPulseTime(RC_PORTX03, 1000);
+                            //RC_SetPulseTime(RC_PORTX03, 1000);
                             StopDrive();
+                            DispenseBall();
                             LiftToAtM6();
                             break;
                         default:

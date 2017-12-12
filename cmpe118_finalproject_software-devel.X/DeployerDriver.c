@@ -1,7 +1,10 @@
 #include "DeployerDriver.h"
 #include "ES_Events.h"
 #include "ES_Configure.h"
+#include "ES_Framework.h"
 #include "ES_Timers.h"
+#include "serial.h"
+#include <stdio.h>
 
 
 typedef enum{
@@ -10,8 +13,10 @@ typedef enum{
     RESET,
 } DeployerState;
 
-static uint8_t isDispensing = 0;
 
+static uint8_t myPriority;
+static uint8_t isDispensing = 0;
+static DeployerState currState = LOAD;
 
 void DispenseBall(void){
     
@@ -19,13 +24,16 @@ void DispenseBall(void){
     if(isDispensing){
         return;
     }
+//    printf("DISPENSE\r\n");
     
     isDispensing = 1;
-    ES_Timer_InitTimer(BALL_DRIVER_TIMER, ACTION_PERIOD);
+    currState = LOAD;
+    ES_Timer_InitTimer(BALL_DRIVER_TIMER, 500);
 }
 
 
 uint8_t InitDeployerDriver(uint8_t priority) {
+//    printf("INIT DEPLOY\r\n");
     myPriority = priority;
     
     ES_Event thisEvent;
@@ -37,34 +45,44 @@ uint8_t PostDeployerDriver(ES_Event thisEvent) {
     return ES_PostToService(myPriority, thisEvent);
 }
 
-uint8_t RunBallDispenser(ES_Event timerEvent){
-    static DeployerState currState = LOAD;
+ES_Event RunBallDispenser(ES_Event timerEvent){
+    ES_Event returnEvent;
+    returnEvent.EventType = ES_NO_EVENT;
     
     if(timerEvent.EventType == ES_TIMEOUT){
+//         printf("RUN\r\n");
         if(timerEvent.EventParam == BALL_DRIVER_TIMER){
+           
             switch(currState){
                 case LOAD:
-                   RC_SetPulseTime(RC_PORTX04, LOAD_PWM);
+//                    printf("LOAD\r\n");
+                    IsTransmitEmpty();
+                   RC_SetPulseTime(RC_PORTX03, LOAD_PWM);
                     
                     currState = DISPENSE;
                     ES_Timer_InitTimer(BALL_DRIVER_TIMER, ACTION_PERIOD);
                     
                      break;
                 case DISPENSE:
-                    
-                    RC_SetPulseTime(RC_PORTX04, DISPENSE_PWM);
+//                    printf("DISPENSE\r\n");
+                                        IsTransmitEmpty();
+
+                    RC_SetPulseTime(RC_PORTX03, DISPENSE_PWM);
                     currState = RESET;
                     ES_Timer_InitTimer(BALL_DRIVER_TIMER, ACTION_PERIOD);
                     
                     break;
                 case RESET:
-                    
-                    RC_SetPulseTime(RC_PORTX04, LOAD_PWM);
+//                    printf("RESET\r\n");
+                                        IsTransmitEmpty();
+
+                    RC_SetPulseTime(RC_PORTX03, LOAD_PWM);
                     isDispensing = 0;
                     break;  
             }
         }
     }
+         return returnEvent;
 }
 
 
