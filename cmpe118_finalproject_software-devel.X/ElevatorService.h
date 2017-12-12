@@ -2,6 +2,8 @@
 #define ELEVATOR_H
 
 #include "ES_Configure.h"
+#include "ES_Framework.h"
+#include "ES_Events.h"
 #include "IO_Ports.h"
 #include "Stepper.h"
 #include <stdint.h>

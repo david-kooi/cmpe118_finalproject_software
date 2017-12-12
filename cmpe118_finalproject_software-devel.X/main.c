@@ -33,7 +33,7 @@ void main(void)
     //RC_Init();
     //RC_AddPins(RC_PORTX04);
     
-    InitElevator();
+//    InitElevatorService();
     // Just for ghetto elevator test:
     RC_Init();
     RC_AddPins(RC_PORTX03);

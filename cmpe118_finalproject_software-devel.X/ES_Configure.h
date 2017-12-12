@@ -105,7 +105,9 @@ typedef enum {
     BC_HEAD_ON,
     BC_OFF,
             
-            
+    // Elevator Events
+    ELEVATOR_ARRIVED,
+    ELEVATOR_STEP_COMMAND,            
     NUMBEROFEVENTS,
 } ES_EventTyp_t;
 
@@ -159,6 +161,8 @@ static const char *EventNames[] = {
 	"BC_IN_SIGHT",
 	"BC_HEAD_ON",
 	"BC_OFF",
+	"ELEVATOR_ARRIVED",
+	"ELEVATOR_STEP_COMMAND",
 	"NUMBEROFEVENTS",
 };
 
@@ -190,7 +194,7 @@ static const char *EventNames[] = {
 #define TIMER9_RESP_FUNC TIMER_UNUSED
 #define TIMER10_RESP_FUNC TIMER_UNUSED
 #define TIMER11_RESP_FUNC TIMER_UNUSED
-#define TIMER12_RESP_FUNC TIMER_UNUSED
+#define TIMER12_RESP_FUNC (PostElevatorService)
 #define TIMER13_RESP_FUNC (PostDeployerDriver)
 #define TIMER14_RESP_FUNC TIMER_UNUSED
 #define TIMER15_RESP_FUNC (PostRateGroupDriverService) // TS Sync Timer
@@ -209,6 +213,7 @@ static const char *EventNames[] = {
 #define HZ_1_TIMER_HSM 2
 #define HZ_50_TIMER   6
 #define HZ_500_TIMER  7
+#define ELEVATOR_SERVICE_TIMER 12
 #define BALL_DRIVER_TIMER 13
 #define TS_SYNC_TIMER 15
 
@@ -221,7 +226,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 5
+#define NUM_SERVICES 6
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
@@ -293,11 +298,11 @@ static const char *EventNames[] = {
 // These are the definitions for Service 5
 #if NUM_SERVICES > 5
 // the header file with the public fuction prototypes
-#define SERV_5_HEADER "TestService.h"
+#define SERV_5_HEADER "ElevatorService.h"
 // the name of the Init function
-#define SERV_5_INIT TestServiceInit
+#define SERV_5_INIT InitElevatorService
 // the name of the run function
-#define SERV_5_RUN TestServiceRun
+#define SERV_5_RUN RunElevatorService
 // How big should this services Queue be?
 #define SERV_5_QUEUE_SIZE 3
 #endif
