@@ -6,10 +6,11 @@
 #include "Stepper.h"
 #include <stdint.h>
 
-#define ELEVATOR_STEP_RATE 300
+#define ELEVATOR_STEP_RATE 200
 
-#define ATM6_HEIGHT 200
-#define REN_HEIGHT 400
+#define HOME_HEIGHT 10
+#define ATM6_HEIGHT 400
+#define REN_HEIGHT 775
 #define SAFE_HEIGHT 600
 
 #define POST_ELEVATOR_EVENT PostHsmTopLevel

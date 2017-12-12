@@ -524,7 +524,7 @@ void HalfStepDrive(void) {
 
 void Drv8811Drive(void) {
     DRV8811_STEP = 0;
-    int i;
+    volatile int i;
     for (i = 0; i < THREE_MICROS; i++);
     DRV8811_STEP = 1;
     return;

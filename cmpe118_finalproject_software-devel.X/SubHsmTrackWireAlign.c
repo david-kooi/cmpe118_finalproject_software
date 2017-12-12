@@ -35,7 +35,9 @@
 #include "TrackWireEventChecker.h"
 #include <stdio.h>
 #include "DriveService.h"
+#include "Elevator.h"
 #include "Trajectory.h"
+#include "RC_Servo_mod.h"
 extern Trajectory pivot180degrees;
 extern Trajectory pivot90Degrees;
 extern Trajectory step10Inches;
@@ -180,9 +182,12 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                         case 1:
                             InitForwardTrajectory(step2Inches);
                             maneuverStep++;
+                            RC_SetPulseTime(RC_PORTX03, 1700);
                             break;
                         case 2:
+                            RC_SetPulseTime(RC_PORTX03, 1000);
                             StopDrive();
+                            LiftToAtM6();
                             break;
                         default:
                             break;      

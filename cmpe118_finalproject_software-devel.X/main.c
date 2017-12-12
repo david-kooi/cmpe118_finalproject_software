@@ -11,6 +11,7 @@
 #include "TrackWireEventChecker.h"
 #include "BeaconEventChecker.h"
 #include "Stepper.h"
+#include "RC_Servo_mod.h"
 
 //Test
 void TestADCPins(void);
@@ -33,10 +34,15 @@ void main(void)
     //RC_AddPins(RC_PORTX04);
     
     InitElevator();
+    // Just for ghetto elevator test:
+    RC_Init();
+    RC_AddPins(RC_PORTX03);
+    RC_SetPulseTime(RC_PORTX03, 1000);
+    
     
     
     //TestADCPins(); // Cycles through and prints values from pins forever
-    //Stepper_Test(300, 300);
+//    Stepper_Test(800, 200);
   
     /* Initialize Event Checkers */
   

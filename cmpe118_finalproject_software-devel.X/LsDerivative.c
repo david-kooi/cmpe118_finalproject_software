@@ -28,7 +28,7 @@ Derivative newDerivative(int32_t dt){
     Derivative d = (Derivative) calloc(1, sizeof(derivObj));
     if (d != (Derivative) 0) {
         d->dt = dt;
-        d->yData = (int32_t) calloc(LENGTH, sizeof(int32_t));
+        d->yData = (int32_t *) calloc(LENGTH, sizeof(int32_t));
         d->tMean = ((LENGTH - 1) * d->dt) >> 1;
         // Note the symmetry between this and the SStx() method:
         d->SStt = 0;

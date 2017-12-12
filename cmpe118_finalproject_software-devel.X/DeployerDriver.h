@@ -9,7 +9,7 @@
 
 #define ACTION_PERIOD 1000 // ms
 #define LOAD_PWM 1000
-#define DISPENSE_PWM 1000
+#define DISPENSE_PWM 1700
 
 static uint8_t myPriority;
 

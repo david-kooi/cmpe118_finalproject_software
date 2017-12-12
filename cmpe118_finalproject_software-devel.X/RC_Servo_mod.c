@@ -111,25 +111,25 @@
 /*******************************************************************************
  * PRIVATE VARIABLES                                                           *
  ******************************************************************************/
-static volatile unsigned int * const RC_TRISCLR[] = {&TRISFCLR, &TRISBCLR, &TRISDCLR,
+static volatile unsigned int * const RC_TRISCLR[] = {&TRISGCLR, &TRISFCLR, &TRISDCLR,
     &TRISECLR, &TRISDCLR, &TRISECLR,
     &TRISBCLR, &TRISBCLR, &TRISBCLR,
     &TRISBCLR};
 
-static volatile unsigned int * const RC_TRISSET[] = {&TRISFSET, &TRISBSET, &TRISDSET,
+static volatile unsigned int * const RC_TRISSET[] = {&TRISGSET, &TRISFSET, &TRISDSET,
     &TRISESET, &TRISDSET, &TRISESET,
     &TRISBSET, &TRISBSET, &TRISBSET,
     &TRISBSET};
 
-static volatile unsigned int * const RC_LATSET[] = {&LATFSET, &LATBSET, &LATDSET,
+static volatile unsigned int * const RC_LATSET[] = {&LATGSET, &LATFSET, &LATDSET,
     &LATESET, &LATDSET, &LATESET,
     &LATBSET, &LATBSET, &LATBSET,
     &LATBSET};
-static volatile unsigned int * const RC_LATCLR[] = {&LATFCLR, &LATBCLR, &LATDCLR,
+static volatile unsigned int * const RC_LATCLR[] = {&LATGCLR, &LATFCLR, &LATDCLR,
     &LATECLR, &LATDCLR, &LATECLR,
     &LATBCLR, &LATBCLR, &LATBCLR,
     &LATBCLR};
-static unsigned short int rcBitsMap[] = {BIT_5, BIT_0, BIT_10, BIT_7, BIT_8,
+static unsigned short int rcBitsMap[] = {BIT_7, BIT_6, BIT_10, BIT_7, BIT_8,
     BIT_1, BIT_2, BIT_3, BIT_15, BIT_14};
 
 unsigned char RCenabled = FALSE;

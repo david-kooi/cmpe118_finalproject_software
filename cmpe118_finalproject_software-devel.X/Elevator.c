@@ -32,6 +32,8 @@ uint8_t InitElevator(void) {
     }
     Stepper_Init();
     Stepper_SetRate(ELEVATOR_STEP_RATE);
+    Stepper_InitSteps(FORWARD, HOME_HEIGHT);
+    elevatorState = HOME_STATE;
     return SUCCESS;
 }
 
@@ -41,6 +43,7 @@ uint8_t ElevatorHome(void) {
     }
     int32_t steps = stepsToState(HOME_STATE);
     Stepper_InitSteps(DIRECTION(steps), ABS(steps));
+    elevatorState = HOME_STATE;
     return SUCCESS;
 }
 
@@ -50,6 +53,7 @@ uint8_t LiftToAtM6(void) {
     }
     int32_t steps = stepsToState(ATM6_STATE);
     Stepper_InitSteps(DIRECTION(steps), ABS(steps));
+    elevatorState = ATM6_STATE;
     return SUCCESS;
 }
 
@@ -59,6 +63,7 @@ uint8_t LiftToRen(void) {
     }
     int32_t steps = stepsToState(REN_STATE);
     Stepper_InitSteps(DIRECTION(steps), ABS(steps));
+    elevatorState = REN_STATE;
     return SUCCESS;
 }
 
@@ -68,6 +73,7 @@ uint8_t LiftToSafe(void) {
     }
     int32_t steps = stepsToState(SAFE_STATE);
     Stepper_InitSteps(DIRECTION(steps), ABS(steps));
+    elevatorState = SAFE_STATE;
     return SUCCESS;
 }
 
