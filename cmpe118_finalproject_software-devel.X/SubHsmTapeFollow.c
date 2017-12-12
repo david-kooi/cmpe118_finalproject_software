@@ -120,7 +120,7 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
         
     case INIT_STATE: // If current state is initial Psedudo State
         ON_ENTRY{
-            SetForwardSpeed(MAX_FORWARD_SPEED);
+            //SetForwardSpeed(MAX_FORWARD_SPEED);
         }
         
         if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
@@ -137,11 +137,13 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
         break;
 
     case REAR_ON_STATE: // in the first state, replace this with correct names
-        ON_ENTRY{
-            SetForwardSpeed(MAX_FORWARD_SPEED);
-        }
-        
+//        ON_ENTRY{
+//            SetForwardSpeed(MAX_FORWARD_SPEED);
+//        }
+//        
         switch (ThisEvent.EventType) {
+            case ES_ENTRY:
+                SetForwardSpeed(MAX_FORWARD_SPEED);
             case TS_LEFT_ON_TAPE:
             case TS_LEFT_OFF_TAPE:
             case TS_CENTER_ON_TAPE:

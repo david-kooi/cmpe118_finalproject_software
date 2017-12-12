@@ -164,19 +164,29 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                 dtEvent.EventType = TW_START_DERIVATIVE;
                 dtEvent.EventParam = 0;
                 PostRateGroupDriverService(dtEvent);
+                maneuverStep = 0;
             }
             
             switch(ThisEvent.EventType){
-                case TW_NULL_DERIVATIVE:
-                    dtEvent.EventType = TW_START_DERIVATIVE;
-                    dtEvent.EventParam = 0;
-                    PostRateGroupDriverService(dtEvent);
-                    break;
+ 
                 case TW_ZERO_DERIVATIVE:
-                    InitForwardTrajectory(step2Inches);
+                    StopDrive();
+                    InitBackwardTrajectory(pivot5Degrees);
+                    maneuverStep++;
+                    break;
                     
-                    // Raise elevator
-                    
+                case TRAJECTORY_COMPLETE:
+                    switch(maneuverStep){
+                        case 1:
+                            InitForwardTrajectory(step2Inches);
+                            maneuverStep++;
+                            break;
+                        case 2:
+                            StopDrive();
+                            break;
+                        default:
+                            break;      
+                    }
                     
                     break;
                 case TW_LEFT_OFF:

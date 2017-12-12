@@ -194,7 +194,8 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                                 maneuverStep++;
                                 break;
                             case 2:
-                                SetTurningSpeed(-200);                               
+                                InitTapeFollowSubHSM();
+                                //SetTurningSpeed(-200);                               
                                 break;
                             default:
                                 break;

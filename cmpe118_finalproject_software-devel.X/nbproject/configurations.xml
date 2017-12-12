@@ -46,7 +46,6 @@
         <itemPath>SubHsmTrackWireAlign.h</itemPath>
       </logicalFolder>
       <itemPath>ES_Configure.h</itemPath>
-      <itemPath>../../Project_REDO/cmpe118_finalproject_software.X/Trajectory.h</itemPath>
       <itemPath>LsDerivative.h</itemPath>
       <itemPath>Elevator.h</itemPath>
       <itemPath>Stepper.h</itemPath>
