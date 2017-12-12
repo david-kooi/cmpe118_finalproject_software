@@ -79,8 +79,8 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         printf("Battery disconnected, stop everything!\r\n");
     }
     
-    
-    static ATM6State    currATState = AT_TAPE_FOLLOW;
+    static uint8_t maneuverStep = 0;
+    static ATM6State    currATState      = AT_TAPE_FOLLOW;
     static StartupState currStartupState =  ST_FIND_BEACON;
     
     
@@ -101,7 +101,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 //LiftToAtM6();
 
                 
-                SWITCH_STATE(STARTUP);
+                SWITCH_STATE(DESTROYING_ATM6);
 
             }
 
@@ -112,7 +112,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case STARTUP:
             ON_ENTRY
             {
-                SetTurningSpeed(120);
+                SetTurningSpeed(200);
             
             }
             
@@ -129,7 +129,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                     if(ThisEvent.EventType == TS_REAR_ON_TAPE){
                         
                         StopDrive();
-                        SetTurningSpeed(120);
+                        SetTurningSpeed(200);
                         
                     }
                     
@@ -157,6 +157,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             switch(currATState){
                 case AT_TAPE_FOLLOW:
                     
+                    
                     if(ThisEvent.EventType == TW_RIGHT_IN_SIGHT){
                         StopDrive();
                         TS_SetIdle();
@@ -170,7 +171,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                     
                     switch(ThisEvent.EventType){
                         case TW_LEFT_OFF: // Finished with at destroy
-                            InitBackwardTrajectory(step2Inches);
+                            TW_SetIdle();
                             currATState = AT_RETURN_TO_TAPE;
                             break;
                     }
@@ -179,14 +180,35 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                     break;
                     
                 case AT_RETURN_TO_TAPE:
+                    
+                    if(maneuverStep == 0){
+                        InitBackwardTrajectory(step2Inches);
+                        maneuverStep++;
+                     }
+                    
                     if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
-                        InitBackwardTrajectory(pivot90Degrees);
-                        
+
+                        switch (maneuverStep) {
+                            case 1:
+                                InitBackwardTrajectory(pivot45Degrees);
+                                maneuverStep++;
+                                break;
+                            case 2:
+                                SetTurningSpeed(-200);                               
+                                break;
+                            default:
+                                break;
+
+                            }
+                    }
+                    
+                    if(ThisEvent.EventType == TS_CENTER_ON_TAPE){
+                        StopDrive();
                         InitTapeFollowSubHSM();
+                        maneuverStep = 0;
+                        //SetForwardSpeed(MAX_FORWARD_SPEED);
                         currATState = AT_TAPE_FOLLOW;
                     }
-                   
-                    
                     
                     break;
                 default:

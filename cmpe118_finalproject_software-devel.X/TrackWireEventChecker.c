@@ -32,6 +32,7 @@ void InitializeTrackWire(void){
     //AD_AddPins(TW_LEFT_ADC | TW_RIGHT_ADC);
 }
 
+//weak trackwire 
 uint8_t RightTrackWireCheck(void){
     ES_Event ReturnEvent;
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
@@ -46,7 +47,7 @@ uint8_t RightTrackWireCheck(void){
     if(rightADCReading >= TRACKWIRE_TOUCHING_THRESHOLD){
         //TWIRE_PRINT("RIGHT_TOUCHING_THRESHOLD_REACHED %d", rightADCReading);
         curEvent = TW_RIGHT_TOUCHING;
-    } else if(rightADCReading >= TRACKWIRE_IN_SIGHT_THRESHOLD){
+    } else if(rightADCReading >= TRACKWIRE_WEAK_IN_SIGHT_THRESHOLD){
          //TWIRE_PRINT("RIGHT_IN_SIGHT_THRESHOLD_REACHED %d", rightADCReading);
         curEvent = TW_RIGHT_IN_SIGHT;     
     } else if((lastEvent == TW_RIGHT_TOUCHING) || (lastEvent == TW_RIGHT_IN_SIGHT)){
