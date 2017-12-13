@@ -190,7 +190,7 @@ static const char *EventNames[] = {
 #define TIMER_UNUSED ((pPostFunc)0)
 #define TIMER0_RESP_FUNC (PostDriveService)
 #define TIMER1_RESP_FUNC (PostRateGroupDriverService) // 1 Hz
-#define TIMER2_RESP_FUNC (PostHsmTopLevel) // 1 s
+#define TIMER2_RESP_FUNC (PostHsmTopLevel)
 #define TIMER3_RESP_FUNC TIMER_UNUSED
 #define TIMER4_RESP_FUNC TIMER_UNUSED
 #define TIMER5_RESP_FUNC TIMER_UNUSED
@@ -216,7 +216,7 @@ static const char *EventNames[] = {
 #define DRIVE_TIMER_TICKS 50
 
 #define HZ_1_TIMER     1 /*make sure this is enabled above and posting to the correct state machine*/
-#define HZ_1_TIMER_HSM 2
+#define TOP_LEVEL_TIMER 2
 #define HZ_50_TIMER   6
 #define HZ_500_TIMER  7
 #define ELEVATOR_SERVICE_TIMER 12

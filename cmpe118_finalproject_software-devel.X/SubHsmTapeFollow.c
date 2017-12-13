@@ -156,25 +156,30 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
                 switch(frontSensors) {
                     
                     case LCR_OFF:
-                        SetForwardSpeed((1000 * MAX_FORWARD_SPEED) / 2000);
-                        SetTurnRadius(FOLLOW_DIRECTION * MIN_TURN_RADIUS); // Turn Left
+                        SetForwardSpeed((1000 * MAX_FORWARD_SPEED) / 4000);
+                        SetTurningSpeed(-200);
 //                    case LR_ON:
 //                        break;
                         break;
                     case L_ON:
-                        SetTurnRadius(6 * MIN_TURN_RADIUS); // Turn Left
+                        SetForwardSpeed(MAX_FORWARD_SPEED);
+                        SetTurnRadius(26700); // Turn Left
                         break;
                     case LC_ON:
-                        SetTurnRadius(8 *MIN_TURN_RADIUS);
+                         SetForwardSpeed(MAX_FORWARD_SPEED);
+                        SetTurnRadius(35600 *MIN_TURN_RADIUS);
                         break;
                     case C_ON:
+                        SetForwardSpeed(MAX_FORWARD_SPEED);
                         SetTurnRadius(PLUS_INFINITY);
                         break;
                     case RC_ON:
-                        SetTurnRadius(-8 *MIN_TURN_RADIUS);
+                        SetForwardSpeed(MAX_FORWARD_SPEED);
+                        SetTurnRadius(-35600 *MIN_TURN_RADIUS);
                         break;
                     case R_ON:
-                        SetTurnRadius(-6*MIN_TURN_RADIUS);
+                        SetForwardSpeed(MAX_FORWARD_SPEED);
+                        SetTurnRadius(-26700*MIN_TURN_RADIUS);
                         break;
 //                    case LCR_ON:
 //                        SetForwardSpeed(0); //This shouldn't happen

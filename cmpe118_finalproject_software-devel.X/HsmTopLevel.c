@@ -83,12 +83,9 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
     static ATM6State    currATState      = AT_TAPE_FOLLOW;
     static StartupState currStartupState =  ST_FIND_BEACON;
     
-    
     ThisEvent = RunTrackWireAlignSubHSM(ThisEvent);
     ThisEvent = RunTapeFollowSubHSM(ThisEvent);
-      
     
-      
     switch (CurrentState) {
         case INIT:
             if (ThisEvent.EventType == ES_INIT) {
@@ -100,7 +97,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 
                 //LiftToAtM6();
                 
-                SWITCH_STATE(DESTROYING_ATM6);
+                SWITCH_STATE(STARTUP);
 
             }
 
@@ -112,33 +109,36 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             ON_ENTRY
             {
 //                SetTurningSpeed(200);
+                ES_Timer_InitTimer(TOP_LEVEL_TIMER, 1500);
             }
-            switch(currStartupState){
-                case ST_FIND_BEACON:
-                    if(ThisEvent.EventType == BC_HEAD_ON || ThisEvent.EventType == BC_IN_SIGHT){
-                        StopDrive();
-                        SetForwardSpeed(-5000); // Backup
-                        currStartupState = ST_FIND_TAPE;
-                    }
-                    break;
-            
-                case ST_FIND_TAPE:
-                    if(ThisEvent.EventType == TS_REAR_ON_TAPE){
-                        
-                        StopDrive();
-                        SetTurningSpeed(200);
-                        
-                    }
-                    
-                    if(ThisEvent.EventType == TS_CENTER_ON_TAPE){
-                        StopDrive();
-                        SWITCH_STATE(DESTROYING_ATM6);
-                    }
-                    
-                    break;
-                
+//            switch(currStartupState){
+//                case ST_FIND_BEACON:
+//                    if(ThisEvent.EventType == BC_HEAD_ON || ThisEvent.EventType == BC_IN_SIGHT){
+//                        StopDrive();
+//                        SetForwardSpeed(-5000); // Backup
+//                        currStartupState = ST_FIND_TAPE;
+//                    }
+//                    break;
+//            
+//                case ST_FIND_TAPE:
+//                    if(ThisEvent.EventType == TS_REAR_ON_TAPE){
+//                        
+//                        StopDrive();
+//                        SetTurningSpeed(200);
+//                        
+//                    }
+//                    
+//                    if(ThisEvent.EventType == TS_CENTER_ON_TAPE){
+//                        StopDrive();
+//                        SWITCH_STATE(DESTROYING_ATM6);
+//                    }
+//                    
+//                    break;
+//                
+//            }
+            if(ThisEvent.EventType == ES_TIMEOUT){
+                SWITCH_STATE(DESTROYING_ATM6);
             }
-            
             
             
             ON_EXIT{
