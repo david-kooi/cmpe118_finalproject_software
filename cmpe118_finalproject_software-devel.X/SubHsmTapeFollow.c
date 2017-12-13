@@ -34,6 +34,7 @@
 #include "SubHsmTapeFollow.h"
 #include "TapeSensorEventChecker.h"
 #include <stdio.h>
+
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -82,8 +83,7 @@ static uint8_t MyPriority;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitTapeFollowSubHSM(void)
-{
+uint8_t InitTapeFollowSubHSM(void) {
     ES_Event returnEvent;
 
     CurrentState = INIT_STATE;
@@ -109,96 +109,95 @@ uint8_t InitTapeFollowSubHSM(void)
  *       not consumed as these need to pass pack to the higher level state machine.
  * @author J. Edward Carryer, 2011.10.23 19:25
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
-ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
-{
+ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
     uint8_t makeTransition = FALSE; // use to flag transition
     TapeFollowSubHSMState_t nextState; // <- change type to correct enum
     ES_Tattle(); // trace call stack
     switch (CurrentState) {
-    case IDLE_STATE:
+        case IDLE_STATE:
             break;
-        
-    case INIT_STATE: // If current state is initial Psedudo State
-        ON_ENTRY{
+
+        case INIT_STATE: // If current state is initial Psedudo State
+            ON_ENTRY
+        {
             //SetForwardSpeed(MAX_FORWARD_SPEED);
         }
-        
-        if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
-        {
-            // this is where you would put any actions associated with the
-            // transition from the initial pseudo-state into the actual
-            // initial state
-            
-            
-            
-            // now put the machine into the actual initial state
-            SWITCH_STATE(REAR_ON_STATE);
-        }
-        break;
 
-    case REAR_ON_STATE: // in the first state, replace this with correct names
-//        ON_ENTRY{
-//            SetForwardSpeed(MAX_FORWARD_SPEED);
-//        }
-//        
-        switch (ThisEvent.EventType) {
-            case ES_ENTRY:
-                SetForwardSpeed(MAX_FORWARD_SPEED);
-            case TS_LEFT_ON_TAPE:
-            case TS_LEFT_OFF_TAPE:
-            case TS_CENTER_ON_TAPE:
-            case TS_CENTER_OFF_TAPE:
-            case TS_RIGHT_ON_TAPE:
-            case TS_RIGHT_OFF_TAPE:
-                SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
-                // Get the status of all front sensors:
-                TsFrontStatus frontSensors = LCR_ON & TS_GetCurrentSensors(); // (b0b111 = 0bLCR)
-                switch(frontSensors) {
-                    
-                    case LCR_OFF:
-                        SetForwardSpeed((1000 * MAX_FORWARD_SPEED) / 4000);
-                        SetTurningSpeed(-200);
-//                    case LR_ON:
-//                        break;
-                        break;
-                    case L_ON:
-                        SetForwardSpeed(MAX_FORWARD_SPEED);
-                        SetTurnRadius(26700); // Turn Left
-                        break;
-                    case LC_ON:
-                         SetForwardSpeed(MAX_FORWARD_SPEED);
-                        SetTurnRadius(35600 *MIN_TURN_RADIUS);
-                        break;
-                    case C_ON:
-                        SetForwardSpeed(MAX_FORWARD_SPEED);
-                        SetTurnRadius(PLUS_INFINITY);
-                        break;
-                    case RC_ON:
-                        SetForwardSpeed(MAX_FORWARD_SPEED);
-                        SetTurnRadius(-35600 *MIN_TURN_RADIUS);
-                        break;
-                    case R_ON:
-                        SetForwardSpeed(MAX_FORWARD_SPEED);
-                        SetTurnRadius(-26700*MIN_TURN_RADIUS);
-                        break;
-//                    case LCR_ON:
-//                        SetForwardSpeed(0); //This shouldn't happen
-//                        break;
-                    default:
-                        printf("Unexpected front tape sensor state!\r\n");
-                        break;
+            if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
+            {
+                // this is where you would put any actions associated with the
+                // transition from the initial pseudo-state into the actual
+                // initial state
+
+
+
+                // now put the machine into the actual initial state
+                SWITCH_STATE(REAR_ON_STATE);
+            }
+            break;
+
+        case REAR_ON_STATE: // in the first state, replace this with correct names
+            //        ON_ENTRY{
+            //            SetForwardSpeed(MAX_FORWARD_SPEED);
+            //        }
+            //        
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    SetForwardSpeed(MAX_FORWARD_SPEED);
+                case TS_LEFT_ON_TAPE:
+                case TS_LEFT_OFF_TAPE:
+                case TS_CENTER_ON_TAPE:
+                case TS_CENTER_OFF_TAPE:
+                case TS_RIGHT_ON_TAPE:
+                case TS_RIGHT_OFF_TAPE: {
+                    SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
+                    // Get the status of all front sensors:
+                    TsFrontStatus frontSensors = LCR_ON & TS_GetCurrentSensors(); // (b0b111 = 0bLCR)
+                    switch (frontSensors) {
+
+                        case LCR_OFF:
+                            SetForwardSpeed((1000 * MAX_FORWARD_SPEED) / 4000);
+                            SetTurningSpeed(-200);
+                            //                    case LR_ON:
+                            //                        break;
+                            break;
+                        case L_ON:
+                            SetForwardSpeed(MAX_FORWARD_SPEED);
+                            SetTurnRadius(26700); // Turn Left
+                            break;
+                        case LC_ON:
+                            SetForwardSpeed(MAX_FORWARD_SPEED);
+                            SetTurnRadius(35600);
+                            break;
+                        case C_ON:
+                            SetForwardSpeed(MAX_FORWARD_SPEED);
+                            SetTurnRadius(PLUS_INFINITY);
+                            break;
+                        case RC_ON:
+                            SetForwardSpeed(MAX_FORWARD_SPEED);
+                            SetTurnRadius(-35600);
+                            break;
+                        case R_ON:
+                            SetForwardSpeed(MAX_FORWARD_SPEED);
+                            SetTurnRadius(-26700);
+                            break;
+                            //                    case LCR_ON:
+                            //                        SetForwardSpeed(0); //This shouldn't happen
+                            //                        break;
+                        default:
+                            printf("Unexpected front tape sensor state!\r\n");
+                            break;
+                    }
+                    break;
                 }
-                break;
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
+            }
+            break;
 
-                
-            case ES_NO_EVENT:
-            default: // all unhandled events pass the event back up to the next level
-                break;
-        }
-        break;
-        
-    default: // all unhandled states fall into here
-        break;
+        default: // all unhandled states fall into here
+            break;
     } // end switch on Current State
 
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
@@ -212,7 +211,7 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent)
     return ThisEvent;
 }
 
-void TS_SetIdle(void){
+void TS_SetIdle(void) {
     CurrentState = IDLE_STATE;
 }
 
