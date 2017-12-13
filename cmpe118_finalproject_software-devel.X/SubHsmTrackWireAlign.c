@@ -198,8 +198,10 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                     LiftToAtM6();
                     break;
                     
-                case ELEVATOR_ARRIVED:
-                    CurrentState = IDLE_STATE;
+//                case ELEVATOR_ARRIVED:
+//                    CurrentState = IDLE_STATE;
+//                    break;
+                default:
                     break;
             }
 
