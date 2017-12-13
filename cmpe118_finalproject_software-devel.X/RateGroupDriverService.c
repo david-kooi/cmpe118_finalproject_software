@@ -157,7 +157,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 RightTrackWireCheck();
                 LeftTrackWireCheck();
                 CheckBeacon();
-//                CheckBumpers();
+                CheckBumpers();
                 
                 
                                 

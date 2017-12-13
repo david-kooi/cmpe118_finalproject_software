@@ -21,15 +21,15 @@ enum BumperIndex{RR_BUMPER = 8, RL_BUMPER=4, FR_BUMPER = 2, FL_BUMPER = 1};
 #define FL_BUMPER_MASK 0x01
 
 
-#define RR_BUMPER_PIN PIN10
-#define RL_BUMPER_PIN PIN8
+#define RR_BUMPER_PIN PIN9
+#define RL_BUMPER_PIN PIN7
 #define FR_BUMPER_PIN PIN6
 #define FL_BUMPER_PIN PIN4
 
-#define RR_BUMPER_NUM PORTZ, RR_BUMPER_PIN
-#define RL_BUMPER_NUM PORTZ, RL_BUMPER_PIN
-#define FR_BUMPER_NUM PORTZ, FR_BUMPER_PIN
-#define FL_BUMPER_NUM PORTZ, FL_BUMPER_PIN
+#define RR_BUMPER_NUM PORTY, RR_BUMPER_PIN
+#define RL_BUMPER_NUM PORTY, RL_BUMPER_PIN
+#define FR_BUMPER_NUM PORTY, FR_BUMPER_PIN
+#define FL_BUMPER_NUM PORTY, FL_BUMPER_PIN
 
 
 // Map the bumper event constants to BumperIndex
@@ -73,7 +73,7 @@ uint8_t ReadBumpers(){
     
     uint16_t portState = IO_PortsReadPort(PORTY);
     
-    //printf("PORT STATE: 0x%x\r\n",portState);
+    printf("PORT STATE: 0x%x\r\n",portState);
     
     // If the BUMPER_PIN is greater than 0, toggle the bumperState bit. Else, do nothing
     (~portState & RR_BUMPER_PIN) ? (bumperState ^= RR_BUMPER_MASK) : (bumperState = bumperState);
