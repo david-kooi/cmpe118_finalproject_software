@@ -61,7 +61,6 @@ static TopLevelState CurrentState;
 static uint8_t myPriority;
 
 uint8_t InitHsmTopLevel(uint8_t priority) {
-    
     myPriority = priority;
     CurrentState = INIT;
     return ES_PostToService(myPriority, INIT_EVENT);
@@ -101,7 +100,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 
                 //LiftToAtM6();
                 
-                SWITCH_STATE(STARTUP);
+                SWITCH_STATE(DESTROYING_ATM6);
 
             }
 
@@ -112,10 +111,8 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case STARTUP:
             ON_ENTRY
             {
-                SetTurningSpeed(200);
-            
+//                SetTurningSpeed(200);
             }
-            
             switch(currStartupState){
                 case ST_FIND_BEACON:
                     if(ThisEvent.EventType == BC_HEAD_ON || ThisEvent.EventType == BC_IN_SIGHT){
@@ -156,21 +153,17 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             }
             switch(currATState){
                 case AT_TAPE_FOLLOW:
-                    
-                    
                     if(ThisEvent.EventType == TW_RIGHT_IN_SIGHT){
                         StopDrive();
                         TS_SetIdle();
                         InitTrackWireAlignSubHSM();
                         currATState = AT_ALIGN_MANUVER;
                     }
-                    
-
                     break;
                 case AT_ALIGN_MANUVER:
                     
                     switch(ThisEvent.EventType){
-                        case TW_LEFT_OFF: // Finished with at destroy
+                        case ELEVATOR_ARRIVED: // Finished with at destroy
                             TW_SetIdle();
                             currATState = AT_RETURN_TO_TAPE;
                             break;

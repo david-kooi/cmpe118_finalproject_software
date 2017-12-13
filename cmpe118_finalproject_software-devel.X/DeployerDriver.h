@@ -11,6 +11,8 @@
 #define LOAD_PWM 1000
 #define DISPENSE_PWM 1700
 
+#define POST_DEPLOYER_EVENT PostHsmTopLevel
+
 
 uint8_t InitDeployerDriver(uint8_t priority);
 uint8_t PostDeployerDriver(ES_Event thisEvent);

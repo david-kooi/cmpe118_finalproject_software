@@ -39,6 +39,7 @@
         <itemPath>DriveService.h</itemPath>
         <itemPath>Trajectory.h</itemPath>
         <itemPath>DeployerDriver.h</itemPath>
+        <itemPath>ElevatorService.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="StateMachines" projectFiles="true">
         <itemPath>HsmTopLevel.h</itemPath>
@@ -47,7 +48,6 @@
       </logicalFolder>
       <itemPath>ES_Configure.h</itemPath>
       <itemPath>LsDerivative.h</itemPath>
-      <itemPath>Elevator.h</itemPath>
       <itemPath>Stepper.h</itemPath>
       <itemPath>RC_Servo_mod.h</itemPath>
     </logicalFolder>
@@ -86,6 +86,7 @@
         <itemPath>RateGroupDriverService.c</itemPath>
         <itemPath>DriveService.c</itemPath>
         <itemPath>DeployerDriver.c</itemPath>
+        <itemPath>ElevatorService.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="StateMachines" projectFiles="true">
         <itemPath>HsmTopLevel.c</itemPath>
@@ -94,7 +95,6 @@
       </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>LsDerivative.c</itemPath>
-      <itemPath>Elevator.c</itemPath>
       <itemPath>Stepper.c</itemPath>
       <itemPath>RC_Servo_mod.c</itemPath>
     </logicalFolder>

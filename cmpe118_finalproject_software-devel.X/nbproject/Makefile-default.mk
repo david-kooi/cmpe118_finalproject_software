@@ -85,7 +85,7 @@ FIXDEPS=fixDeps
 
 # The following macros may be used in the pre and post step lines
 Device=PIC32MX320F128H
-ProjectDir="C:\Users\dkooi\Desktop\cmpe118_finalproject_software\cmpe118_finalproject_software-devel.X"
+ProjectDir="C:\Users\jwloughb\MPLABXProjects\cmpe118_finalproject_software\cmpe118_finalproject_software-devel.X"
 ConfName=default
 ImagePath="dist\default\${IMAGE_TYPE}\cmpe118_finalproject_software-devel.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
 ImageDir="dist\default\${IMAGE_TYPE}"

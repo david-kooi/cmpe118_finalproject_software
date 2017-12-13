@@ -24,6 +24,16 @@ typedef enum {
     BETWEEN_STATE,
 } ElevatorState_t;
 
+static const char *StateNames[] = {
+	"INIT_STATE",
+	"HOME_STATE",
+	"ATM6_STATE",
+	"REN_STATE",
+	"SAFE_STATE",
+	"BETWEEN_STATE",
+};
+
+
 //static const char *StateNames[] = {
 //    "INIT_STATE",
 //    "HOME_STATE",
@@ -86,7 +96,7 @@ ES_Event RunElevatorService(ES_Event thisEvent) {
                                 wasSteppingLast = FALSE;
                                 returnEvent.EventType = ELEVATOR_ARRIVED;
                                 returnEvent.EventParam = currentState;
-                                currentState = nextState;
+                                nextState = currentState;
                                 POST_ELEVATOR_EVENT(returnEvent);
                                 break;
                             default:

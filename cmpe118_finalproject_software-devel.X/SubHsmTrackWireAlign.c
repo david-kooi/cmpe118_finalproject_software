@@ -35,7 +35,7 @@
 #include "TrackWireEventChecker.h"
 #include <stdio.h>
 #include "DriveService.h"
-#include "Elevator.h"
+#include "ElevatorService.h"
 #include "Trajectory.h"
 #include "RC_Servo_mod.h"
 extern Trajectory pivot180degrees;
@@ -128,7 +128,7 @@ uint8_t InitTrackWireAlignSubHSM(void) {
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
 ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
     static ES_Event dtEvent; // Derivative event
-    
+
     static uint16_t rightValue = 0;
     static uint16_t leftValue = 0;
     static int maneuverStep;
@@ -138,11 +138,11 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
     TrackWireAlignSubHSMState_t nextState; // <- change type to correct enum
 
     ES_Tattle(); // trace call stack
-    
-    if(ThisEvent.EventType == TW_LEFT_OFF){
-     printf("TRACK TW_LEFT_OFF\r\n");
+
+    if (ThisEvent.EventType == TW_LEFT_OFF) {
+        printf("TRACK TW_LEFT_OFF\r\n");
     }
-            
+
     switch (CurrentState) {
         case IDLE_STATE:
             break;
@@ -153,32 +153,32 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                 // transition from the initial pseudo-state into the actual
                 // initial state
 
-//                SWITCH_STATE(ORIENT_STATE);
+                //                SWITCH_STATE(ORIENT_STATE);
                 SWITCH_STATE(ALIGN_STATE);
             }
             break;
-            
+
         case ORIENT_STATE: // in the first state, replace this with correct names
             ON_ENTRY
-            {
-                //SetForwardSpeed(MAX_FORWARD_SPEED);
-                SetTurningSpeed(90);
-                dtEvent.EventType = TW_START_DERIVATIVE;
-                dtEvent.EventParam = 0;
-                PostRateGroupDriverService(dtEvent);
-                maneuverStep = 0;
-            }
-            
-            switch(ThisEvent.EventType){
- 
+        {
+            //SetForwardSpeed(MAX_FORWARD_SPEED);
+            SetTurningSpeed(90);
+            dtEvent.EventType = TW_START_DERIVATIVE;
+            dtEvent.EventParam = 0;
+            PostRateGroupDriverService(dtEvent);
+            maneuverStep = 0;
+        }
+
+            switch (ThisEvent.EventType) {
+
                 case TW_ZERO_DERIVATIVE:
                     StopDrive();
                     InitBackwardTrajectory(pivot5Degrees);
                     maneuverStep++;
                     break;
-                    
+
                 case TRAJECTORY_COMPLETE:
-                    switch(maneuverStep){
+                    switch (maneuverStep) {
                         case 1:
                             InitForwardTrajectory(step2Inches);
                             maneuverStep++;
@@ -188,22 +188,25 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                             //RC_SetPulseTime(RC_PORTX03, 1000);
                             StopDrive();
                             DispenseBall();
-                            LiftToAtM6();
                             break;
                         default:
-                            break;      
+                            break;
                     }
-                    
                     break;
-                case TW_LEFT_OFF:
+                    
+                case BALL_DEPLOYED:
+                    LiftToAtM6();
+                    break;
+                    
+                case ELEVATOR_ARRIVED:
                     CurrentState = IDLE_STATE;
                     break;
             }
-                    
-            
+
+
             break; //ORIENT_STATE
-            
-            
+
+
         case ALIGN_STATE:
             ON_ENTRY
         {
@@ -220,7 +223,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                         break;
                     case 3:
                         StopDrive();
-                        SWITCH_STATE(ORIENT_STATE); 
+                        SWITCH_STATE(ORIENT_STATE);
                         break;
                     default:
                         break;
@@ -228,12 +231,12 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                 }
                 maneuverStep++;
             }
-            
+
             ON_EXIT{
                 //SetForwardSpeed((MAX_FORWARD_SPEED) / 3);
             }
-            break;  
-            
+            break;
+
         default: // all unhandled states fall into here
             break;
     } // end switch on Current State
@@ -249,7 +252,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
     return ThisEvent;
 }
 
-void TW_SetIdle(void){
+void TW_SetIdle(void) {
     CurrentState = IDLE_STATE;
 }
 

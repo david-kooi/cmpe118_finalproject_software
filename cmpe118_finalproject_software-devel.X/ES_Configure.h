@@ -30,7 +30,7 @@
 //#define POSTFUNCTION_FOR_KEYBOARD_INPUT PostGenericService
 
 //define for TattleTale
-//#define USE_TATTLETALE
+#define USE_TATTLETALE
 
 //uncomment to supress the entry and exit events
 //#define SUPPRESS_EXIT_ENTRY_IN_TATTLE
@@ -89,7 +89,7 @@ typedef enum {
     TW_RIGHT_TOUCHING,
     TW_RIGHT_IN_SIGHT,
     TW_RIGHT_OFF,
-                   
+
     TW_OFF,
     TW_SHIFTED_LEFT,
     TW_CENTER,
@@ -99,15 +99,20 @@ typedef enum {
     TW_START_DERIVATIVE,
     TW_ZERO_DERIVATIVE,
     TW_NULL_DERIVATIVE,
-            
+
     // Beacon Events
     BC_IN_SIGHT,
     BC_HEAD_ON,
     BC_OFF,
-            
+
+    // Deployer Events
+    BALL_DEPLOYED,
+
     // Elevator Events
     ELEVATOR_ARRIVED,
-    ELEVATOR_STEP_COMMAND,            
+    ELEVATOR_STEP_COMMAND,
+            
+            
     NUMBEROFEVENTS,
 } ES_EventTyp_t;
 
@@ -161,6 +166,7 @@ static const char *EventNames[] = {
 	"BC_IN_SIGHT",
 	"BC_HEAD_ON",
 	"BC_OFF",
+	"BALL_DEPLOYED",
 	"ELEVATOR_ARRIVED",
 	"ELEVATOR_STEP_COMMAND",
 	"NUMBEROFEVENTS",
