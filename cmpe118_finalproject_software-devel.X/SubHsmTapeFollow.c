@@ -163,11 +163,11 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
                             break;
                         case L_ON:
                             SetForwardSpeed(MAX_FORWARD_SPEED);
-                            SetTurnRadius(26700); // Turn Left
+                            SetTurnRadius(20000); // Turn Left
                             break;
                         case LC_ON:
                             SetForwardSpeed(MAX_FORWARD_SPEED);
-                            SetTurnRadius(35600);
+                            SetTurnRadius(30000);
                             break;
                         case C_ON:
                             SetForwardSpeed(MAX_FORWARD_SPEED);
@@ -175,11 +175,11 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
                             break;
                         case RC_ON:
                             SetForwardSpeed(MAX_FORWARD_SPEED);
-                            SetTurnRadius(-35600);
+                            SetTurnRadius(-30000);
                             break;
                         case R_ON:
                             SetForwardSpeed(MAX_FORWARD_SPEED);
-                            SetTurnRadius(-26700);
+                            SetTurnRadius(-20000);
                             break;
                             //                    case LCR_ON:
                             //                        SetForwardSpeed(0); //This shouldn't happen

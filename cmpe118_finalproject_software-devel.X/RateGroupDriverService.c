@@ -205,7 +205,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
  ******************************************************************************/
 #define LOWER_VAL_THRESHOLD 30
 #define LOWER_DT_THRESHOLD 100
-#define UPPER_THRESHOLD 200
+#define UPPER_THRESHOLD 100
 #define NUM_SAMPLES 10
 #define MIN_VAL_THRESHOLD 300
 void DerivativeSampleTrackWire(void){
