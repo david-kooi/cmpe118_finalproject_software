@@ -118,7 +118,10 @@ typedef enum {
     // Collision Events
     COLLISION_COMPLETE,
             
-    NUMBEROFEVENTS,
+    // AT Events
+            AT_KILLED,
+            
+            NUMBEROFEVENTS,
 } ES_EventTyp_t;
 
 static const char *EventNames[] = {
@@ -175,6 +178,7 @@ static const char *EventNames[] = {
 	"ELEVATOR_ARRIVED",
 	"ELEVATOR_STEP_COMMAND",
 	"COLLISION_COMPLETE",
+	"AT_KILLED",
 	"NUMBEROFEVENTS",
 };
 
@@ -199,7 +203,7 @@ static const char *EventNames[] = {
 #define TIMER2_RESP_FUNC (PostHsmTopLevel)
 #define TIMER3_RESP_FUNC TIMER_UNUSED
 #define TIMER4_RESP_FUNC TIMER_UNUSED
-#define TIMER5_RESP_FUNC TIMER_UNUSED
+#define TIMER5_RESP_FUNC (PostHsmTopLevel)
 #define TIMER6_RESP_FUNC (PostRateGroupDriverService) // 20 Hz
 #define TIMER7_RESP_FUNC (PostRateGroupDriverService) // 500 Hz
 #define TIMER8_RESP_FUNC  (PostHsmTopLevel)
@@ -223,6 +227,7 @@ static const char *EventNames[] = {
 
 #define HZ_1_TIMER     1 /*make sure this is enabled above and posting to the correct state machine*/
 #define TOP_LEVEL_TIMER 2
+#define WIGGLE_TIMER 5
 #define HZ_50_TIMER   6
 #define HZ_500_TIMER  7
 #define TW_FINAL_TO 8

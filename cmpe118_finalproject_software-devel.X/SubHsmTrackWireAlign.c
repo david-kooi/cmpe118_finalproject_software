@@ -170,9 +170,8 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
         {
             //SetForwardSpeed(MAX_FORWARD_SPEED);
             SetTurningSpeed(90);
-            TwSampleOn();
             StartDerivative();
-            ES_Timer_InitTimer(TW_ALIGN_TIMER,6600);
+            ES_Timer_InitTimer(TW_ALIGN_TIMER,6800);
             ES_Timer_InitTimer(TW_FINAL_TO, 16000);
             maneuverStep = 1;
         }
@@ -206,16 +205,29 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                     switch (ThisEvent.EventType) {
 
                         case ES_TIMEOUT:
-                            if(ThisEvent.EventParam == TW_ALIGN_TIMER){
-                                StopDerivative();  
-                                orientSubState = ORIENT_SUB_STATE_CORRECTING;
-                                InitBackwardTrajectory(pivot45Degrees);
-                                maneuverStep = 1;
+                            switch(ThisEvent.EventParam){
+                                case TW_ALIGN_TIMER:
+                                {
+                                    StopDerivative();  
+                                    orientSubState = ORIENT_SUB_STATE_CORRECTING;
+                                    InitBackwardTrajectory(pivot45Degrees);
+                                    maneuverStep = 1;
+
+                                    break;
+                                }
+                                case WIGGLE_TIMER:
+                                {
+                                    StopDrive();
+                                    ES_Event returnEvent;
+                                    returnEvent.EventType = AT_KILLED;
+                                    PostHsmTopLevel(returnEvent);
+                                    break;
+                                }
+                                default:
+                                    break;
                             }
-                            break;
-
-
                         case TW_ZERO_DERIVATIVE:
+                            ES_Timer_StopTimer(TW_FINAL_TO);
                             ES_Timer_StopTimer(TW_ALIGN_TIMER);
                             StopDrive();
                             InitBackwardTrajectory(pivot5Degrees);
@@ -241,16 +253,25 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                         case BALL_DEPLOYED:
                             LiftToAtM6();
                             break;
+                            
+                        case ELEVATOR_ARRIVED:
+                            ES_Timer_InitTimer(WIGGLE_TIMER, 500);
+                            SetTurningSpeed(100);
+                            
+                            break;
+                            
+                            
                         default:
                             break;
+                    
+                    
+                    
                     }
                     
                     
                     
 
-    //                case ELEVATOR_ARRIVED:
-    //                    CurrentState = IDLE_STATE;
-    //                    break;
+                    
                     break;
                 }// ORIENT_SUB_STATE_NOMINAL case
                 
@@ -283,6 +304,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                         break;
                     case 3:
                         StopDrive();
+                        orientSubState = ORIENT_SUB_STATE_NOMINAL;
                         SWITCH_STATE(ORIENT_STATE);
                         break;
                     default:

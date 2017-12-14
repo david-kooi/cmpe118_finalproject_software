@@ -328,7 +328,7 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                         case TS_CENTER_ON_TAPE:
                         {
                             StopDrive();
-                            SetForwardSpeed(5000);
+                            SetForwardSpeed(10000);
                             //ThrottleTapeFollow();
                             //InitTapeFollowSubHSM();  
                             ES_Timer_InitTimer(REN_LAUNCH_TIMER, 5000);
@@ -339,6 +339,16 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                             StopDrive();
                             if(ThisEvent.EventParam == REN_LAUNCH_TIMER){
                                 DispenseBall();
+                            }
+                            
+                            if(ThisEvent.EventParam == WIGGLE_TIMER){
+                                toggle ^= 0xFF;
+                                if(toggle){
+                                    SetTurningSpeed(75);
+                                }else{
+                                    SetTurningSpeed(-75);
+                                }
+                                ES_Timer_InitTimer(WIGGLE_TIMER, 300);
                             }
                             break;
                         }
@@ -358,17 +368,8 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                             break;
                         }
                         case ELEVATOR_ARRIVED:
-                            TS_SetIdle();
-                        case TRAJECTORY_COMPLETE:
-                        {
-                            toggle ^= 0xFF;
-                            if(toggle){
-                                SetTurningSpeed(75);
-                            }else{
-                                SetTurningSpeed(-75);
-                            }
+                            ES_Timer_InitTimer(WIGGLE_TIMER, 300);
                             break;
-                        }
                         case BC_OFF:
                         {
                             StopDrive();

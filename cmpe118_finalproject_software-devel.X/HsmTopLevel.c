@@ -167,7 +167,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                         StopDrive();
                         InitTrackWireAlignSubHSM();
                         currATState = AT_ALIGN_MANUVER;
-                        TwSampleOff();
+//                        TwSampleOff();
                     }else if(ThisEvent.EventType == FR_BUMPER_ON || ThisEvent.EventType == FL_BUMPER_ON){
                         TS_SetIdle();
                         StopDrive();
@@ -192,7 +192,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                                 currATState = AT_TAPE_FOLLOW;
                             }
                         
-                        case ELEVATOR_ARRIVED: // Finished with atm6 destroy
+                        case AT_KILLED: // Finished with atm6 destroy
                             TW_SetIdle();
                             currATState = AT_RETURN_TO_TAPE;
                             InitBackwardTrajectory(step2Inches);
