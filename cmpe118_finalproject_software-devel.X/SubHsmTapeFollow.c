@@ -159,28 +159,32 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
                         case LCR_OFF:
 //                            SetForwardSpeed((1000 * MAX_FORWARD_SPEED) / 4000);
                             SetForwardSpeed(0);
-                            SetTurningSpeed(-200);
+                            SetTurningSpeed(-130);
                             //                    case LR_ON:
                             //                        break;
                             break;
                         case L_ON:
-                            SetForwardSpeed(MAX_FORWARD_SPEED);
+                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
+//                            SetTurnRadius(6 * MIN_TURN_RADIUS); // Turn Left
                             SetTurnRadius(15000); // Turn Left
                             break;
                         case LC_ON:
-                            SetForwardSpeed(MAX_FORWARD_SPEED);
+                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
+//                            SetTurnRadius(8 *MIN_TURN_RADIUS);
                             SetTurnRadius(20000);
                             break;
                         case C_ON:
-                            SetForwardSpeed(MAX_FORWARD_SPEED);
+                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
                             SetTurnRadius(PLUS_INFINITY);
                             break;
                         case RC_ON:
-                            SetForwardSpeed(MAX_FORWARD_SPEED);
+                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
+//                            SetTurnRadius(-8 *MIN_TURN_RADIUS);
                             SetTurnRadius(-20000);
                             break;
                         case R_ON:
-                            SetForwardSpeed(MAX_FORWARD_SPEED);
+                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
+//                            SetTurnRadius(-6 * MIN_TURN_RADIUS); // Turn right
                             SetTurnRadius(-15000);
                             break;
                             //                    case LCR_ON:
