@@ -36,6 +36,7 @@
 #include "Trajectory.h"
 #include "DriveService.h"
 #include "BeaconEventChecker.h"
+#include "ElevatorService.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -117,6 +118,7 @@ uint8_t InitCollisionSubHSM(void) {
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
 ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
     static uint8_t snubTimerExpired = 0;
+    static uint8_t isLifted         = 0;
     
     uint8_t makeTransition = FALSE; // use to flag transition
     CollisionSubHSMState_t nextState; // <- change type to correct enum
@@ -131,14 +133,14 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
         {// If current state is initial Psedudo State
             if (ThisEvent.EventType == ES_INIT) {
 
-                printf("START TRAJ\r\n");
+//                printf("START TRAJ\r\n");
                 
             
             
                 if(atm6KillCount == 3){
-
+                    SWITCH_STATE(REN_APPROACH);
                 }else{
-                    printf("COLLISION SWITCH\r\n");
+                    //printf("COLLISION SWITCH\r\n");
                     SWITCH_STATE(COLLISION_AVOID);
                     ES_Timer_InitTimer(COLLISION_TAPE_SNUB_TIMER, 5000);
                 }
@@ -216,6 +218,7 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                 switch(maneuverStep){
                     case 1:
                         // Raise evavator to check for beacon
+                        LiftToRen();
                         
                         maneuverStep++;
                         break;
@@ -228,7 +231,7 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                         maneuverStep++;
                         break;
                     case 4:
-                        InitForwardTrajectory(step8Inches);
+                        InitForwardTrajectory(step5Inches);
                         maneuverStep++;
                         break;
                     case 5:
@@ -236,33 +239,35 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                         maneuverStep++;
                         break;
                     case 6:
-                        InitForwardTrajectory(step10Inches);
+                        SetForwardSpeed(7000);
                         maneuverStep++;
                         break;
-                    case 7:
-                        InitForwardTrajectory(step5Inches);
-                    case 8:
-                        InitForwardTrajectory(pivot90Degrees);
-                        maneuverStep++;
-                        break;
-                    case 9:
-                        SetForwardSpeed(10000);
-                        maneuverStep++;
+//                    case 7:
+//                        InitForwardTrajectory(step5Inches);
+//                    case 8:
+//                        InitForwardTrajectory(pivot90Degrees);
+//                        maneuverStep++;
+//                        break;
+//                    case 9:
+//                        SetForwardSpeed(10000);
+//                        maneuverStep++;
                     default:
                         break;
                 }
             }
             
             // Check beacon levels
-            if(ThisEvent.EventType == ELEVATOR_ARRIVED){
-                uint16_t beaconVal = ReadBeacon();
-                if(beaconVal > HI_HEAD_ON_THRESH){
-                    // Send a false TRAJECTORY_COMPLETE event to continue maneuver
-                    ES_Event ReturnEvent;
-                    ReturnEvent.EventType = TRAJECTORY_COMPLETE;
-                    PostHsmTopLevel(ReturnEvent);
-                }
+            if(ThisEvent.EventType == ELEVATOR_ARRIVED && isLifted == 0){
+                isLifted = 1; 
+                ElevatorHome();
             }
+            
+            if(ThisEvent.EventType == BC_HEAD_ON && isLifted){
+                ES_Event ReturnEvent;
+                ReturnEvent.EventType = TRAJECTORY_COMPLETE;
+                PostHsmTopLevel(ReturnEvent); 
+            }
+            
             
             if(ThisEvent.EventType == FR_BUMPER_ON || ThisEvent.EventType == FL_BUMPER_ON){
                 StopDrive();
@@ -272,13 +277,13 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
             // Ren ship approach
             if(ThisEvent.EventType == TS_REAR_ON_TAPE){
                 StopDrive();
-               
+                InitBackwardTrajectory(pivot90Degrees);
             }
             
             
             
             ON_EXIT{
-                
+                isLifted = 0;
             }
             break;
         }
