@@ -24,7 +24,7 @@ typedef struct traj {
 } Trajectory;
 
 
-Trajectory pivot135Degrees = {
+__attribute__((space(prog))) Trajectory pivot135Degrees = {
 	28,
 	{{0, 0, 0, 0},
 	{0, 0, 54, 1972},
@@ -56,7 +56,7 @@ Trajectory pivot135Degrees = {
 	{0, 0, 0, 0}}
 };
 
-Trajectory pivot90Degrees = {
+__attribute__((space(prog))) Trajectory pivot90Degrees = {
 	23,
 	{{0, 0, 0, 0},
 	{0, 0, 54, 1977},
@@ -83,7 +83,7 @@ Trajectory pivot90Degrees = {
 	{0, 0, 0, 0}}
 };
 
-Trajectory pivot45Degrees = {
+__attribute__((space(prog))) Trajectory pivot45Degrees = {
 	19,
 	{{0, 0, 0, 0},
 	{0, 0, 54, 1953},
@@ -106,13 +106,13 @@ Trajectory pivot45Degrees = {
 	{0, 0, 0, 0}}
 };
 
-Trajectory pivot5Degrees = {
+__attribute__((space(prog))) Trajectory pivot5Degrees = {
 	10,
 	{{0, 0, 0, 0},
-//	{0, 0, 52, 1885},
-//	{0, 0, 198, 3769},
-//	{0, 0, 353, 2262},
-//	{0, 0, 415, 377},
+	{0, 0, 52, 1885},
+	{0, 0, 198, 3769},
+	{0, 0, 353, 2262},
+	{0, 0, 415, 377},
 	{0, 0, 3000, 1885},
 	{0, 0, 3000, 3769},
 	{0, 0, 3000, 2262},
@@ -126,7 +126,7 @@ Trajectory pivot5Degrees = {
 
 
 
-Trajectory step10Inches = {
+__attribute__((space(prog))) Trajectory step10Inches = {
 	29,
 	{{0, 0, 0, 0},
 	{205, 7470, 0, 0},
@@ -159,7 +159,7 @@ Trajectory step10Inches = {
 	{0, 0, 0, 0}}
 };
 
-Trajectory step8Inches = {
+__attribute__((space(prog))) Trajectory step8Inches = {
 	26,
 	{{0, 0, 0, 0},
 	{547, 19900, 0, 0},
@@ -189,7 +189,7 @@ Trajectory step8Inches = {
 	{0, 0, 0, 0}}
 };
 
-Trajectory step5Inches = {
+__attribute__((space(prog))) Trajectory step5Inches = {
 	22,
 	{{0, 0, 0, 0},
 	{205, 7440, 0, 0},
@@ -215,7 +215,7 @@ Trajectory step5Inches = {
 	{0, 0, 0, 0}}
 };
 
-Trajectory step2Inches = {
+__attribute__((space(prog))) Trajectory step2Inches = {
 	14,
 	{{0, 0, 0, 0},
 	{546, 19871, 0, 0},
