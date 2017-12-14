@@ -115,13 +115,15 @@ ES_Event RunElevatorService(ES_Event thisEvent) {
         case REN_STATE:
         case SAFE_STATE:
             switch (thisEvent.EventType) {
-                case ELEVATOR_STEP_COMMAND:
+                case ELEVATOR_STEP_COMMAND: {
                     nextState = thisEvent.EventParam;
                     int16_t steps = stepsToState(nextState);
                     Stepper_InitSteps(DIRECTION(steps), ABS(steps));
                     wasSteppingLast = TRUE;
+                    ES_Timer_InitTimer(ELEVATOR_SERVICE_TIMER, 5);
                     currentState = BETWEEN_STATE;
                     break;
+                }
                 default:
                     break;
             }

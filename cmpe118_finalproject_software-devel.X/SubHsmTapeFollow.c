@@ -132,6 +132,8 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
 
 
                 // now put the machine into the actual initial state
+                EnableDriveMotors();
+                StopDrive();
                 SWITCH_STATE(REAR_ON_STATE);
             }
             break;
@@ -143,31 +145,31 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
             //        
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    SetForwardSpeed(MAX_FORWARD_SPEED);
+//                    SetForwardSpeed(MAX_FORWARD_SPEED);
                 case TS_LEFT_ON_TAPE:
                 case TS_LEFT_OFF_TAPE:
                 case TS_CENTER_ON_TAPE:
                 case TS_CENTER_OFF_TAPE:
                 case TS_RIGHT_ON_TAPE:
                 case TS_RIGHT_OFF_TAPE: {
-                    SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
+//                    SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
                     // Get the status of all front sensors:
                     TsFrontStatus frontSensors = LCR_ON & TS_GetCurrentSensors(); // (b0b111 = 0bLCR)
                     switch (frontSensors) {
-
                         case LCR_OFF:
-                            SetForwardSpeed((1000 * MAX_FORWARD_SPEED) / 4000);
+//                            SetForwardSpeed((1000 * MAX_FORWARD_SPEED) / 4000);
+                            SetForwardSpeed(0);
                             SetTurningSpeed(-200);
                             //                    case LR_ON:
                             //                        break;
                             break;
                         case L_ON:
                             SetForwardSpeed(MAX_FORWARD_SPEED);
-                            SetTurnRadius(20000); // Turn Left
+                            SetTurnRadius(15000); // Turn Left
                             break;
                         case LC_ON:
                             SetForwardSpeed(MAX_FORWARD_SPEED);
-                            SetTurnRadius(30000);
+                            SetTurnRadius(20000);
                             break;
                         case C_ON:
                             SetForwardSpeed(MAX_FORWARD_SPEED);
@@ -175,11 +177,11 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
                             break;
                         case RC_ON:
                             SetForwardSpeed(MAX_FORWARD_SPEED);
-                            SetTurnRadius(-30000);
+                            SetTurnRadius(-20000);
                             break;
                         case R_ON:
                             SetForwardSpeed(MAX_FORWARD_SPEED);
-                            SetTurnRadius(-20000);
+                            SetTurnRadius(-15000);
                             break;
                             //                    case LCR_ON:
                             //                        SetForwardSpeed(0); //This shouldn't happen

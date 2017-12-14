@@ -20,7 +20,7 @@
 #include "SubHsmTapeFollow.h"
 #include "SubHsmTrackWireAlign.h"
 #include <stdio.h>
-#include "Elevator.h"
+#include "ElevatorService.h"
 
 
 extern Trajectory pivot90Degrees;
@@ -90,7 +90,6 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case INIT:
             if (ThisEvent.EventType == ES_INIT) {
                 printf("Initializing Top Level State Machine\r\n");
-                EnableDriveMotors();
                 
 //                                SetForwardSpeed(MAX_FORWARD_SPEED);
                 //                SetTurningSpeed(0);
@@ -166,44 +165,29 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                         case ELEVATOR_ARRIVED: // Finished with at destroy
                             TW_SetIdle();
                             currATState = AT_RETURN_TO_TAPE;
+                            InitBackwardTrajectory(step2Inches);
+                            break;
+                        default:
                             break;
                     }
+                
                     
 
                     break;
                     
                 case AT_RETURN_TO_TAPE:
                     
-                    if(maneuverStep == 0){
-                        InitBackwardTrajectory(step2Inches);
-                        maneuverStep++;
-                     }
                     
                     if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
 
-                        switch (maneuverStep) {
-                            case 1:
-                                InitBackwardTrajectory(pivot45Degrees);
-                                maneuverStep++;
-                                break;
-                            case 2:
-                                InitTapeFollowSubHSM();
-                                //SetTurningSpeed(-200);                               
-                                break;
-                            default:
-                                break;
-
-                            }
-                    }
-                    
-                    if(ThisEvent.EventType == TS_CENTER_ON_TAPE){
-                        StopDrive();
+                        SetTurningSpeed(-100); 
+                        ElevatorHome();
                         InitTapeFollowSubHSM();
-                        maneuverStep = 0;
-                        //SetForwardSpeed(MAX_FORWARD_SPEED);
                         currATState = AT_TAPE_FOLLOW;
+
+                               
                     }
-                    
+
                     break;
                 default:
                     break;
