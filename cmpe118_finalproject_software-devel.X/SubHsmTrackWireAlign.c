@@ -38,6 +38,7 @@
 #include "ElevatorService.h"
 #include "Trajectory.h"
 #include "RC_Servo_mod.h"
+#include "RateGroupDriverService.h"
 extern Trajectory pivot180degrees;
 extern Trajectory pivot90Degrees;
 extern Trajectory step10Inches;
@@ -67,6 +68,11 @@ static const char *StateNames[] = {
 };
 
 
+typedef enum{
+    ORIENT_SUB_STATE_NOMINAL,
+    ORIENT_SUB_STATE_CORRECTING,
+}OrientSubState_t;
+
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -79,6 +85,7 @@ static const char *StateNames[] = {
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
 
+static OrientSubState_t            orientSubState = ORIENT_SUB_STATE_NOMINAL;
 static TrackWireAlignSubHSMState_t CurrentState = IDLE_STATE; // <- change name to match ENUM
 static uint8_t MyPriority;
 
@@ -163,47 +170,95 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
         {
             //SetForwardSpeed(MAX_FORWARD_SPEED);
             SetTurningSpeed(90);
-            dtEvent.EventType = TW_START_DERIVATIVE;
-            dtEvent.EventParam = 0;
-            PostRateGroupDriverService(dtEvent);
-            maneuverStep = 0;
+            StartDerivative();
+            ES_Timer_InitTimer(TW_ALIGN_TIMER, 7000);
+            maneuverStep = 1;
         }
 
-            switch (ThisEvent.EventType) {
+            switch(orientSubState){
+                
+                case ORIENT_SUB_STATE_CORRECTING:
+                {
+                    
+                    if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
+                        switch(maneuverStep){
+                            case 1:
+                                InitForwardTrajectory(step2Inches);
+                                maneuverStep++;
+                                break;
+                            case 2:
+                                orientSubState = ORIENT_SUB_STATE_NOMINAL;
+                                SWITCH_STATE(ORIENT_STATE);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    
+                    break;               
+                }
+                
+                
+                case ORIENT_SUB_STATE_NOMINAL:
+                {
+                    switch (ThisEvent.EventType) {
 
-                case TW_ZERO_DERIVATIVE:
-                    StopDrive();
-                    InitBackwardTrajectory(pivot5Degrees);
-                    maneuverStep++;
-                    break;
-
-                case TRAJECTORY_COMPLETE:
-                    switch (maneuverStep) {
-                        case 1:
-                            InitForwardTrajectory(step2Inches);
-                            maneuverStep++;
-                            //RC_SetPulseTime(RC_PORTX03, 1700);
+                        case ES_TIMEOUT:
+                            if(ThisEvent.EventParam == TW_ALIGN_TIMER){
+                                StopDerivative();  
+                                orientSubState = ORIENT_SUB_STATE_CORRECTING;
+                                InitBackwardTrajectory(pivot45Degrees);
+                                maneuverStep = 1;
+                            }
                             break;
-                        case 2:
-                            //RC_SetPulseTime(RC_PORTX03, 1000);
+
+
+                        case TW_ZERO_DERIVATIVE:
                             StopDrive();
-                            DispenseBall();
+                            InitBackwardTrajectory(pivot5Degrees);
+                            break;
+
+                        case TRAJECTORY_COMPLETE:
+                            switch (maneuverStep) {
+                                case 1:
+                                    InitForwardTrajectory(step2Inches);
+                                    maneuverStep++;
+                                    //RC_SetPulseTime(RC_PORTX03, 1700);
+                                    break;
+                                case 2:
+                                    //RC_SetPulseTime(RC_PORTX03, 1000);
+                                    StopDrive();
+                                    DispenseBall();
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                            
+                        case BALL_DEPLOYED:
+                            LiftToAtM6();
                             break;
                         default:
                             break;
                     }
-                    break;
                     
-                case BALL_DEPLOYED:
-                    LiftToAtM6();
-                    break;
                     
-//                case ELEVATOR_ARRIVED:
-//                    CurrentState = IDLE_STATE;
-//                    break;
+                    
+
+    //                case ELEVATOR_ARRIVED:
+    //                    CurrentState = IDLE_STATE;
+    //                    break;
+                    break;
+                }// ORIENT_SUB_STATE_NOMINAL case
+                
+                
+                
+                
                 default:
                     break;
-            }
+            } // Orient Sub State machine
+            
+                
 
 
             break; //ORIENT_STATE

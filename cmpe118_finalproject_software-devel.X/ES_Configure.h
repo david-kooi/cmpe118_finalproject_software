@@ -202,7 +202,7 @@ static const char *EventNames[] = {
 #define TIMER11_RESP_FUNC TIMER_UNUSED
 #define TIMER12_RESP_FUNC (PostElevatorService)
 #define TIMER13_RESP_FUNC (PostDeployerDriver)
-#define TIMER14_RESP_FUNC TIMER_UNUSED
+#define TIMER14_RESP_FUNC (PostHsmTopLevel)
 #define TIMER15_RESP_FUNC (PostRateGroupDriverService) // TS Sync Timer
 
 
@@ -221,6 +221,7 @@ static const char *EventNames[] = {
 #define HZ_500_TIMER  7
 #define ELEVATOR_SERVICE_TIMER 12
 #define BALL_DRIVER_TIMER 13
+#define TW_ALIGN_TIMER 14
 #define TS_SYNC_TIMER 15
 
 /****************************************************************************/

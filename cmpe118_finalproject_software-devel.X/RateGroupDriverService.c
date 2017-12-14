@@ -130,11 +130,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
         //DEBUG_PRINT("ES_INIT");
         break;
 
-    case TW_START_DERIVATIVE:
-        //printf("START\r\n");
-        dtSamplingTrackWire = TRUE;
-        break;
-        
+                
     case ES_TIMEOUT:
         // Handle the various rate groups
         switch(ThisEvent.EventParam){
@@ -198,6 +194,14 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
 
 
     return ReturnEvent;
+}
+
+uint8_t StartDerivative(){
+    dtSamplingTrackWire = TRUE;
+}
+
+uint8_t StopDerivative(){
+    dtSamplingTrackWire = FALSE;
 }
 
 /*******************************************************************************
