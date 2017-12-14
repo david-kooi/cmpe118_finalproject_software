@@ -140,7 +140,7 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                 }else{
                     printf("COLLISION SWITCH\r\n");
                     SWITCH_STATE(COLLISION_AVOID);
-                    ES_Timer_InitTimer(COLLISION_TAPE_SNUB_TIMER, 3000);
+                    ES_Timer_InitTimer(COLLISION_TAPE_SNUB_TIMER, 5000);
                 }
             }
             
