@@ -150,8 +150,13 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
             case HZ_50_TIMER:
                 //DEBUG_PRINT("20HZ TICK");
                 TS_StartSampling();
-                RightTrackWireCheck();
-                LeftTrackWireCheck();
+                
+                // Only check track wires when needed
+                if(atm6KillCount != 3){
+                    RightTrackWireCheck();
+                    LeftTrackWireCheck();
+                }
+                
                 CheckBeacon();
                 CheckBumpers();
                 
