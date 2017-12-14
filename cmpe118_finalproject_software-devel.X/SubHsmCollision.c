@@ -242,12 +242,14 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                         SetForwardSpeed(7000);
                         maneuverStep++;
                         break;
-//                    case 7:
-//                        InitForwardTrajectory(step5Inches);
-//                    case 8:
-//                        InitForwardTrajectory(pivot90Degrees);
-//                        maneuverStep++;
-//                        break;
+                    case 7:
+                        InitForwardTrajectory(step5Inches);
+                        maneuverStep++;
+                        break;
+                    case 8:
+                        InitForwardTrajectory(pivot180Degrees);
+                        maneuverStep++;
+                        break;
 //                    case 9:
 //                        SetForwardSpeed(10000);
 //                        maneuverStep++;
