@@ -6,7 +6,7 @@
 
 // CheckBumper defines
 #define NUM_BUMPERS 4
-#define DEBOUNCE_LENGTH 5
+#define DEBOUNCE_LENGTH 2
 #define ON_EVENT  0
 #define OFF_EVENT 1
 

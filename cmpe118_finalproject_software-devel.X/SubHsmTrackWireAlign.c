@@ -171,7 +171,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
             //SetForwardSpeed(MAX_FORWARD_SPEED);
             SetTurningSpeed(90);
             StartDerivative();
-            ES_Timer_InitTimer(TW_ALIGN_TIMER, 7000);
+            ES_Timer_InitTimer(TW_ALIGN_TIMER, 6300);
             maneuverStep = 1;
         }
 

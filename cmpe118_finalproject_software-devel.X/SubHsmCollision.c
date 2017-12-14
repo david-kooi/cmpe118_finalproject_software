@@ -243,9 +243,11 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                     // Check beacon levels
                     if(ThisEvent.EventType == ELEVATOR_ARRIVED){
                         isLifted = 1; 
+                        ES_Timer_InitTimer(BEACON_CHECK_TIMER, 1000); // Set a timeout
                     }
                     
-                    if(ThisEvent.EventType == BC_IN_SIGHT && isLifted){
+                    if(ThisEvent.EventType == BC_HEAD_ON && isLifted){
+                        ES_Timer_StopTimer(BEACON_CHECK_TIMER);
                         renState = REN_TRAVERSE;
                         ES_Event ReturnEvent;
                         ReturnEvent.EventType = TRAJECTORY_COMPLETE;
@@ -255,6 +257,11 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                         ElevatorHome();
                     }
                     
+                    if(ThisEvent.EventType == ES_TIMEOUT){
+                        if(ThisEvent.EventParam == BEACON_CHECK_TIMER){
+                            SWITCH_STATE(COLLISION_AVOID);
+                        }
+                    }
                     
                     break;
                 }
@@ -318,13 +325,15 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                         case TS_CENTER_ON_TAPE:
                         {
                             StopDrive();
-                            ThrottleTapeFollow();
-                            InitTapeFollowSubHSM();  
+                            SetForwardSpeed(5000);
+                            //ThrottleTapeFollow();
+                            //InitTapeFollowSubHSM();  
                             ES_Timer_InitTimer(REN_LAUNCH_TIMER, 1000);
                             break;
                         }
                         case ES_TIMEOUT:
                         {
+                            StopDrive();
                             if(ThisEvent.EventParam == REN_LAUNCH_TIMER){
                                 DispenseBall();
                             }
@@ -347,6 +356,8 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                         }
                         case ELEVATOR_ARRIVED:
                             TS_SetIdle();
+                            InitBackwardTrajectory(step2Inches);
+                            break;
                         case TRAJECTORY_COMPLETE:
                         {
                             toggle ^= 0xFF;
