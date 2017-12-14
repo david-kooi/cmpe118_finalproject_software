@@ -112,6 +112,8 @@ typedef enum {
     ELEVATOR_ARRIVED,
     ELEVATOR_STEP_COMMAND,
             
+    // Collision Events
+    COLLISION_COMPLETE,
             
     NUMBEROFEVENTS,
 } ES_EventTyp_t;
@@ -169,6 +171,7 @@ static const char *EventNames[] = {
 	"BALL_DEPLOYED",
 	"ELEVATOR_ARRIVED",
 	"ELEVATOR_STEP_COMMAND",
+	"COLLISION_COMPLETE",
 	"NUMBEROFEVENTS",
 };
 
@@ -219,7 +222,7 @@ static const char *EventNames[] = {
 #define TOP_LEVEL_TIMER 2
 #define HZ_50_TIMER   6
 #define HZ_500_TIMER  7
-#define COLLISION_ROUNDING_TIMER 11
+#define COLLISION_TAPE_SNUB_TIMER 11
 #define ELEVATOR_SERVICE_TIMER 12
 #define BALL_DRIVER_TIMER 13
 #define TW_ALIGN_TIMER 14

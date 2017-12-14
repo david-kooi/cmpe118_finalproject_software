@@ -35,6 +35,7 @@
 #include "TapeSensorEventChecker.h"
 #include "Trajectory.h"
 #include "DriveService.h"
+#include "BeaconEventChecker.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -56,6 +57,7 @@ static const char *StateNames[] = {
 
 
 static uint8_t maneuverStep;
+static uint8_t pastRenShip;
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -88,6 +90,7 @@ static uint8_t MyPriority;
 uint8_t InitCollisionSubHSM(void) {
     ES_Event returnEvent;
 
+    pastRenShip = 0;
     //printf("COLLISION INIT\r\n");
     CurrentState = INIT_STATE;
     returnEvent = RunCollisionSubHSM(INIT_EVENT);
@@ -113,10 +116,12 @@ uint8_t InitCollisionSubHSM(void) {
  * @author J. Edward Carryer, 2011.10.23 19:25
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
 ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
-   
+    static uint8_t snubTimerExpired = 0;
+    
     uint8_t makeTransition = FALSE; // use to flag transition
     CollisionSubHSMState_t nextState; // <- change type to correct enum
     ES_Tattle(); // trace call stack
+    
     
     switch (CurrentState) {
         case IDLE_STATE:
@@ -135,6 +140,7 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                 }else{
                     printf("COLLISION SWITCH\r\n");
                     SWITCH_STATE(COLLISION_AVOID);
+                    ES_Timer_InitTimer(COLLISION_TAPE_SNUB_TIMER, 3000);
                 }
             }
             
@@ -148,10 +154,11 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                 maneuverStep = 1;
             }
             
+            
             if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
                 switch(maneuverStep){
                     case 1:
-                        InitBackwardTrajectory(pivot45Degrees);
+                        InitBackwardTrajectory(pivot90Degrees);
                         maneuverStep++;
                         break;
                     case 2:
@@ -169,6 +176,25 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                 SWITCH_STATE(COLLISION_AVOID);
             }
             
+            if(ThisEvent.EventType == ES_TIMEOUT){
+                if(ThisEvent.EventParam == COLLISION_TAPE_SNUB_TIMER){
+                    snubTimerExpired = 1;
+                }
+            }
+            if(ThisEvent.EventType == TS_CENTER_ON_TAPE && snubTimerExpired){
+                StopDrive();
+                SetForwardSpeed(5000);
+                SetTurnRadius(-6000);
+                
+                ES_Event ReturnEvent;
+                ReturnEvent.EventType = COLLISION_COMPLETE;
+                PostHsmTopLevel(ReturnEvent);
+                
+                CurrentState = IDLE_STATE;
+                InitTapeFollowSubHSM();  
+                
+                snubTimerExpired = 0;
+            }
             
             
             
@@ -182,45 +208,73 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                 InitBackwardTrajectory(step2Inches);   
             }
             
+            
+            
+            
+            
             if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
                 switch(maneuverStep){
                     case 1:
-                        InitBackwardTrajectory(pivot45Degrees);
+                        // Raise evavator to check for beacon
+                        
                         maneuverStep++;
                         break;
                     case 2:
-                        InitBackwardTrajectory(pivot5Degrees);
+                        InitBackwardTrajectory(pivot45Degrees);
                         maneuverStep++;
                         break;
                     case 3:
-                        InitForwardTrajectory(step8Inches);
+                        InitBackwardTrajectory(pivot5Degrees);
                         maneuverStep++;
                         break;
                     case 4:
-                        InitForwardTrajectory(pivot45Degrees);
+                        InitForwardTrajectory(step8Inches);
                         maneuverStep++;
                         break;
                     case 5:
-                        InitForwardTrajectory(step10Inches);
+                        InitForwardTrajectory(pivot45Degrees);
                         maneuverStep++;
                         break;
                     case 6:
-                        InitForwardTrajectory(step5Inches);
+                        InitForwardTrajectory(step10Inches);
+                        maneuverStep++;
+                        break;
                     case 7:
+                        InitForwardTrajectory(step5Inches);
+                    case 8:
                         InitForwardTrajectory(pivot90Degrees);
                         maneuverStep++;
                         break;
+                    case 9:
+                        SetForwardSpeed(10000);
+                        maneuverStep++;
                     default:
                         break;
-                
-                
+                }
+            }
+            
+            // Check beacon levels
+            if(ThisEvent.EventType == ELEVATOR_ARRIVED){
+                uint16_t beaconVal = ReadBeacon();
+                if(beaconVal > HI_HEAD_ON_THRESH){
+                    // Send a false TRAJECTORY_COMPLETE event to continue maneuver
+                    ES_Event ReturnEvent;
+                    ReturnEvent.EventType = TRAJECTORY_COMPLETE;
+                    PostHsmTopLevel(ReturnEvent);
                 }
             }
             
             if(ThisEvent.EventType == FR_BUMPER_ON || ThisEvent.EventType == FL_BUMPER_ON){
                 StopDrive();
-                InitCollisionSubHSM();
+                SWITCH_STATE(COLLISION_AVOID);
             }
+            
+            // Ren ship approach
+            if(ThisEvent.EventType == TS_REAR_ON_TAPE){
+                StopDrive();
+               
+            }
+            
             
             
             ON_EXIT{

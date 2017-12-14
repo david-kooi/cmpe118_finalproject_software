@@ -11,6 +11,10 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
+uint16_t ReadBeacon(){
+    return AD_ReadADPin(BEACON_ADC);
+}
+
 void CheckBeacon(void){
 
     uint16_t val =  AD_ReadADPin(BEACON_ADC);

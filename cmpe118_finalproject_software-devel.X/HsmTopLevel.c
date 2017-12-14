@@ -40,6 +40,7 @@ typedef enum{
     AT_TAPE_FOLLOW,
     AT_ALIGN_MANUVER,
     AT_RETURN_TO_TAPE,
+    AT_COLLISION_AVOID,
 } ATM6State;
 
 typedef enum{
@@ -169,11 +170,17 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                     }else if(ThisEvent.EventType == FR_BUMPER_ON || ThisEvent.EventType == FL_BUMPER_ON){
                         TS_SetIdle();
                         StopDrive();
-                        //InitBackwardTrajectory(step2Inches);
+                        TS_SetIdle();
                         InitCollisionSubHSM();
+                        currATState = AT_COLLISION_AVOID;
                     }
                     
+                    break;
                     
+                case AT_COLLISION_AVOID:
+                    if(ThisEvent.EventType == COLLISION_COMPLETE){
+                        currATState = AT_TAPE_FOLLOW;
+                    }
                     break;
                 case AT_ALIGN_MANUVER:
                     
