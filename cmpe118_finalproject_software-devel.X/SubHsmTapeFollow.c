@@ -68,10 +68,17 @@ static const char *StateNames[] = {
 
 static TapeFollowSubHSMState_t CurrentState = IDLE_STATE;
 static uint8_t MyPriority;
+static uint16_t forwardSpeed;
 
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
+
+void ThrottleTapeFollow(){
+    forwardSpeed = (1000 * MAX_FORWARD_SPEED) / 2000;
+}
+
+
 
 /**
  * @Function InitTapeFollowSubHSM(uint8_t Priority)
@@ -85,6 +92,7 @@ static uint8_t MyPriority;
  * @author J. Edward Carryer, 2011.10.23 19:25 */
 uint8_t InitTapeFollowSubHSM(void) {
     ES_Event returnEvent;
+    
 
     CurrentState = INIT_STATE;
     returnEvent = RunTapeFollowSubHSM(INIT_EVENT);
@@ -132,7 +140,7 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
 
 
                 // now put the machine into the actual initial state
-                
+                forwardSpeed = (2000 * MAX_FORWARD_SPEED) / 2000;
                 StopDrive();
                 SWITCH_STATE(REAR_ON_STATE);
             }
@@ -164,26 +172,26 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
                             //                        break;
                             break;
                         case L_ON:
-                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
+                            SetForwardSpeed(forwardSpeed);
 //                            SetTurnRadius(6 * MIN_TURN_RADIUS); // Turn Left
                             SetTurnRadius(15000); // Turn Left
                             break;
                         case LC_ON:
-                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
+                            SetForwardSpeed(forwardSpeed);
 //                            SetTurnRadius(8 *MIN_TURN_RADIUS);
                             SetTurnRadius(20000);
                             break;
                         case C_ON:
-                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
+                            SetForwardSpeed(forwardSpeed);
                             SetTurnRadius(PLUS_INFINITY);
                             break;
                         case RC_ON:
-                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
+                            SetForwardSpeed(forwardSpeed);
 //                            SetTurnRadius(-8 *MIN_TURN_RADIUS);
                             SetTurnRadius(-20000);
                             break;
                         case R_ON:
-                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
+                            SetForwardSpeed(forwardSpeed);
 //                            SetTurnRadius(-6 * MIN_TURN_RADIUS); // Turn right
                             SetTurnRadius(-15000);
                             break;

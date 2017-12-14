@@ -99,7 +99,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 //                SetTurningSpeed(0);
                 
                 //LiftToAtM6();
-                atm6KillCount = 3;
+                atm6KillCount = 0;
                 EnableDriveMotors();
                 SWITCH_STATE(STARTUP);
 

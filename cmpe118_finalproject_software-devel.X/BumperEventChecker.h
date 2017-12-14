@@ -1,5 +1,23 @@
 #include "EventCheckerCommon.h"
 
+
+#define RR_BUMPER_MASK 0x08
+#define RL_BUMPER_MASK 0x04
+#define FR_BUMPER_MASK 0x02
+#define FL_BUMPER_MASK 0x01
+
+
+#define RR_BUMPER_PIN PIN6
+#define RL_BUMPER_PIN PIN7
+#define FR_BUMPER_PIN PIN4
+#define FL_BUMPER_PIN PIN9
+
+#define RR_BUMPER_NUM PORTY, RR_BUMPER_PIN
+#define RL_BUMPER_NUM PORTY, RL_BUMPER_PIN
+#define FR_BUMPER_NUM PORTY, FR_BUMPER_PIN
+#define FL_BUMPER_NUM PORTY, FL_BUMPER_PIN
+
+
 /**
  * @Function ReadBumpers(void)
  * @param none

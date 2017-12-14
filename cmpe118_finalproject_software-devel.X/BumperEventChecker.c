@@ -15,21 +15,7 @@
 /* Standardizes the index for bumper access. 
    These numbers are mapped to the 4-bit value returned by ReadBumpers()*/
 enum BumperIndex{RR_BUMPER = 8, RL_BUMPER=4, FR_BUMPER = 2, FL_BUMPER = 1};
-#define RR_BUMPER_MASK 0x08
-#define RL_BUMPER_MASK 0x04
-#define FR_BUMPER_MASK 0x02
-#define FL_BUMPER_MASK 0x01
 
-
-#define RR_BUMPER_PIN PIN6
-#define RL_BUMPER_PIN PIN7
-#define FR_BUMPER_PIN PIN4
-#define FL_BUMPER_PIN PIN9
-
-#define RR_BUMPER_NUM PORTY, RR_BUMPER_PIN
-#define RL_BUMPER_NUM PORTY, RL_BUMPER_PIN
-#define FR_BUMPER_NUM PORTY, FR_BUMPER_PIN
-#define FL_BUMPER_NUM PORTY, FL_BUMPER_PIN
 
 
 // Map the bumper event constants to BumperIndex

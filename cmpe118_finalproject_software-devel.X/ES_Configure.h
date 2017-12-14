@@ -18,6 +18,9 @@
 //#include "HsmTopLevel.h"
 
 
+//#include "HsmTopLevel.h"
+
+
 // General DEBUG_PRINT macros
 
 #define DEBUG_PRINT(fmt, ...) printf(fmt"\r\n", ##__VA_ARGS__); fflush(stderr)
@@ -201,7 +204,7 @@ static const char *EventNames[] = {
 #define TIMER7_RESP_FUNC (PostRateGroupDriverService) // 500 Hz
 #define TIMER8_RESP_FUNC TIMER_UNUSED
 #define TIMER9_RESP_FUNC TIMER_UNUSED
-#define TIMER10_RESP_FUNC TIMER_UNUSED
+#define TIMER10_RESP_FUNC (PostHsmTopLevel)
 #define TIMER11_RESP_FUNC (PostHsmTopLevel)
 #define TIMER12_RESP_FUNC (PostElevatorService)
 #define TIMER13_RESP_FUNC (PostDeployerDriver)
@@ -222,6 +225,7 @@ static const char *EventNames[] = {
 #define TOP_LEVEL_TIMER 2
 #define HZ_50_TIMER   6
 #define HZ_500_TIMER  7
+#define REN_LAUNCH_TIMER 10
 #define COLLISION_TAPE_SNUB_TIMER 11
 #define ELEVATOR_SERVICE_TIMER 12
 #define BALL_DRIVER_TIMER 13

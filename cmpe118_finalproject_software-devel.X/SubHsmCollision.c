@@ -37,6 +37,8 @@
 #include "DriveService.h"
 #include "BeaconEventChecker.h"
 #include "ElevatorService.h"
+#include "DeployerDriver.h"
+#include "BumperEventChecker.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -57,6 +59,13 @@ static const char *StateNames[] = {
 };
 
 
+typedef enum{
+    REN_INITIAL,
+    REN_TRAVERSE,
+    REN_ALIGN,
+    
+} RenApproachState_t;
+static RenApproachState_t renState;
 static uint8_t maneuverStep;
 static uint8_t pastRenShip;
 /*******************************************************************************
@@ -91,6 +100,7 @@ static uint8_t MyPriority;
 uint8_t InitCollisionSubHSM(void) {
     ES_Event returnEvent;
 
+    renState = REN_INITIAL;
     pastRenShip = 0;
     //printf("COLLISION INIT\r\n");
     CurrentState = INIT_STATE;
@@ -119,6 +129,7 @@ uint8_t InitCollisionSubHSM(void) {
 ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
     static uint8_t snubTimerExpired = 0;
     static uint8_t isLifted         = 0;
+    static uint8_t toggle           = 0;
     
     uint8_t makeTransition = FALSE; // use to flag transition
     CollisionSubHSMState_t nextState; // <- change type to correct enum
@@ -212,80 +223,176 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
             
             
             
-            
-            
-            if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
-                switch(maneuverStep){
-                    case 1:
-                        // Raise evavator to check for beacon
-                        LiftToRen();
+            switch(renState){
+                case REN_INITIAL:
+                {
+                    if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
+                        switch(maneuverStep){
+                            case 1:
+                                // Raise evavator to check for beacon
+                                LiftToRen();
+                                maneuverStep++;
+                                break;
+                            
+                            default:
+                                break;
                         
-                        maneuverStep++;
-                        break;
-                    case 2:
-                        InitBackwardTrajectory(pivot45Degrees);
-                        maneuverStep++;
-                        break;
-                    case 3:
-                        InitBackwardTrajectory(pivot5Degrees);
-                        maneuverStep++;
-                        break;
-                    case 4:
-                        InitForwardTrajectory(step5Inches);
-                        maneuverStep++;
-                        break;
-                    case 5:
-                        InitForwardTrajectory(pivot45Degrees);
-                        maneuverStep++;
-                        break;
-                    case 6:
-                        SetForwardSpeed(7000);
-                        maneuverStep++;
-                        break;
-                    case 7:
-                        InitForwardTrajectory(step5Inches);
-                        maneuverStep++;
-                        break;
-                    case 8:
-                        InitForwardTrajectory(pivot180Degrees);
-                        maneuverStep++;
-                        break;
-//                    case 9:
-//                        SetForwardSpeed(10000);
-//                        maneuverStep++;
-                    default:
-                        break;
+                        }
+                    }
+                    
+                    // Check beacon levels
+                    if(ThisEvent.EventType == ELEVATOR_ARRIVED){
+                        isLifted = 1; 
+                    }
+                    
+                    if(ThisEvent.EventType == BC_IN_SIGHT && isLifted){
+                        renState = REN_TRAVERSE;
+                        ES_Event ReturnEvent;
+                        ReturnEvent.EventType = TRAJECTORY_COMPLETE;
+                        PostHsmTopLevel(ReturnEvent); 
+                        isLifted = 0;
+                        
+                        ElevatorHome();
+                    }
+                    
+                    
+                    break;
                 }
+                case REN_TRAVERSE:
+                {
+                    if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
+                        switch(maneuverStep){
+                            case 2:
+                                InitBackwardTrajectory(pivot45Degrees);
+                                maneuverStep++;
+                                break;
+                            case 3:
+                                InitForwardTrajectory(step5Inches);
+                                maneuverStep++;
+                                break;
+                            case 4:
+                                InitForwardTrajectory(step2Inches);
+                                maneuverStep++;
+                                break;
+                            case 5:
+                                InitForwardTrajectory(pivot45Degrees);
+                                maneuverStep++;
+                                break;
+                            case 6:
+                                InitForwardTrajectory(pivot5Degrees);
+                                maneuverStep++;
+                                break;
+                            case 7:
+                                SetForwardSpeed(7000);
+                                maneuverStep++;
+                                break;
+                            case 8:
+                                InitForwardTrajectory(step5Inches);
+                                maneuverStep++;
+                                break;                             
+                            case 9:
+                                renState = REN_ALIGN;
+                                SetTurningSpeed(120);
+                                maneuverStep++;
+                                break;
+                            default:
+                                break;
+                        }
+
+                    }
+
+                    
+                    // Ren ship approach
+                    if(ThisEvent.EventType == TS_REAR_ON_TAPE){
+                        StopDrive();
+                        InitBackwardTrajectory(pivot90Degrees);  
+                    }
+                    
+                    
+                    break;
+                }
+                case REN_ALIGN:
+                {
+                    
+                    switch(ThisEvent.EventType){
+                        case TS_CENTER_ON_TAPE:
+                        {
+                            StopDrive();
+                            ThrottleTapeFollow();
+                            InitTapeFollowSubHSM();  
+                            ES_Timer_InitTimer(REN_LAUNCH_TIMER, 1000);
+                            break;
+                        }
+                        case ES_TIMEOUT:
+                        {
+                            if(ThisEvent.EventParam == REN_LAUNCH_TIMER){
+                                DispenseBall();
+                            }
+                            break;
+                        }
+                        case BALL_DEPLOYED:
+                        {
+                            LiftToRen();
+                            break;
+                        }
+                        case FL_BUMPER_ON:
+                        {
+                            setLeftMotor(0);
+                            break;
+                        }
+                        case FR_BUMPER_ON:
+                        {
+                            setRightMotor(0);
+                            break;
+                        }
+                        case ELEVATOR_ARRIVED:
+                            TS_SetIdle();
+                        case TRAJECTORY_COMPLETE:
+                        {
+                            toggle ^= 0xFF;
+                            if(toggle){
+                                InitBackwardTrajectory(pivot5Degrees);
+                            }else{
+                                InitForwardTrajectory(pivot5Degrees);
+                            }
+                            break;
+                        }
+                        case BC_OFF:
+                        {
+                            StopDrive();
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+
+
+                    
+                    break;
+                }
+                
+                default:
+                    break;
+                
+                
+                
             }
             
-            // Check beacon levels
-            if(ThisEvent.EventType == ELEVATOR_ARRIVED && isLifted == 0){
-                isLifted = 1; 
-                ElevatorHome();
-            }
-            
-            if(ThisEvent.EventType == BC_HEAD_ON && isLifted){
-                ES_Event ReturnEvent;
-                ReturnEvent.EventType = TRAJECTORY_COMPLETE;
-                PostHsmTopLevel(ReturnEvent); 
-            }
             
             
-            if(ThisEvent.EventType == FR_BUMPER_ON || ThisEvent.EventType == FL_BUMPER_ON){
-                StopDrive();
-                SWITCH_STATE(COLLISION_AVOID);
-            }
             
-            // Ren ship approach
-            if(ThisEvent.EventType == TS_REAR_ON_TAPE){
-                StopDrive();
-                InitBackwardTrajectory(pivot90Degrees);
-            }
+            
+//            if(ThisEvent.EventType == FR_BUMPER_ON || ThisEvent.EventType == FL_BUMPER_ON){
+            //            SWITCH_STATE(COLLISION_AVOIDANCE);
+//                        StopDrive();
+//                    }
+            
+            
+            
             
             
             
             ON_EXIT{
-                isLifted = 0;
             }
             break;
         }
