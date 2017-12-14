@@ -199,7 +199,7 @@ static const char *EventNames[] = {
 #define TIMER8_RESP_FUNC TIMER_UNUSED
 #define TIMER9_RESP_FUNC TIMER_UNUSED
 #define TIMER10_RESP_FUNC TIMER_UNUSED
-#define TIMER11_RESP_FUNC TIMER_UNUSED
+#define TIMER11_RESP_FUNC (PostHsmTopLevel)
 #define TIMER12_RESP_FUNC (PostElevatorService)
 #define TIMER13_RESP_FUNC (PostDeployerDriver)
 #define TIMER14_RESP_FUNC (PostHsmTopLevel)
@@ -219,6 +219,7 @@ static const char *EventNames[] = {
 #define TOP_LEVEL_TIMER 2
 #define HZ_50_TIMER   6
 #define HZ_500_TIMER  7
+#define COLLISION_ROUNDING_TIMER 11
 #define ELEVATOR_SERVICE_TIMER 12
 #define BALL_DRIVER_TIMER 13
 #define TW_ALIGN_TIMER 14

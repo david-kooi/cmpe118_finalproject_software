@@ -44,12 +44,14 @@ typedef enum {
     IDLE_STATE,
     INIT_STATE,
     COLLISION_AVOID,
+    REN_APPROACH,
 } CollisionSubHSMState_t;
 
 static const char *StateNames[] = {
 	"IDLE_STATE",
 	"INIT_STATE",
 	"COLLISION_AVOID",
+	"REN_APPROACH",
 };
 
 
@@ -120,7 +122,8 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
         case IDLE_STATE:
             break;
 
-        case INIT_STATE: // If current state is initial Psedudo State
+        case INIT_STATE:
+        {// If current state is initial Psedudo State
             if (ThisEvent.EventType == ES_INIT) {
 
                 printf("START TRAJ\r\n");
@@ -135,10 +138,45 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                 }
             }
             
-            
+        }   
             
             break;
         case COLLISION_AVOID:
+        {
+            ON_ENTRY{
+                InitBackwardTrajectory(step2Inches);   
+                maneuverStep = 1;
+            }
+            
+            if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
+                switch(maneuverStep){
+                    case 1:
+                        InitBackwardTrajectory(pivot45Degrees);
+                        maneuverStep++;
+                        break;
+                    case 2:
+                        SetForwardSpeed(10000);
+                        SetTurnRadius(10000);
+                        maneuverStep++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+             
+            if(ThisEvent.EventType == FL_BUMPER_ON){
+                StopDrive();
+                SWITCH_STATE(COLLISION_AVOID);
+            }
+            
+            
+            
+            
+            break;
+        }   
+            
+        case REN_APPROACH:
+        {
             ON_ENTRY{
                 maneuverStep = 1;
                 InitBackwardTrajectory(step2Inches);   
@@ -189,7 +227,7 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                 
             }
             break;
-
+        }
         default: // all unhandled states fall into here
             break;
     } // end switch on Current State
