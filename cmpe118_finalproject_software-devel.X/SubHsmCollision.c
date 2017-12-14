@@ -185,7 +185,7 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                 }
             }
              
-            if(ThisEvent.EventType == FL_BUMPER_ON){
+            if(ThisEvent.EventType == FL_BUMPER_ON || ThisEvent.EventType == FR_BUMPER_ON){
                 StopDrive();
                 SWITCH_STATE(COLLISION_AVOID);
             }
@@ -331,7 +331,7 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                             SetForwardSpeed(5000);
                             //ThrottleTapeFollow();
                             //InitTapeFollowSubHSM();  
-                            ES_Timer_InitTimer(REN_LAUNCH_TIMER, 1000);
+                            ES_Timer_InitTimer(REN_LAUNCH_TIMER, 5000);
                             break;
                         }
                         case ES_TIMEOUT:
@@ -359,15 +359,13 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                         }
                         case ELEVATOR_ARRIVED:
                             TS_SetIdle();
-                            InitBackwardTrajectory(step2Inches);
-                            break;
                         case TRAJECTORY_COMPLETE:
                         {
                             toggle ^= 0xFF;
                             if(toggle){
-                                InitBackwardTrajectory(pivot5Degrees);
+                                SetTurningSpeed(75);
                             }else{
-                                InitForwardTrajectory(pivot5Degrees);
+                                SetTurningSpeed(-75);
                             }
                             break;
                         }

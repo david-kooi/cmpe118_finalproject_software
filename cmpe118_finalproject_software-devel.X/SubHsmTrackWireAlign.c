@@ -173,7 +173,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
             TwSampleOn();
             StartDerivative();
             ES_Timer_InitTimer(TW_ALIGN_TIMER,6600);
-            ES_Timer_InitTimer(TW_FINAL_TO, 16000)
+            ES_Timer_InitTimer(TW_FINAL_TO, 16000);
             maneuverStep = 1;
         }
 
