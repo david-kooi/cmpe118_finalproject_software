@@ -6,6 +6,7 @@
 #include "ES_Timers.h"
 #include "AD.h"
 
+#include "DriveService.h"
 #include "BumperEventChecker.h"
 #include "TapeSensorEventChecker.h"
 #include "TrackWireEventChecker.h"
@@ -30,6 +31,7 @@ void main(void)
     AD_Init();
     AD_AddPins(TW_LEFT_ADC | TW_RIGHT_ADC | TS_LEFT_ADC | TS_RIGHT_ADC | TS_CENTER_ADC | TS_REAR_ADC | BEACON_ADC);
     PWM_Init();
+    
     //RC_Init();
     //RC_AddPins(RC_PORTX04);
     

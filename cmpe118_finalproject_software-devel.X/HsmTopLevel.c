@@ -95,7 +95,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 //                SetTurningSpeed(0);
                 
                 //LiftToAtM6();
-                
+                EnableDriveMotors();
                 SWITCH_STATE(STARTUP);
 
             }
@@ -107,37 +107,42 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         case STARTUP:
             ON_ENTRY
             {
-//                SetTurningSpeed(200);
-                ES_Timer_InitTimer(TOP_LEVEL_TIMER, 1500);
+                printf("STARTUP INIT\r\n");
+                
+                SetTurningSpeed(130);
+//                ES_Timer_InitTimer(TOP_LEVEL_TIMER, 1500);
+                currStartupState = ST_FIND_BEACON;
             }
-//            switch(currStartupState){
-//                case ST_FIND_BEACON:
-//                    if(ThisEvent.EventType == BC_HEAD_ON || ThisEvent.EventType == BC_IN_SIGHT){
-//                        StopDrive();
-//                        SetForwardSpeed(-5000); // Backup
-//                        currStartupState = ST_FIND_TAPE;
-//                    }
-//                    break;
-//            
-//                case ST_FIND_TAPE:
-//                    if(ThisEvent.EventType == TS_REAR_ON_TAPE){
-//                        
-//                        StopDrive();
-//                        SetTurningSpeed(200);
-//                        
-//                    }
-//                    
-//                    if(ThisEvent.EventType == TS_CENTER_ON_TAPE){
-//                        StopDrive();
-//                        SWITCH_STATE(DESTROYING_ATM6);
-//                    }
-//                    
-//                    break;
-//                
+            switch(currStartupState){
+                case ST_FIND_BEACON:
+                {
+                    if(ThisEvent.EventType == BC_HEAD_ON || ThisEvent.EventType == BC_IN_SIGHT){
+                        StopDrive();
+                        SetForwardSpeed(-5000); // Backup
+                        currStartupState = ST_FIND_TAPE;
+                    }
+                    break;
+                }
+                case ST_FIND_TAPE:
+                {
+                    if(ThisEvent.EventType == TS_REAR_ON_TAPE){
+                        
+                        StopDrive();
+                        SetTurningSpeed(200);
+                        
+                    }
+                    
+                    if(ThisEvent.EventType == TS_CENTER_ON_TAPE){
+                        StopDrive();
+                        SWITCH_STATE(DESTROYING_ATM6);
+                    }
+                    
+                    break;
+                }
+            }
+//            if(ThisEvent.EventType == ES_TIMEOUT){
+//                SWITCH_STATE(DESTROYING_ATM6);
 //            }
-            if(ThisEvent.EventType == ES_TIMEOUT){
-                SWITCH_STATE(DESTROYING_ATM6);
-            }
             
             
             ON_EXIT{

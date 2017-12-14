@@ -132,7 +132,7 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
 
 
                 // now put the machine into the actual initial state
-                EnableDriveMotors();
+                
                 StopDrive();
                 SWITCH_STATE(REAR_ON_STATE);
             }
