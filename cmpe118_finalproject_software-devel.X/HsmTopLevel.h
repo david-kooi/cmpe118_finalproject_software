@@ -19,6 +19,9 @@
 #define ON_ENTRY if(ThisEvent.EventType == ES_ENTRY)
 #define ON_EXIT if(ThisEvent.EventType == ES_EXIT)
 
+
+uint8_t atm6KillCount;
+
 uint8_t InitHsmTopLevel(uint8_t priority);
 
 uint8_t PostHsmTopLevel(ES_Event thisEvent);

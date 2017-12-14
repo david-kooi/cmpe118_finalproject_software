@@ -45,6 +45,7 @@
         <itemPath>HsmTopLevel.h</itemPath>
         <itemPath>SubHsmTapeFollow.h</itemPath>
         <itemPath>SubHsmTrackWireAlign.h</itemPath>
+        <itemPath>SubHsmCollision.h</itemPath>
       </logicalFolder>
       <itemPath>ES_Configure.h</itemPath>
       <itemPath>LsDerivative.h</itemPath>
@@ -92,6 +93,7 @@
         <itemPath>HsmTopLevel.c</itemPath>
         <itemPath>SubHsmTapeFollow.c</itemPath>
         <itemPath>SubHsmTrackWireAlign.c</itemPath>
+        <itemPath>SubHsmCollision.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>LsDerivative.c</itemPath>

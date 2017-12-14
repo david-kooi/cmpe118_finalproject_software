@@ -1,9 +1,9 @@
 /*
- * File: TapeFollowSubHSM.c
+ * File: CollisionSubHSM.c
  * Author: J. Edward Carryer
  * Modified: Gabriel H Elkaim
  *
- * TapeFollow file to set up a Heirarchical State Machine to work with the Events and
+ * Collision file to set up a Heirarchical State Machine to work with the Events and
  * Services Framework (ES_Framework) on the Uno32 for the CMPE-118/L class. Note that
  * this file will need to be modified to fit your exact needs, and most of the names
  * will have to be changed to match your code.
@@ -18,8 +18,8 @@
  * 09/13/13 15:17 ghe      added tattletail functionality and recursive calls
  * 01/15/12 11:12 jec      revisions for Gen2 framework
  * 11/07/11 11:26 jec      made the queue static
- * 10/30/11 17:59 jec      fixed references to CurrentEvent in RunTapeFollowSM()
- * 10/23/11 18:20 jec      began conversion from SMTapeFollow.c (02/20/07 rev)
+ * 10/30/11 17:59 jec      fixed references to CurrentEvent in RunCollisionSM()
+ * 10/23/11 18:20 jec      began conversion from SMCollision.c (02/20/07 rev)
  */
 
 
@@ -31,8 +31,10 @@
 #include "ES_Framework.h"
 #include "BOARD.h"
 #include "HsmTopLevel.h"
-#include "SubHsmTapeFollow.h"
+#include "SubHsmCollision.h"
 #include "TapeSensorEventChecker.h"
+#include "Trajectory.h"
+#include "DriveService.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -41,19 +43,17 @@
 typedef enum {
     IDLE_STATE,
     INIT_STATE,
-    REAR_ON_STATE,
-    REAR_OFF_STATE,
-} TapeFollowSubHSMState_t;
+    COLLISION_AVOID,
+} CollisionSubHSMState_t;
 
 static const char *StateNames[] = {
 	"IDLE_STATE",
 	"INIT_STATE",
-	"REAR_ON_STATE",
-	"REAR_OFF_STATE",
+	"COLLISION_AVOID",
 };
 
 
-
+static uint8_t maneuverStep;
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -66,7 +66,7 @@ static const char *StateNames[] = {
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
 
-static TapeFollowSubHSMState_t CurrentState = IDLE_STATE;
+static CollisionSubHSMState_t CurrentState = IDLE_STATE;
 static uint8_t MyPriority;
 
 /*******************************************************************************
@@ -74,20 +74,21 @@ static uint8_t MyPriority;
  ******************************************************************************/
 
 /**
- * @Function InitTapeFollowSubHSM(uint8_t Priority)
+ * @Function InitCollisionSubHSM(uint8_t Priority)
  * @param Priority - internal variable to track which event queue to use
  * @return TRUE or FALSE
  * @brief This will get called by the framework at the beginning of the code
  *        execution. It will post an ES_INIT event to the appropriate event
- *        queue, which will be handled inside RunTapeFollowFSM function. Remember
+ *        queue, which will be handled inside RunCollisionFSM function. Remember
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitTapeFollowSubHSM(void) {
+uint8_t InitCollisionSubHSM(void) {
     ES_Event returnEvent;
 
+    //printf("COLLISION INIT\r\n");
     CurrentState = INIT_STATE;
-    returnEvent = RunTapeFollowSubHSM(INIT_EVENT);
+    returnEvent = RunCollisionSubHSM(INIT_EVENT);
     if (returnEvent.EventType == ES_NO_EVENT) {
         return TRUE;
     }
@@ -95,7 +96,7 @@ uint8_t InitTapeFollowSubHSM(void) {
 }
 
 /**
- * @Function RunTapeFollowSubHSM(ES_Event ThisEvent)
+ * @Function RunCollisionSubHSM(ES_Event ThisEvent)
  * @param ThisEvent - the event (type and param) to be responded.
  * @return Event - return event (type and param), in general should be ES_NO_EVENT
  * @brief This function is where you implement the whole of the heirarchical state
@@ -109,96 +110,83 @@ uint8_t InitTapeFollowSubHSM(void) {
  *       not consumed as these need to pass pack to the higher level state machine.
  * @author J. Edward Carryer, 2011.10.23 19:25
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
-ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
+ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
+   
     uint8_t makeTransition = FALSE; // use to flag transition
-    TapeFollowSubHSMState_t nextState; // <- change type to correct enum
+    CollisionSubHSMState_t nextState; // <- change type to correct enum
     ES_Tattle(); // trace call stack
+    
     switch (CurrentState) {
         case IDLE_STATE:
             break;
 
         case INIT_STATE: // If current state is initial Psedudo State
-            ON_ENTRY
-        {
-            //SetForwardSpeed(MAX_FORWARD_SPEED);
-        }
+            if (ThisEvent.EventType == ES_INIT) {
 
-            if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
-            {
-                // this is where you would put any actions associated with the
-                // transition from the initial pseudo-state into the actual
-                // initial state
-
-
-
-                // now put the machine into the actual initial state
+                printf("START TRAJ\r\n");
                 
-                StopDrive();
-                SWITCH_STATE(REAR_ON_STATE);
-            }
-            break;
+            
+            
+                if(atm6KillCount == 3){
 
-        case REAR_ON_STATE: // in the first state, replace this with correct names
-            //        ON_ENTRY{
-            //            SetForwardSpeed(MAX_FORWARD_SPEED);
-            //        }
-            //        
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-//                    SetForwardSpeed(MAX_FORWARD_SPEED);
-                case TS_LEFT_ON_TAPE:
-                case TS_LEFT_OFF_TAPE:
-                case TS_CENTER_ON_TAPE:
-                case TS_CENTER_OFF_TAPE:
-                case TS_RIGHT_ON_TAPE:
-                case TS_RIGHT_OFF_TAPE: {
-//                    SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
-                    // Get the status of all front sensors:
-                    TsFrontStatus frontSensors = LCR_ON & TS_GetCurrentSensors(); // (b0b111 = 0bLCR)
-                    switch (frontSensors) {
-                        case LCR_OFF:
-//                            SetForwardSpeed((1000 * MAX_FORWARD_SPEED) / 4000);
-                            SetForwardSpeed(-100);
-                            SetTurningSpeed(-160);
-                            //                    case LR_ON:
-                            //                        break;
-                            break;
-                        case L_ON:
-                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
-//                            SetTurnRadius(6 * MIN_TURN_RADIUS); // Turn Left
-                            SetTurnRadius(15000); // Turn Left
-                            break;
-                        case LC_ON:
-                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
-//                            SetTurnRadius(8 *MIN_TURN_RADIUS);
-                            SetTurnRadius(20000);
-                            break;
-                        case C_ON:
-                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
-                            SetTurnRadius(PLUS_INFINITY);
-                            break;
-                        case RC_ON:
-                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
-//                            SetTurnRadius(-8 *MIN_TURN_RADIUS);
-                            SetTurnRadius(-20000);
-                            break;
-                        case R_ON:
-                            SetForwardSpeed((2000 * MAX_FORWARD_SPEED) / 2000);
-//                            SetTurnRadius(-6 * MIN_TURN_RADIUS); // Turn right
-                            SetTurnRadius(-15000);
-                            break;
-                            //                    case LCR_ON:
-                            //                        SetForwardSpeed(0); //This shouldn't happen
-                            //                        break;
-                        default:
-                            printf("Unexpected front tape sensor state!\r\n");
-                            break;
-                    }
-                    break;
+                }else{
+                    printf("COLLISION SWITCH\r\n");
+                    SWITCH_STATE(COLLISION_AVOID);
                 }
-                case ES_NO_EVENT:
-                default: // all unhandled events pass the event back up to the next level
-                    break;
+            }
+            
+            
+            
+            break;
+        case COLLISION_AVOID:
+            ON_ENTRY{
+                maneuverStep = 1;
+                InitBackwardTrajectory(step2Inches);   
+            }
+            
+            if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
+                switch(maneuverStep){
+                    case 1:
+                        InitBackwardTrajectory(pivot45Degrees);
+                        maneuverStep++;
+                        break;
+                    case 2:
+                        InitBackwardTrajectory(pivot5Degrees);
+                        maneuverStep++;
+                        break;
+                    case 3:
+                        InitForwardTrajectory(step8Inches);
+                        maneuverStep++;
+                        break;
+                    case 4:
+                        InitForwardTrajectory(pivot45Degrees);
+                        maneuverStep++;
+                        break;
+                    case 5:
+                        InitForwardTrajectory(step10Inches);
+                        maneuverStep++;
+                        break;
+                    case 6:
+                        InitForwardTrajectory(step5Inches);
+                    case 7:
+                        InitForwardTrajectory(pivot90Degrees);
+                        maneuverStep++;
+                        break;
+                    default:
+                        break;
+                
+                
+                }
+            }
+            
+            if(ThisEvent.EventType == FR_BUMPER_ON || ThisEvent.EventType == FL_BUMPER_ON){
+                StopDrive();
+                InitCollisionSubHSM();
+            }
+            
+            
+            ON_EXIT{
+                
             }
             break;
 
@@ -208,16 +196,16 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
 
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
-        RunTapeFollowSubHSM(EXIT_EVENT); // <- rename to your own Run function
+        RunCollisionSubHSM(EXIT_EVENT); // <- rename to your own Run function
         CurrentState = nextState;
-        RunTapeFollowSubHSM(ENTRY_EVENT); // <- rename to your own Run function
+        RunCollisionSubHSM(ENTRY_EVENT); // <- rename to your own Run function
     }
 
     ES_Tail(); // trace call stack end
     return ThisEvent;
 }
 
-void TS_SetIdle(void) {
+void COL_SetIdle(void) {
     CurrentState = IDLE_STATE;
 }
 

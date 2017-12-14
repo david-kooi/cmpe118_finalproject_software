@@ -19,6 +19,7 @@
 //#include sub-sm's here
 #include "SubHsmTapeFollow.h"
 #include "SubHsmTrackWireAlign.h"
+#include "SubHsmCollision.h"
 #include <stdio.h>
 #include "ElevatorService.h"
 
@@ -63,6 +64,7 @@ static uint8_t myPriority;
 uint8_t InitHsmTopLevel(uint8_t priority) {
     myPriority = priority;
     CurrentState = INIT;
+
     return ES_PostToService(myPriority, INIT_EVENT);
 }
 
@@ -85,6 +87,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
     
     ThisEvent = RunTrackWireAlignSubHSM(ThisEvent);
     ThisEvent = RunTapeFollowSubHSM(ThisEvent);
+    ThisEvent = RunCollisionSubHSM(ThisEvent);
     
     switch (CurrentState) {
         case INIT:
@@ -95,6 +98,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 //                SetTurningSpeed(0);
                 
                 //LiftToAtM6();
+                atm6KillCount = 0;
                 EnableDriveMotors();
                 SWITCH_STATE(STARTUP);
 
@@ -162,15 +166,23 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                         TS_SetIdle();
                         InitTrackWireAlignSubHSM();
                         currATState = AT_ALIGN_MANUVER;
+                    }else if(ThisEvent.EventType == FR_BUMPER_ON || ThisEvent.EventType == FL_BUMPER_ON){
+                        TS_SetIdle();
+                        StopDrive();
+                        //InitBackwardTrajectory(step2Inches);
+                        InitCollisionSubHSM();
                     }
+                    
+                    
                     break;
                 case AT_ALIGN_MANUVER:
                     
                     switch(ThisEvent.EventType){
-                        case ELEVATOR_ARRIVED: // Finished with at destroy
+                        case ELEVATOR_ARRIVED: // Finished with atm6 destroy
                             TW_SetIdle();
                             currATState = AT_RETURN_TO_TAPE;
                             InitBackwardTrajectory(step2Inches);
+                            atm6KillCount++;
                             break;
                         default:
                             break;
