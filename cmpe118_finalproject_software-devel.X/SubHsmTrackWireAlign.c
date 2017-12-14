@@ -39,6 +39,7 @@
 #include "Trajectory.h"
 #include "RC_Servo_mod.h"
 #include "RateGroupDriverService.h"
+#include "SubHsmTapeFollow.h"
 extern Trajectory pivot180degrees;
 extern Trajectory pivot90Degrees;
 extern Trajectory step10Inches;
@@ -161,6 +162,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                 // initial state
 
                 //                SWITCH_STATE(ORIENT_STATE);
+                TS_SetIdle();
                 SWITCH_STATE(ALIGN_STATE);
             }
             break;
@@ -208,7 +210,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                             switch(ThisEvent.EventParam){
                                 case TW_ALIGN_TIMER:
                                 {
-                                    StopDerivative();  
+                                    //StopDerivative();  
                                     orientSubState = ORIENT_SUB_STATE_CORRECTING;
                                     InitBackwardTrajectory(pivot45Degrees);
                                     maneuverStep = 1;

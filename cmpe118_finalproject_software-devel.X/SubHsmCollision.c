@@ -328,16 +328,18 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                         case TS_CENTER_ON_TAPE:
                         {
                             StopDrive();
-                            SetForwardSpeed(10000);
+                            //SetForwardSpeed(10000);
                             //ThrottleTapeFollow();
-                            //InitTapeFollowSubHSM();  
-                            ES_Timer_InitTimer(REN_LAUNCH_TIMER, 5000);
+                            InitTapeFollowSubHSM();  
+                            ES_Timer_InitTimer(REN_LAUNCH_TIMER, 2000);
                             break;
                         }
                         case ES_TIMEOUT:
                         {
-                            StopDrive();
+                            
                             if(ThisEvent.EventParam == REN_LAUNCH_TIMER){
+                                TS_SetIdle();
+                                SetForwardSpeed(10000);
                                 DispenseBall();
                             }
                             
@@ -345,15 +347,18 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                                 toggle ^= 0xFF;
                                 if(toggle){
                                     SetTurningSpeed(75);
+                                    ES_Timer_InitTimer(WIGGLE_TIMER, 300);
                                 }else{
                                     SetTurningSpeed(-75);
+                                    ES_Timer_InitTimer(WIGGLE_TIMER, 330);
                                 }
-                                ES_Timer_InitTimer(WIGGLE_TIMER, 300);
+                                
                             }
                             break;
                         }
                         case BALL_DEPLOYED:
                         {
+                            SetForwardSpeed(0);
                             LiftToRen();
                             break;
                         }

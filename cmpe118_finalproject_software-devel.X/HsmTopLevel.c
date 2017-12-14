@@ -191,7 +191,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                                 InitTapeFollowSubHSM();
                                 currATState = AT_TAPE_FOLLOW;
                             }
-                        
+                            break;
                         case AT_KILLED: // Finished with atm6 destroy
                             TW_SetIdle();
                             currATState = AT_RETURN_TO_TAPE;
