@@ -96,7 +96,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 
                 //LiftToAtM6();
                 
-//                SWITCH_STATE(STARTUP);
+                SWITCH_STATE(STARTUP);
 
             }
 

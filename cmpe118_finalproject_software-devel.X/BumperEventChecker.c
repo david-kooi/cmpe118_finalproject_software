@@ -73,7 +73,7 @@ uint8_t ReadBumpers(){
     
     uint16_t portState = IO_PortsReadPort(PORTY);
     
-    printf("PORT STATE: 0x%x\r\n",portState);
+//    printf("PORT STATE: 0x%x\r\n",portState);
     
     // If the BUMPER_PIN is greater than 0, toggle the bumperState bit. Else, do nothing
     (~portState & RR_BUMPER_PIN) ? (bumperState ^= RR_BUMPER_MASK) : (bumperState = bumperState);

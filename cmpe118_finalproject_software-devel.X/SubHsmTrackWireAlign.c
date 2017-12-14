@@ -154,7 +154,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                 // initial state
 
                 //                SWITCH_STATE(ORIENT_STATE);
-                //SWITCH_STATE(ALIGN_STATE);
+                SWITCH_STATE(ALIGN_STATE);
             }
             break;
 
