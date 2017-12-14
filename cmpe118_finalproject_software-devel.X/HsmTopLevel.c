@@ -163,14 +163,14 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             switch(currATState){
                 case AT_TAPE_FOLLOW:
                     if(ThisEvent.EventType == TW_RIGHT_IN_SIGHT){
-                        StopDrive();
                         TS_SetIdle();
+                        StopDrive();
                         InitTrackWireAlignSubHSM();
                         currATState = AT_ALIGN_MANUVER;
+                        TwSampleOff();
                     }else if(ThisEvent.EventType == FR_BUMPER_ON || ThisEvent.EventType == FL_BUMPER_ON){
                         TS_SetIdle();
                         StopDrive();
-                        TS_SetIdle();
                         InitCollisionSubHSM();
                         currATState = AT_COLLISION_AVOID;
                     }
@@ -185,6 +185,13 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 case AT_ALIGN_MANUVER:
                     
                     switch(ThisEvent.EventType){
+                        case ES_TIMEOUT:
+                            if(ThisEvent.EventParam == TW_FINAL_TO){
+                                TW_SetIdle();
+                                InitTapeFollowSubHSM();
+                                currATState = AT_TAPE_FOLLOW;
+                            }
+                        
                         case ELEVATOR_ARRIVED: // Finished with atm6 destroy
                             TW_SetIdle();
                             currATState = AT_RETURN_TO_TAPE;
@@ -206,10 +213,12 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
 
                         SetTurningSpeed(-100); 
                         ElevatorHome();
+                        
+                    }
+                    
+                    if(ThisEvent.EventType == TS_RIGHT_ON_TAPE){
                         InitTapeFollowSubHSM();
                         currATState = AT_TAPE_FOLLOW;
-
-                               
                     }
 
                     break;

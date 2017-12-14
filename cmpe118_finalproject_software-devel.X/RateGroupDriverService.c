@@ -51,7 +51,7 @@
 
 static uint8_t MyPriority;
 static uint8_t dtSamplingTrackWire;
-
+static uint8_t sampleTw;
 static Derivative dtTrackWire;
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
@@ -72,6 +72,7 @@ uint8_t InitRateGroupDriverService(uint8_t Priority)
 {
 
     dtTrackWire = newDerivative(2);
+    sampleTw = 1;
     
     
     ES_Event ThisEvent;
@@ -152,7 +153,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 TS_StartSampling();
                 
                 // Only check track wires when needed
-                if(atm6KillCount != 3){
+                if(atm6KillCount != 3 && sampleTw){
                     RightTrackWireCheck();
                     LeftTrackWireCheck();
                 }
@@ -207,6 +208,13 @@ uint8_t StartDerivative(){
 
 uint8_t StopDerivative(){
     dtSamplingTrackWire = FALSE;
+}
+
+uint8_t TwSampleOff(){
+    sampleTw = 0;
+}
+uint8_t TwSampleOn(){
+    sampleTw = 1;
 }
 
 /*******************************************************************************

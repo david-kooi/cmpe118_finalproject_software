@@ -39,6 +39,7 @@
 #include "ElevatorService.h"
 #include "DeployerDriver.h"
 #include "BumperEventChecker.h"
+#include "SubHsmTapeFollow.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -147,7 +148,7 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
 //                printf("START TRAJ\r\n");
                 
             
-            
+                TS_SetIdle();
                 if(atm6KillCount == 3){
                     SWITCH_STATE(REN_APPROACH);
                 }else{
@@ -259,7 +260,9 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                     
                     if(ThisEvent.EventType == ES_TIMEOUT){
                         if(ThisEvent.EventParam == BEACON_CHECK_TIMER){
+                            atm6KillCount--;
                             SWITCH_STATE(COLLISION_AVOID);
+                            ES_Timer_InitTimer(COLLISION_TAPE_SNUB_TIMER, 5000);
                         }
                     }
                     

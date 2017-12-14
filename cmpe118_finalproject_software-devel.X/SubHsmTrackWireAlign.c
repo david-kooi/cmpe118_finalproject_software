@@ -170,8 +170,10 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
         {
             //SetForwardSpeed(MAX_FORWARD_SPEED);
             SetTurningSpeed(90);
+            TwSampleOn();
             StartDerivative();
-            ES_Timer_InitTimer(TW_ALIGN_TIMER, 6300);
+            ES_Timer_InitTimer(TW_ALIGN_TIMER,6600);
+            ES_Timer_InitTimer(TW_FINAL_TO, 16000)
             maneuverStep = 1;
         }
 
@@ -214,6 +216,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
 
 
                         case TW_ZERO_DERIVATIVE:
+                            ES_Timer_StopTimer(TW_ALIGN_TIMER);
                             StopDrive();
                             InitBackwardTrajectory(pivot5Degrees);
                             break;
