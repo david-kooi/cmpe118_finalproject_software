@@ -62,6 +62,7 @@ Trajectory atSpline = {
 	{0, 0, 0, 0}}
 };
 
+
 // Tightened
 //__attribute__((space(prog))) Trajectory pivot135Degrees = { 
 //    20,

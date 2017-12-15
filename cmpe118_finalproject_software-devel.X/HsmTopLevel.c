@@ -124,7 +124,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 {
                     if(ThisEvent.EventType == BC_HEAD_ON || ThisEvent.EventType == BC_IN_SIGHT){
                         StopDrive();
-                        SetForwardSpeed(-5000); // Backup
+                        SetForwardSpeed(-9000); // Backup
                         currStartupState = ST_FIND_TAPE;
                     }
                     break;
@@ -193,6 +193,8 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                     switch(ThisEvent.EventType){
                         case ES_TIMEOUT:
                             if(ThisEvent.EventParam == TW_FINAL_TO){
+                                StopDrive();
+                                SetTurningSpeed(-150);
                                 TW_SetIdle();
                                 InitTapeFollowSubHSM();
                                 currATState = AT_TAPE_FOLLOW;
