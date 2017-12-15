@@ -153,7 +153,7 @@ ES_Event RunRateGroupDriverService(ES_Event ThisEvent)
                 TS_StartSampling();
                 
                 // Only check track wires when needed
-                if(atm6KillCount != 3 && sampleTw){
+                if(sampleTw){
                     RightTrackWireCheck();
                     LeftTrackWireCheck();
                 }
