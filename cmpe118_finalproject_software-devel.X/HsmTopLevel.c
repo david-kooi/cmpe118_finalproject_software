@@ -36,29 +36,28 @@ typedef enum {
     IDLE,
 } TopLevelState;
 
-typedef enum{
+static const char *StateNames[] = {
+    "INIT",
+    "STARTUP",
+    "DESTROYING_ATM6",
+    "DESTROYING_REN",
+    "IDLE",
+};
+
+typedef enum {
     AT_TAPE_FOLLOW,
     AT_ALIGN_MANUVER,
     AT_RETURN_TO_TAPE,
     AT_COLLISION_AVOID,
 } ATM6State;
 
-typedef enum{
+typedef enum {
     ST_FIND_BEACON,
     ST_FIND_TAPE,
     ST_FOUND_TAPE,
-    
+
 } StartupState;
 
-static const char *StateNames[] = {
-    "INIT",
-    "STARTUP",
-    "TOP_ATM6",
-    "DESTROYING_ATM6",
-    "DESTROYING_REN",
-    "IDLE",
-
-};
 
 static TopLevelState CurrentState;
 static uint8_t myPriority;
@@ -82,23 +81,23 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
         SWITCH_STATE(IDLE);
         printf("Battery disconnected, stop everything!\r\n");
     }
-    
+
     static uint8_t maneuverStep = 0;
-    static ATM6State    currATState      = AT_TAPE_FOLLOW;
-    static StartupState currStartupState =  ST_FIND_BEACON;
-    
+    static ATM6State currATState = AT_TAPE_FOLLOW;
+    static StartupState currStartupState = ST_FIND_BEACON;
+
+    ThisEvent = RunCollisionSubHSM(ThisEvent);
     ThisEvent = RunTrackWireAlignSubHSM(ThisEvent);
     ThisEvent = RunTapeFollowSubHSM(ThisEvent);
-    ThisEvent = RunCollisionSubHSM(ThisEvent);
-    
+
     switch (CurrentState) {
         case INIT:
             if (ThisEvent.EventType == ES_INIT) {
                 printf("Initializing Top Level State Machine\r\n");
-                
-//                                SetForwardSpeed(MAX_FORWARD_SPEED);
+
+                //                                SetForwardSpeed(MAX_FORWARD_SPEED);
                 //                SetTurningSpeed(0);
-                
+
                 //LiftToAtM6();
                 atm6KillCount = 0;
                 EnableDriveMotors();
@@ -112,17 +111,17 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
             break;
         case STARTUP:
             ON_ENTRY
-            {
-                printf("STARTUP INIT\r\n");
-                
-                SetTurningSpeed(130);
-//                ES_Timer_InitTimer(TOP_LEVEL_TIMER, 1500);
-                currStartupState = ST_FIND_BEACON;
-            }
-            switch(currStartupState){
+        {
+            printf("STARTUP INIT\r\n");
+
+            SetTurningSpeed(130);
+            //                ES_Timer_InitTimer(TOP_LEVEL_TIMER, 1500);
+            currStartupState = ST_FIND_BEACON;
+        }
+            switch (currStartupState) {
                 case ST_FIND_BEACON:
                 {
-                    if(ThisEvent.EventType == BC_HEAD_ON || ThisEvent.EventType == BC_IN_SIGHT){
+                    if (ThisEvent.EventType == BC_HEAD_ON || ThisEvent.EventType == BC_IN_SIGHT) {
                         StopDrive();
                         SetForwardSpeed(-9000); // Backup
                         currStartupState = ST_FIND_TAPE;
@@ -131,68 +130,68 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 }
                 case ST_FIND_TAPE:
                 {
-                    if(ThisEvent.EventType == TS_REAR_ON_TAPE){
-                        
+                    if (ThisEvent.EventType == TS_REAR_ON_TAPE) {
+
                         StopDrive();
                         SetTurningSpeed(200);
                         currStartupState = ST_FOUND_TAPE;
-                        
+
                     }
                     break;
                 }
                 case ST_FOUND_TAPE:
-                {       
-                              
-                    if(ThisEvent.EventType == TS_CENTER_ON_TAPE){
+                {
+
+                    if (ThisEvent.EventType == TS_CENTER_ON_TAPE) {
                         StopDrive();
                         SWITCH_STATE(DESTROYING_ATM6);
                     }
-                    
+
                     break;
                 }
             }
-//            if(ThisEvent.EventType == ES_TIMEOUT){
-//                SWITCH_STATE(DESTROYING_ATM6);
-//            }
-            
-            
+            //            if(ThisEvent.EventType == ES_TIMEOUT){
+            //                SWITCH_STATE(DESTROYING_ATM6);
+            //            }
+
+
             ON_EXIT{
-                
+
             }
             break;
         case DESTROYING_ATM6:
-            
-            ON_ENTRY{       
-                InitTapeFollowSubHSM();
-                currATState = AT_TAPE_FOLLOW;
-            }
-            switch(currATState){
+
+            ON_ENTRY
+        {
+            InitTapeFollowSubHSM();
+            currATState = AT_TAPE_FOLLOW;
+        }
+            switch (currATState) {
                 case AT_TAPE_FOLLOW:
-                    if(ThisEvent.EventType == TW_RIGHT_IN_SIGHT){
+                    if (ThisEvent.EventType == TW_RIGHT_IN_SIGHT) {
                         TS_SetIdle();
                         StopDrive();
                         InitTrackWireAlignSubHSM();
                         currATState = AT_ALIGN_MANUVER;
-//                        TwSampleOff();
-                    }else if(ThisEvent.EventType == FR_BUMPER_ON || ThisEvent.EventType == FL_BUMPER_ON){
+                        //                        TwSampleOff();
+                    } else if (ThisEvent.EventType == FR_BUMPER_ON || ThisEvent.EventType == FL_BUMPER_ON) {
                         TS_SetIdle();
                         StopDrive();
                         InitCollisionSubHSM();
                         currATState = AT_COLLISION_AVOID;
                     }
-                    
+
                     break;
-                    
+
                 case AT_COLLISION_AVOID:
-                    if(ThisEvent.EventType == COLLISION_COMPLETE){
+                    if (ThisEvent.EventType == COLLISION_COMPLETE) {
                         currATState = AT_TAPE_FOLLOW;
                     }
                     break;
                 case AT_ALIGN_MANUVER:
-                    
-                    switch(ThisEvent.EventType){
+                    switch (ThisEvent.EventType) {
                         case ES_TIMEOUT:
-                            if(ThisEvent.EventParam == TW_FINAL_TO){
+                            if (ThisEvent.EventParam == TW_FINAL_TO) {
                                 StopDrive();
                                 SetTurningSpeed(-150);
                                 TW_SetIdle();
@@ -206,25 +205,35 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                             InitBackwardTrajectory(step2Inches);
                             atm6KillCount++;
                             break;
+                        case FR_BUMPER_ON:
+                        case FL_BUMPER_ON:
+                        {
+                            TW_SetIdle();
+                            TS_SetIdle();
+                            StopDrive();
+                            InitCollisionSubHSM();
+                            currATState = AT_COLLISION_AVOID;
+                            break;
+                        }
                         default:
                             break;
                     }
-                
-                    
+
+
 
                     break;
-                    
-                case AT_RETURN_TO_TAPE:
-                    
-                    
-                    if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
 
-                        SetTurningSpeed(-100); 
+                case AT_RETURN_TO_TAPE:
+
+
+                    if (ThisEvent.EventType == TRAJECTORY_COMPLETE) {
+
+                        SetTurningSpeed(-100);
                         ElevatorHome();
-                        
+
                     }
-                    
-                    if(ThisEvent.EventType == TS_RIGHT_ON_TAPE){
+
+                    if (ThisEvent.EventType == TS_RIGHT_ON_TAPE) {
                         InitTapeFollowSubHSM();
                         currATState = AT_TAPE_FOLLOW;
                     }
@@ -233,7 +242,7 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                 default:
                     break;
             }
-            
+
 
 
             break;

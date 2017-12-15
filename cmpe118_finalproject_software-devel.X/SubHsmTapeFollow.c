@@ -195,9 +195,10 @@ ES_Event RunTapeFollowSubHSM(ES_Event ThisEvent) {
 //                            SetTurnRadius(-6 * MIN_TURN_RADIUS); // Turn right
                             SetTurnRadius(-15000);
                             break;
-                        case LCR_ON:
-                            SetForwardSpeed(forwardSpeed / 2); //This shouldn't happen
-                            break;
+//                        case LCR_ON:
+//                            SetForwardSpeed(0); //This shouldn't happen
+//                            SetTurningSpeed(-160);
+//                            break;
                         default:
                             printf("Unexpected front tape sensor state!\r\n");
                             break;

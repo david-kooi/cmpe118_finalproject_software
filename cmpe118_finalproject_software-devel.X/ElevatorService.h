@@ -17,7 +17,7 @@
 
 #define RELEASE_RAMP_STEPS 20
 #define RUBBER_BAND_STEPS 20
-#define HOME_HEIGHT 30
+#define HOME_HEIGHT 25
 
 #define POST_ELEVATOR_EVENT PostHsmTopLevel
 
