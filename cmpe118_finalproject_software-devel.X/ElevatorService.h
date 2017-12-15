@@ -16,7 +16,7 @@
 #define SAFE_HEIGHT 600
 
 #define RELEASE_RAMP_STEPS 20
-#define RUBBER_BAND_STEPS 0
+#define RUBBER_BAND_STEPS 12
 #define HOME_HEIGHT 30
 
 #define POST_ELEVATOR_EVENT PostHsmTopLevel
