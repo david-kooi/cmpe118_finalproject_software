@@ -262,6 +262,7 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                         if(ThisEvent.EventParam == BEACON_CHECK_TIMER){
                             
                             SWITCH_STATE(COLLISION_AVOID);
+                            ElevatorHome();
                             ES_Timer_InitTimer(COLLISION_TAPE_SNUB_TIMER, 5000);
                         }
                     }
