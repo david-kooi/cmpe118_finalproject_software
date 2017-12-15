@@ -46,6 +46,7 @@ typedef enum{
 typedef enum{
     ST_FIND_BEACON,
     ST_FIND_TAPE,
+    ST_FOUND_TAPE,
     
 } StartupState;
 
@@ -134,9 +135,14 @@ ES_Event RunHsmTopLevel(ES_Event ThisEvent) {
                         
                         StopDrive();
                         SetTurningSpeed(200);
+                        currStartupState = ST_FOUND_TAPE;
                         
                     }
-                    
+                    break;
+                }
+                case ST_FOUND_TAPE:
+                {       
+                              
                     if(ThisEvent.EventType == TS_CENTER_ON_TAPE){
                         StopDrive();
                         SWITCH_STATE(DESTROYING_ATM6);

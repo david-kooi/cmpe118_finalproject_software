@@ -294,7 +294,7 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
         {
             //            maneuverStep = 1;
             //            InitBackwardTrajectory(pivot45Degrees);
-            InitBackwardTrajectory(step5Inches);
+            InitBackwardTrajectory(step6P5Inches);
             maneuverStep = 1;
         }
             if (ThisEvent.EventType == TRAJECTORY_COMPLETE) {
