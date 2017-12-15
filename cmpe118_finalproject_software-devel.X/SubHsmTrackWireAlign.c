@@ -68,11 +68,10 @@ static const char *StateNames[] = {
 	"RETURN_TO_TAPE",
 };
 
-
-typedef enum{
+typedef enum {
     ORIENT_SUB_STATE_NOMINAL,
     ORIENT_SUB_STATE_CORRECTING,
-}OrientSubState_t;
+} OrientSubState_t;
 
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
@@ -86,7 +85,7 @@ typedef enum{
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
 
-static OrientSubState_t            orientSubState = ORIENT_SUB_STATE_NOMINAL;
+static OrientSubState_t orientSubState = ORIENT_SUB_STATE_NOMINAL;
 static TrackWireAlignSubHSMState_t CurrentState = IDLE_STATE; // <- change name to match ENUM
 static uint8_t MyPriority;
 
@@ -173,18 +172,18 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
             //SetForwardSpeed(MAX_FORWARD_SPEED);
             SetTurningSpeed(90);
             StartDerivative();
-            ES_Timer_InitTimer(TW_ALIGN_TIMER,6800);
+            ES_Timer_InitTimer(TW_ALIGN_TIMER, 6800);
             ES_Timer_InitTimer(TW_FINAL_TO, 16000);
             maneuverStep = 1;
         }
 
-            switch(orientSubState){
-                
+            switch (orientSubState) {
+
                 case ORIENT_SUB_STATE_CORRECTING:
                 {
-                    
-                    if(ThisEvent.EventType == TRAJECTORY_COMPLETE){
-                        switch(maneuverStep){
+
+                    if (ThisEvent.EventType == TRAJECTORY_COMPLETE) {
+                        switch (maneuverStep) {
                             case 1:
                                 InitForwardTrajectory(step2Inches);
                                 maneuverStep++;
@@ -197,17 +196,17 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                                 break;
                         }
                     }
-                    
-                    break;               
+
+                    break;
                 }
-                
-                
+
+
                 case ORIENT_SUB_STATE_NOMINAL:
                 {
                     switch (ThisEvent.EventType) {
 
                         case ES_TIMEOUT:
-                            switch(ThisEvent.EventParam){
+                            switch (ThisEvent.EventParam) {
                                 case TW_ALIGN_TIMER:
                                 {
                                     //StopDerivative();  
@@ -251,40 +250,40 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
                                     break;
                             }
                             break;
-                            
+
                         case BALL_DEPLOYED:
                             LiftToAtM6();
                             break;
-                            
+
                         case ELEVATOR_ARRIVED:
                             ES_Timer_InitTimer(WIGGLE_TIMER, 500);
                             SetTurningSpeed(100);
-                            
+
                             break;
-                            
-                            
+
+
                         default:
                             break;
-                    
-                    
-                    
-                    }
-                    
-                    
-                    
 
-                    
+
+
+                    }
+
+
+
+
+
                     break;
                 }// ORIENT_SUB_STATE_NOMINAL case
-                
-                
-                
-                
+
+
+
+
                 default:
                     break;
             } // Orient Sub State machine
-            
-                
+
+
 
 
             break; //ORIENT_STATE
@@ -293,13 +292,16 @@ ES_Event RunTrackWireAlignSubHSM(ES_Event ThisEvent) {
         case ALIGN_STATE:
             ON_ENTRY
         {
+            //            maneuverStep = 1;
+            //            InitBackwardTrajectory(pivot45Degrees);
+            InitBackwardTrajectory(step5Inches);
             maneuverStep = 1;
-            InitBackwardTrajectory(pivot45Degrees);
         }
             if (ThisEvent.EventType == TRAJECTORY_COMPLETE) {
                 switch (maneuverStep) {
                     case 1:
-                        InitForwardTrajectory(step5Inches);
+//                        InitForwardTrajectory(step5Inches);
+                        InitForwardTrajectory(atSpline);
                         break;
                     case 2:
                         InitForwardTrajectory(pivot90Degrees);

@@ -1,0 +1,3 @@
+build/default/production/LsDerivative.o:  \
+LsDerivative.c  \
+LsDerivative.h 

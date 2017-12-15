@@ -149,7 +149,7 @@ ES_Event RunCollisionSubHSM(ES_Event ThisEvent) {
                 
             
                 TS_SetIdle();
-                if(atm6KillCount == 3){
+                if(atm6KillCount >= 3){
                     SWITCH_STATE(REN_APPROACH);
                 }else{
                     //printf("COLLISION SWITCH\r\n");
